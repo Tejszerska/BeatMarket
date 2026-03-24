@@ -1,4 +1,4 @@
-package com.spring.songify.domain.crud.song;
+package com.spring.songify.domain.crud;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import java.time.Instant;
 @RequiredArgsConstructor
 @Service
 @Transactional
-
 class SongAdder {
     private final SongRepository songRepository;
 

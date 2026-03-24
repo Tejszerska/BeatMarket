@@ -1,4 +1,4 @@
-package com.spring.songify.domain.crud.song;
+package com.spring.songify.domain.crud;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

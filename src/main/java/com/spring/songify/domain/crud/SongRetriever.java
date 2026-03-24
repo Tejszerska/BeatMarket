@@ -1,4 +1,4 @@
-package com.spring.songify.domain.crud.song;
+package com.spring.songify.domain.crud;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

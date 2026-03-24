@@ -1,6 +1,6 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller;
 
-import com.spring.songify.domain.crud.song.dto.SongDto;
+import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.dto.request.CreateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.dto.request.PartiallyUpdateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.dto.request.UpdateSongRequestDto;

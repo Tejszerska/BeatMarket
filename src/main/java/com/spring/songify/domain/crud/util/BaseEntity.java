@@ -14,6 +14,7 @@ public abstract class BaseEntity implements Serializable {
     @CreationTimestamp
     public Instant createdOn;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

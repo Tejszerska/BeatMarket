@@ -1,4 +1,4 @@
-package com.spring.songify.domain.crud.song;
+package com.spring.songify.domain.crud;
 
 enum SongLanguage {
     ENGLISH,
@@ -7,5 +7,6 @@ enum SongLanguage {
     FRENCH,
     GERMAN,
     JAPANESE,
+    INSTRUMENTAL,
     OTHER
 }
