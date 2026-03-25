@@ -1,5 +1,7 @@
 package com.spring.songify.domain.crud;
 
+import com.spring.songify.domain.crud.dto.SongDto;
+import com.spring.songify.domain.crud.dto.SongRequestDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +16,11 @@ import java.time.Instant;
 class SongAdder {
     private final SongRepository songRepository;
 
-    Song addSong(final Song song) {
-        log.info("adding new song: " + song);
-        song.setDuration(200L);
-        song.setReleaseDate(Instant.now());
-        return songRepository.save(song);
+    SongDto addSong(final SongRequestDto dto) {
+        String languageFromDto = dto.languageDto().name();
+        SongLanguage songLanguage = SongLanguage.valueOf(languageFromDto);
+        Song song = new Song(dto.name(), dto.releaseDate(), dto.duration(), songLanguage);
+        Song save = songRepository.save(song);
+        return new SongDto(save.getId(), save.getName());
     }
 }
