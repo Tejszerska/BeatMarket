@@ -23,7 +23,7 @@ class Song extends BaseEntity {
     )
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Genre genre;
 
     @Column(nullable = false)

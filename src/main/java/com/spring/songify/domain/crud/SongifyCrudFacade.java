@@ -1,7 +1,9 @@
 package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.AlbumDto;
+import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumRequestDto;
+import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
 import com.spring.songify.domain.crud.dto.GenreDto;
@@ -28,11 +30,21 @@ public class SongifyCrudFacade {
     private final GenreAdder genreAdder;
     private final AlbumAdder albumAdder;
     private final ArtistRetriever artistRetriever;
+    private final AlbumRetriever albumRetriever;
 
+
+    public AlbumWithArtistsAndSongsDto findAlbumByIdWithArtistsAndSongs(Long id) {
+        return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
+    }
+
+    public AlbumInfo findAlbumByReturnAlbumInfo(Long id) {
+        return albumRetriever.findAlbumByReturnAlbumInfo(id);
+    }
 
     public Set<ArtistDto> findAllArtists(Pageable pageable) {
         return artistRetriever.findAllArtist(pageable);
     }
+
     public List<SongDto> findAllSongs(Pageable pageable) {
         return songRetriever.findAll(pageable);
     }
@@ -63,9 +75,7 @@ public class SongifyCrudFacade {
 
     public void updateSongById(Long id, SongDto newSongDto) {
         songRetriever.existsById(id);
-        // some domain validator
         Song songValidatedAndReadyToUpdate = new Song(newSongDto.name());
-        // some domain validator ended checking
         songUpdater.updateById(id, songValidatedAndReadyToUpdate);
     }
 

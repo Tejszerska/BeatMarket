@@ -1,6 +1,5 @@
 package com.spring.songify.domain.crud;
 
-import com.spring.songify.domain.crud.dto.ArtistDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
 
