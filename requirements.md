@@ -26,6 +26,7 @@ SONGIFY: APLIKACJA DO ZARZĄDZANIA ALBUMAMI, ARTYSTAMI I PIOSENKAMI
 24. można wyświetlać konkretne gatunki muzyczne wraz z piosenkami
 25. można wyświetlać konkretnych artystów wraz z ich albumami
 26. chcemy mieć trwałe dane
+27. MOJE Usun genre i zapytaj czy usunac przypisana pisoenke
 
 HAPPY PATH (user tworzy album "Eminema" z piosenkami "Til i collapse", "Lose Yourself", o gatunku Rap)
 

@@ -38,4 +38,8 @@ class AlbumRetriever {
         return albumRepository.findAlbumByIdReturnAlbumInfo(id)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id=" + id + " not found"));
     }
+
+    Set<Album> findAlbumsByArtistId(final Long artistId) {
+        return albumRepository.findAllAlbumsByArtistId(artistId);
+    }
 }

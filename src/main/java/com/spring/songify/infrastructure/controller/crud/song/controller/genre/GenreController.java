@@ -1,8 +1,6 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.genre;
 
 import com.spring.songify.domain.crud.SongifyCrudFacade;
-import com.spring.songify.domain.crud.dto.ArtistDto;
-import com.spring.songify.domain.crud.dto.ArtistRequestDto;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.GenreRequestDto;
 import lombok.AllArgsConstructor;
@@ -19,7 +17,7 @@ class GenreController {
     private final SongifyCrudFacade songifyCrudFacade;
 
     @PostMapping
-    ResponseEntity<GenreDto> postGenre(@RequestBody GenreRequestDto genreRequestDto){
+    ResponseEntity<GenreDto> postGenre(@RequestBody GenreRequestDto genreRequestDto) {
         GenreDto genreDto = songifyCrudFacade.addGenre(genreRequestDto);
         return ResponseEntity.ok(genreDto);
     }

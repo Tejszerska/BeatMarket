@@ -1,8 +1,22 @@
 package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.util.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 
@@ -35,6 +49,7 @@ class Song extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private SongLanguage language;
+
     @ManyToOne
     private Album album;
 
