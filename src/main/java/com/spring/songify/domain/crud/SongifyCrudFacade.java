@@ -10,7 +10,6 @@ import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.GenreRequestDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.Set;
 
 @AllArgsConstructor
 @Service
-@Transactional
 public class SongifyCrudFacade {
     private final SongAdder songAdder;
     private final SongRetriever songRetriever;
@@ -33,6 +31,7 @@ public class SongifyCrudFacade {
     private final AlbumRetriever albumRetriever;
     private final ArtistDeleter artistDeleter;
     private final ArtistAssigner artistAssigner;
+    private final ArtistUpdater artistUpdater;
 
     public AlbumWithArtistsAndSongsDto findAlbumByIdWithArtistsAndSongs(Long id) {
         return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
@@ -78,6 +77,9 @@ public class SongifyCrudFacade {
         return artistAdder.addArtist(dto.name());
     }
 
+    public ArtistDto updateArtistNameById(Long artistId, String name){
+        return artistUpdater.updateArtistNameById(artistId, name);
+    }
     public void updateSongById(Long id, SongDto newSongDto) {
         songRetriever.existsById(id);
         Song songValidatedAndReadyToUpdate = new Song(newSongDto.name());
