@@ -45,16 +45,21 @@ class ArtistController {
     }
 
     @PutMapping("/{artistId}/{albumId}")
-    ResponseEntity<String> addArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId){
+    ResponseEntity<String> addArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId) {
         songifyCrudFacade.addArtistToAlbum(artistId, albumId);
         return ResponseEntity.ok("Artist added to album - to be tested!");
     }
 
     @PatchMapping("/{artistId}")
     ResponseEntity<ArtistDto> updateArtistNameById(@PathVariable Long artistId,
-                                                   @Valid @RequestBody ArtistUpdateRequestDto updateRequestDto){
+                                                   @Valid @RequestBody ArtistUpdateRequestDto updateRequestDto) {
         ArtistDto artistDto = songifyCrudFacade.updateArtistNameById(artistId, updateRequestDto.newArtistName());
         return ResponseEntity.ok(artistDto);
+    }
 
+    @PostMapping("/default")
+    ResponseEntity<ArtistDto> addArtistWithDefaultAlbumAndSong(@RequestBody ArtistRequestDto requestDto) {
+        ArtistDto artistDto = songifyCrudFacade.addArtistWithDefaultAlbumAndSong(requestDto);
+        return ResponseEntity.ok(artistDto);
     }
 }

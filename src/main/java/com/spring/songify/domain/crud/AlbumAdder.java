@@ -26,4 +26,6 @@ class AlbumAdder {
         albumRepository.save(album);
         return new AlbumDto(album.getId(), album.getTitle());
     }
+
+
 }

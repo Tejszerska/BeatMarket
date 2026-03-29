@@ -53,6 +53,10 @@ public class SongifyCrudFacade {
         return songRetriever.findSongDtoById(id);
     }
 
+    public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto){
+        return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
+    }
+
     public GenreDto addGenre(GenreRequestDto dto) {
         return genreAdder.addGenre(dto.name());
     }
