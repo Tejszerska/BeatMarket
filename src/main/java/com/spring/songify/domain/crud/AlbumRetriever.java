@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ class AlbumRetriever {
     }
 
     Set<Album> findAlbumsByArtistId(final Long artistId) {
-        return albumRepository.findAllAlbumsByArtistId(artistId);
+        return new HashSet<>(albumRepository.findAllAlbumsByArtistId(artistId));
     }
 
     Set<AlbumDto> findAlbumsDtoByArtistId(final Long artistId) {

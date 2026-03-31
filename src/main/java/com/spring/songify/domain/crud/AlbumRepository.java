@@ -8,6 +8,7 @@ import org.springframework.data.repository.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ interface AlbumRepository extends Repository<Album, Long> {
             inner join a.artists artists 
             where artists.id = :id
             """)
-    Set<Album> findAllAlbumsByArtistId(Long id);
+    List<Album> findAllAlbumsByArtistId(Long id);
 
     @Transactional
     @Modifying
@@ -41,5 +42,5 @@ interface AlbumRepository extends Repository<Album, Long> {
     Optional<Album> findById(Long id);
 
     @Query("SELECT a FROM Album a")
-    Set<Album> findAllAlbums(Pageable pageable);
+    List<Album> findAllAlbums(Pageable pageable);
 }

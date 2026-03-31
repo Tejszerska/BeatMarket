@@ -1,13 +1,14 @@
 package com.spring.songify.domain.crud;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class InMemorySongRepository implements SongRepository {
@@ -15,8 +16,8 @@ class InMemorySongRepository implements SongRepository {
     AtomicInteger index = new AtomicInteger(0);
 
     @Override
-    public Set<Song> findAll(final Pageable pageable) {
-        return new HashSet<>(db.values());
+    public Page<Song> findAll(final Pageable pageable) {
+        return new PageImpl<>(new ArrayList<>(db.values()));
     }
 
     @Override
