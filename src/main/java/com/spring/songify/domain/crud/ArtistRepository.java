@@ -14,5 +14,5 @@ interface ArtistRepository extends Repository<Artist, Long> {
 
     Optional<Artist> findById(Long artistId);
 
-    void deleteArtistById(Long id);
+    int deleteArtistById(Long id);
 }

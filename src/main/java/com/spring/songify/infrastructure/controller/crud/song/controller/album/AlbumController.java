@@ -34,7 +34,7 @@ class AlbumController {
 
     @GetMapping("/v2/{albumId}")
     ResponseEntity<AlbumInfo> getAlbumsReturnAlbumInfo(@PathVariable Long albumId) {
-        AlbumInfo albumByReturnAlbumInfo = songifyCrudFacade.findAlbumByReturnAlbumInfo(albumId);
+        AlbumInfo albumByReturnAlbumInfo = songifyCrudFacade.findAlbumByIdReturnAlbumInfo(albumId);
         return ResponseEntity.ok(albumByReturnAlbumInfo);
     }
 }

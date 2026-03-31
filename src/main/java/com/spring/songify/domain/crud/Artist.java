@@ -10,17 +10,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
-
+@Builder
 @Entity
 @NoArgsConstructor
 @Setter(AccessLevel.PACKAGE)
 @Getter(AccessLevel.PACKAGE)
+@AllArgsConstructor
 class Artist extends BaseEntity {
     @Id
     @GeneratedValue(generator = "artist_id_seq", strategy = GenerationType.SEQUENCE)

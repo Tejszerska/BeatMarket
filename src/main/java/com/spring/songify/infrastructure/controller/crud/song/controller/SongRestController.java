@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.spring.songify.infrastructure.controller.crud.song.controller.SongControllerMapper.*;
 
@@ -29,7 +30,7 @@ class SongRestController {
 
     @GetMapping
     ResponseEntity<GetAllSongsResponseDto> getAllSongs(@PageableDefault(page = 0, size = 10) Pageable pageable) {
-        List<SongDto> allSongs = songFacade.findAllSongs(pageable);
+        Set<SongDto> allSongs = songFacade.findAllSongs(pageable);
         GetAllSongsResponseDto response = mapFromSongToGetAllSongsResponseDto(allSongs);
         return ResponseEntity.ok(response);
     }

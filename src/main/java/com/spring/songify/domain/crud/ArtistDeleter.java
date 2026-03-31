@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -27,15 +28,18 @@ class ArtistDeleter {
             artistRepository.deleteArtistById(artistId);
             return;
         }
-        // removing from albums with 2 or more artists
-         artistsAlbums.stream()
-                .filter(album -> album.getArtists().size() >= 2)
-                .forEach(album -> album.removeArtist(artist));
-
         // get this artist solo albums
         Set<Album> albumsWithOneArtist = artistsAlbums.stream()
                 .filter(album -> album.getArtists().size() == 1)
                 .collect(Collectors.toSet());
+
+        // get albums with 2 or more artists
+        Stream<Album> albumsWithMultipleArtists = artistsAlbums.stream()
+                .filter(album -> album.getArtists().size() >= 2);
+
+        // remove artist from albums with 2+ artists
+        albumsWithMultipleArtists.forEach(album -> album.removeArtist(artist));
+
 
         // flatmap song ids from solo albums
         Set<Long> allSongsIdsFromAllAlbumsWithOnlyThisArtist = albumsWithOneArtist.stream()

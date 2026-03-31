@@ -7,6 +7,7 @@ import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -20,7 +21,7 @@ class AlbumRetriever {
 
 
     AlbumWithArtistsAndSongsDto findAlbumByIdWithArtistsAndSongs(final Long id) {
-        Album album= albumRepository.findAlbumByIdWithSongsAndArtists(id)
+        Album album = albumRepository.findAlbumByIdWithSongsAndArtists(id)
                 .orElseThrow(() -> new AlbumNotFoundException("Album with id=" + id + " not found"));
 
         Set<Artist> artists = album.getArtists();
@@ -43,8 +44,24 @@ class AlbumRetriever {
         return albumRepository.findAllAlbumsByArtistId(artistId);
     }
 
+    Set<AlbumDto> findAlbumsDtoByArtistId(final Long artistId) {
+        return findAlbumsByArtistId(artistId)
+                .stream().map(
+                        album -> new AlbumDto(album.getId(), album.getTitle()))
+                .collect(Collectors.toSet());
+    }
+
     Album findById(final Long albumId) {
         return albumRepository.findById(albumId)
                 .orElseThrow(() -> new AlbumNotFoundException("Album by id=" + albumId + "was not found"));
+    }
+
+    Set<AlbumDto> findAllAlbums(Pageable pageable) {
+        return albumRepository.findAllAlbums(pageable).stream()
+                .map(album -> AlbumDto.builder()
+                        .id(album.getId())
+                        .title(album.getTitle())
+                        .build())
+                .collect(Collectors.toSet());
     }
 }

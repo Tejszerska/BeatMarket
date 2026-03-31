@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -14,14 +16,14 @@ import java.util.List;
 class SongRetriever {
     private final SongRepository songRepository;
 
-    List<SongDto> findAll(Pageable pageable) {
+    Set<SongDto> findAll(Pageable pageable) {
         log.info("retrieving all songs: ");
         return songRepository.findAll(pageable).stream().map(song -> SongDto.builder()
                         .id(song.getId())
                         .name(song.getName())
                         .name(song.getName())
                         .build())
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     SongDto findSongDtoById(Long id) {

@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -33,11 +32,16 @@ public class SongifyCrudFacade {
     private final ArtistAssigner artistAssigner;
     private final ArtistUpdater artistUpdater;
 
+
     public AlbumWithArtistsAndSongsDto findAlbumByIdWithArtistsAndSongs(Long id) {
         return albumRetriever.findAlbumByIdWithArtistsAndSongs(id);
     }
 
-    public AlbumInfo findAlbumByReturnAlbumInfo(Long id) {
+    public Set<AlbumDto> findAlbumsDtoByArtistId (Long artistId){
+        return albumRetriever.findAlbumsDtoByArtistId(artistId);
+    }
+
+    public AlbumInfo findAlbumByIdReturnAlbumInfo(Long id) {
         return albumRetriever.findAlbumByReturnAlbumInfo(id);
     }
 
@@ -45,7 +49,7 @@ public class SongifyCrudFacade {
         return artistRetriever.findAllArtist(pageable);
     }
 
-    public List<SongDto> findAllSongs(Pageable pageable) {
+    public Set<SongDto> findAllSongs(Pageable pageable) {
         return songRetriever.findAll(pageable);
     }
 
@@ -53,7 +57,11 @@ public class SongifyCrudFacade {
         return songRetriever.findSongDtoById(id);
     }
 
-    public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto){
+    public Set<AlbumDto> findAllAlbums(Pageable pageable){
+        return albumRetriever.findAllAlbums(pageable);
+    };
+
+    public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
         return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
     }
 
@@ -81,9 +89,10 @@ public class SongifyCrudFacade {
         return artistAdder.addArtist(dto.name());
     }
 
-    public ArtistDto updateArtistNameById(Long artistId, String name){
+    public ArtistDto updateArtistNameById(Long artistId, String name) {
         return artistUpdater.updateArtistNameById(artistId, name);
     }
+
     public void updateSongById(Long id, SongDto newSongDto) {
         songRetriever.existsById(id);
         Song songValidatedAndReadyToUpdate = new Song(newSongDto.name());

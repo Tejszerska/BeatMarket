@@ -10,19 +10,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @org.springframework.stereotype.Repository
 interface SongRepository extends Repository<Song, Long> {
 
     @Query("SELECT s FROM Song s")
-    List<Song> findAll(Pageable pageable);
+    Set<Song> findAll(Pageable pageable);
 
     @Query("SELECT s FROM Song s WHERE s.id = :id")
     Optional<Song> findById(Long id);
 
     @Modifying
     @Query("DELETE FROM Song s WHERE s.id = :id")
-    void deleteById(Long id);
+    int deleteById(Long id);
 
     @Modifying
     @Query("UPDATE Song s SET s.name = :#{#newSong.name} where s.id = :id")
@@ -31,10 +32,6 @@ interface SongRepository extends Repository<Song, Long> {
     boolean existsById(Long id);
 
     Song save(Song song);
-
-    int deleteSongByGenre_Id(Long genreId);
-
-    void deleteAllById(Long id);
 
     @Transactional
     @Modifying

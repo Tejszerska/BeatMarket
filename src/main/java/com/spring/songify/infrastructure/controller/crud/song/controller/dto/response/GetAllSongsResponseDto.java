@@ -4,6 +4,7 @@ package com.spring.songify.infrastructure.controller.crud.song.controller.dto.re
 import com.spring.songify.domain.crud.dto.SongDto;
 
 import java.util.List;
+import java.util.Set;
 
-public record GetAllSongsResponseDto(List<SongDto> songs) {
+public record GetAllSongsResponseDto(Set<SongDto> songs) {
 }
