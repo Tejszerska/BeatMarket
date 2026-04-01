@@ -24,7 +24,12 @@ interface AlbumRepository extends Repository<Album, Long> {
             """)
     Optional<Album> findAlbumByIdWithSongsAndArtists(Long id);
 
-    @Query("SELECT a FROM Album a WHERE a.id = :id")
+    @Query(""" 
+            SELECT a FROM Album a
+            JOIN FETCH a.songs songs
+            JOIN FETCH a.artists artists
+            WHERE a.id = :id
+            """)
     Optional<AlbumInfo> findAlbumByIdReturnAlbumInfo(Long id);
 
     @Query("""

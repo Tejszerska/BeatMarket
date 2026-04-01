@@ -29,13 +29,13 @@ class AlbumController {
         return ResponseEntity.ok(albumDto);
     }
 
-    @GetMapping("/v1/{albumId}")
+    @GetMapping("/v2/{albumId}")
     ResponseEntity<AlbumWithArtistsAndSongsDto> getAlbumsWithArtistsAndSongs(@PathVariable Long albumId) {
         AlbumWithArtistsAndSongsDto albumByIdWithArtistsAndSongs = songifyCrudFacade.findAlbumByIdWithArtistsAndSongs(albumId);
         return ResponseEntity.ok(albumByIdWithArtistsAndSongs);
     }
 
-    @GetMapping("/v2/{albumId}")
+    @GetMapping("/{albumId}")
     ResponseEntity<AlbumInfo> getAlbumsReturnAlbumInfo(@PathVariable Long albumId) {
         AlbumInfo albumByReturnAlbumInfo = songifyCrudFacade.findAlbumByIdReturnAlbumInfo(albumId);
         return ResponseEntity.ok(albumByReturnAlbumInfo);
