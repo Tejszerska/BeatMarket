@@ -72,4 +72,12 @@ class Song extends BaseEntity {
         this.duration = duration;
         this.language = songLanguage;
     }
+    Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage songLanguage, final Genre genre) {
+        this.name = name;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.language = songLanguage;
+        this.genre = genre;
+    }
+
 }

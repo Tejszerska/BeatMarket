@@ -4,6 +4,7 @@ import com.spring.songify.domain.crud.dto.AlbumDto;
 import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
+import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ class AlbumRetriever {
         Set<Song> songs = album.getSongs();
 
         Set<ArtistDto> artistsDto = artists.stream().map(a -> new ArtistDto(a.getId(), a.getName())).collect(Collectors.toSet());
-        Set<SongDto> songsDto = songs.stream().map(s -> new SongDto(s.getId(), s.getName())).collect(Collectors.toSet());
+        Set<SongDto> songsDto = songs.stream().map(s -> new SongDto(s.getId(), s.getName(), new GenreDto(s.getId(), s.getName()))).collect(Collectors.toSet());
         AlbumDto albumDto = new AlbumDto(album.getId(), album.getTitle());
 
         return new AlbumWithArtistsAndSongsDto(albumDto, artistsDto, songsDto);

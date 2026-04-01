@@ -22,6 +22,12 @@ interface SongRepository extends Repository<Song, Long> {
     @Query("SELECT s FROM Song s WHERE s.id = :id")
     Optional<Song> findById(Long id);
 
+    @Query("SELECT s FROM Song s JOIN FETCH s.genre")
+    Page<Song> findAllSongsWithGenre(Pageable pageable);
+
+    @Query("SELECT s FROM Song s JOIN FETCH s.genre WHERE s.id = :id")
+    Optional<Song> findSongByIdWithGenre(Long id);
+
     @Modifying
     @Query("DELETE FROM Song s WHERE s.id = :id")
     int deleteById(Long id);

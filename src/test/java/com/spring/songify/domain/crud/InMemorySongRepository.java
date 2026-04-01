@@ -26,6 +26,16 @@ class InMemorySongRepository implements SongRepository {
     }
 
     @Override
+    public Page<Song> findAllSongsWithGenre(final Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Optional<Song> findSongByIdWithGenre(final Long id) {
+        return Optional.empty();
+    }
+
+    @Override
     public int deleteById(final Long id) {
         if (db.containsKey(id)) {
             db.remove(id);

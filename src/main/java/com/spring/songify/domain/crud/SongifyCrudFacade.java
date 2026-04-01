@@ -84,11 +84,7 @@ public class SongifyCrudFacade {
     }
 
     public SongDto addSong(final SongRequestDto dto) {
-        SongDto addedSong = songAdder.addSong(dto);
-        return SongDto.builder()
-                .id(addedSong.id())
-                .name(addedSong.name())
-                .build();
+        return songAdder.addSong(dto);
     }
 
     public ArtistDto addArtist(ArtistRequestDto dto) {

@@ -46,7 +46,7 @@ class SongRestController {
     @PostMapping
     ResponseEntity<CreateSongResponseDto> postSong(@RequestBody @Valid SongRequestDto request) {
         SongDto savedSong = songFacade.addSong(request);
-        CreateSongResponseDto body = mapFromSongToCreateSongResponseDto(savedSong);
+        CreateSongResponseDto body = new CreateSongResponseDto(savedSong);
         return ResponseEntity.ok(body);
     }
 
