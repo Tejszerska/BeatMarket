@@ -74,4 +74,10 @@ class SongRestController {
         PartiallyUpdateSongResponseDto body = SongControllerMapper.mapFromSongDtoToPartiallyUpdateSongResponseDto(savedSong);
         return ResponseEntity.ok(body);
     }
+
+    @PutMapping("/{songId}/genre/{genreId}")
+    ResponseEntity<String> assignGenreByIdToSongById(@PathVariable Long songId, @PathVariable Long genreId){
+        songFacade.assignGenreByIdToSongById(songId, genreId);
+        return ResponseEntity.ok("Updated");
+    }
 }
