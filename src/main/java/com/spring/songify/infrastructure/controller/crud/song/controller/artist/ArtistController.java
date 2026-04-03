@@ -21,7 +21,7 @@ import java.util.Set;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/artist")
+@RequestMapping("/artists")
 class ArtistController {
     private final SongifyCrudFacade songifyCrudFacade;
 
@@ -44,7 +44,7 @@ class ArtistController {
         return ResponseEntity.ok("Artist, album, songs deleted... probably ");
     }
 
-    @PutMapping("/{artistId}/{albumId}")
+    @PutMapping("/{artistId}/albums/{albumId}")
     ResponseEntity<String> addArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId) {
         songifyCrudFacade.addArtistToAlbum(artistId, albumId);
         return ResponseEntity.ok("Artist added to album - to be tested!");

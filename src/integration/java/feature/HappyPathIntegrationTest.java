@@ -15,6 +15,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -140,20 +141,40 @@ class HappyPathIntegrationTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is("EminemAlbum1")));
 
-                // 11. when I go to /albums/1 then I can not see any albums because there is no artist in system
-                mockMvc.perform(get("/albums/1")
+        // 11. when I go to /albums/1 then I can not see any albums because there is no artist in system
+        mockMvc.perform(get("/albums/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                        .andExpect(jsonPath("$.message", is("Album with id=1 not found")))
-                        .andExpect(jsonPath("$.status", is("NOT_FOUND")));
-                // 12. when I post to /artists with Artist "Eminem" then Artist "Eminem" is returned with id 1
+                .andExpect(jsonPath("$.message", is("Album with id=1 not found")))
+                .andExpect(jsonPath("$.status", is("NOT_FOUND")));
+        // 12. when I post to /artists with Artist "Eminem" then Artist "Eminem" is returned with id 1
+        mockMvc.perform(post("/artists")
+                        .content("""
+                                {
+                                "name": "Eminem"
+                                }
+                                """)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("Eminem")));
+        // 13. when I put to /artists/1/albums/1 then Artist with id 1 ("Eminem") is added to Album with id 1 ("EminemAlbum1")
+        mockMvc.perform(put("/artists/1/albums/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is("Artist added to album - to be tested!")));
+        ;
+        // 14. when I go to /albums/1 then I can see album with single song with id 1 and single artist with id 1
+        mockMvc.perform(get("/albums/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.artists", hasSize(1)))
+                .andExpect(jsonPath("$.artists[0].id", is(1)))
+                .andExpect(jsonPath("$.songs", hasSize(1)))
+                .andExpect(jsonPath("$.songs[0].id", is(1)));
 
-                // 13. when I put to /artists/1/albums/2 then Artist with id 1 ("Eminem") is added to Album with id 1 ("EminemAlbum1")
+        // 15. when I put to /albums/1/songs/2 then Song with id 2 ("Lose Yourself") is added to Album with id 1 ("EminemAlbum1")
 
-                // 14. when I go to /albums/1 then I can see album with single song with id 1 and single artist with id 1
-
-                // 15. when I put to /albums/1/songs/2 then Song with id 2 ("Lose Yourself") is added to Album with id 1 ("EminemAlbum1")
-
-                // 16. when I go to /albums/1 then I can see album with 2 songs (id1 and id2)
+        // 16. when I go to /albums/1 then I can see album with 2 songs (id1 and id2)
     }
 }

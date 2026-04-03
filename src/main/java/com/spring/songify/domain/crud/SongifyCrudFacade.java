@@ -10,6 +10,7 @@ import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.GenreRequestDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class SongifyCrudFacade {
     private final SongAdder songAdder;
     private final SongRetriever songRetriever;
