@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -46,7 +45,7 @@ class Song extends BaseEntity {
     )
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Genre genre;
 
     @Column(nullable = false)
@@ -66,12 +65,6 @@ class Song extends BaseEntity {
         this.name = name;
     }
 
-    Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage songLanguage) {
-        this.name = name;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.language = songLanguage;
-    }
     Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage songLanguage, final Genre genre) {
         this.name = name;
         this.releaseDate = releaseDate;
