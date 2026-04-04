@@ -5,7 +5,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.repository.Repository;
 
 import java.util.Optional;
-import java.util.Set;
 
 @org.springframework.stereotype.Repository
 interface ArtistRepository extends Repository<Artist, Long> {

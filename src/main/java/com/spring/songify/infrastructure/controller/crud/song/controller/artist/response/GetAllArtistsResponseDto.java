@@ -1,7 +1,6 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.artist.response;
 
 import com.spring.songify.domain.crud.dto.ArtistDto;
-import com.spring.songify.domain.crud.dto.SongDto;
 
 import java.util.List;
 

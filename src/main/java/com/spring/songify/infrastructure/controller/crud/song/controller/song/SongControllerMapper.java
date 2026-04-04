@@ -1,8 +1,6 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.song;
 
-import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.SongDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.artist.response.GetAllArtistsResponseDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.CreateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.PartiallyUpdateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.UpdateSongRequestDto;
@@ -16,7 +14,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.Set;
 
 class SongControllerMapper {
 

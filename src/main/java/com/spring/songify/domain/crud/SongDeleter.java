@@ -1,12 +1,10 @@
 package com.spring.songify.domain.crud;
 
-import com.spring.songify.domain.crud.dto.SongDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Service

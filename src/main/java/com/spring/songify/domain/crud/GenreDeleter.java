@@ -1,12 +1,9 @@
 package com.spring.songify.domain.crud;
 
-import com.spring.songify.domain.crud.dto.GenreDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @Slf4j

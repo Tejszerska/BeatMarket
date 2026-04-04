@@ -1,6 +1,5 @@
 package com.spring.songify.domain.crud;
 
-import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

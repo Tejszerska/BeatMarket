@@ -18,11 +18,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
-
-import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.*;
+import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToDeleteSongResponseDto;
+import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToGetAllSongsResponseDto;
+import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToGetSongResponseDto;
+import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToUpdateSongResponseDto;
 
 @RestController
 @Log4j2
