@@ -3,6 +3,7 @@ package com.spring.songify.domain.crud;
 import com.spring.songify.domain.crud.dto.AlbumDto;
 import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumRequestDto;
+import com.spring.songify.domain.crud.dto.AlbumSongsDto;
 import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
@@ -35,6 +36,7 @@ public class SongifyCrudFacade {
     private final ArtistUpdater artistUpdater;
     private final GenreRetriever genreRetriever;
     private final GenreAssigner genreAssigner;
+    private final SongAssigner songAssigner;
 
 
     public AlbumWithArtistsAndSongsDto findAlbumByIdWithArtistsAndSongs(Long id) {
@@ -141,5 +143,9 @@ public class SongifyCrudFacade {
 
     public  void assignGenreByIdToSongById(final Long songId, final Long genreId) {
         genreAssigner.assignGenreByIdToSongById(songId, genreId);
+    }
+
+    public AlbumSongsDto assignSongByIdToAlbumById(final Long albumId, final Long songId) {
+        return songAssigner.assignSongByIdToAlbumById(albumId, songId);
     }
 }

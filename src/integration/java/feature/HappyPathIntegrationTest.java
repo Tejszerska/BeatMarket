@@ -14,6 +14,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -174,7 +176,18 @@ class HappyPathIntegrationTest {
                 .andExpect(jsonPath("$.songs[0].id", is(1)));
 
         // 15. when I put to /albums/1/songs/2 then Song with id 2 ("Lose Yourself") is added to Album with id 1 ("EminemAlbum1")
+        mockMvc.perform(put("/albums/1/songs/2").
+                contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.album.id", is(1)))
+                .andExpect(jsonPath("$.song.id", is(2))
+                );
 
         // 16. when I go to /albums/1 then I can see album with 2 songs (id1 and id2)
+        mockMvc.perform(get("/albums/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.songs", hasSize(2)))
+                .andExpect(jsonPath("$.songs[*].id", containsInAnyOrder(1, 2)));
     }
 }

@@ -1,9 +1,10 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.album;
 
-import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.SongifyCrudFacade;
 import com.spring.songify.domain.crud.dto.AlbumDto;
+import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumRequestDto;
+import com.spring.songify.domain.crud.dto.AlbumSongsDto;
 import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -43,8 +44,14 @@ class AlbumController {
     }
 
     @GetMapping
-    ResponseEntity<AllAlbumDto> getAllAlbums(Pageable pageable){
+    ResponseEntity<AllAlbumDto> getAllAlbums(Pageable pageable) {
         Set<AlbumDto> allAlbums = songifyCrudFacade.findAllAlbums(pageable);
         return ResponseEntity.ok(new AllAlbumDto(allAlbums));
+    }
+
+    @PutMapping("{albumId}/songs/{songId}")
+    ResponseEntity<AlbumSongsDto> assignSongToAlbum(@PathVariable Long albumId, @PathVariable Long songId) {
+        AlbumSongsDto albumSongsDto = songifyCrudFacade.assignSongByIdToAlbumById(albumId, songId);
+        return ResponseEntity.ok(albumSongsDto);
     }
 }
