@@ -14,6 +14,7 @@ import com.spring.songify.domain.crud.dto.SongRequestDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -51,11 +52,11 @@ public class SongifyCrudFacade {
         return albumRetriever.findAlbumByReturnAlbumInfo(id);
     }
 
-    public Set<ArtistDto> findAllArtists(Pageable pageable) {
+    public Slice<ArtistDto> findAllArtists(Pageable pageable) {
         return artistRetriever.findAllArtist(pageable);
     }
 
-    public Set<SongDto> findAllSongs(Pageable pageable) {
+    public Slice<SongDto> findAllSongs(Pageable pageable) {
         return songRetriever.findAll(pageable);
     }
 
@@ -63,11 +64,11 @@ public class SongifyCrudFacade {
         return songRetriever.findSongDtoById(id);
     }
 
-    public Set<AlbumDto> findAllAlbums(Pageable pageable) {
+    public Slice<AlbumDto> findAllAlbums(Pageable pageable) {
         return albumRetriever.findAllAlbums(pageable);
     }
 
-    public Set<GenreDto> findAllGenres(Pageable pageable) {
+    public Slice<GenreDto> findAllGenres(Pageable pageable) {
         return genreRetriever.findAllGenres(pageable);
     }
 

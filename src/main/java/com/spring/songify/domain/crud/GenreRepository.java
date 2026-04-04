@@ -1,6 +1,7 @@
 package com.spring.songify.domain.crud;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
@@ -13,7 +14,7 @@ interface GenreRepository extends Repository<Genre, Long> {
 
     Integer deleteGenreById(Long genreId);
 
-    List<Genre> findAll(Pageable pageable);
+    Slice<Genre> findAll(Pageable pageable);
 
     @Query("SELECT g FROM Genre g where g.id=:id")
     Optional<Genre> findGenreById(Long id);

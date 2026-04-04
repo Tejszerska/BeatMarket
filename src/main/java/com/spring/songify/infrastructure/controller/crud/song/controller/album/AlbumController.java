@@ -6,8 +6,10 @@ import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumRequestDto;
 import com.spring.songify.domain.crud.dto.AlbumSongsDto;
 import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.album.response.GetAllAlbumsResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,9 +46,10 @@ class AlbumController {
     }
 
     @GetMapping
-    ResponseEntity<AllAlbumDto> getAllAlbums(Pageable pageable) {
-        Set<AlbumDto> allAlbums = songifyCrudFacade.findAllAlbums(pageable);
-        return ResponseEntity.ok(new AllAlbumDto(allAlbums));
+    ResponseEntity<GetAllAlbumsResponseDto> getAllAlbums(Pageable pageable) {
+        Slice<AlbumDto> allAlbumsSlice = songifyCrudFacade.findAllAlbums(pageable);
+        GetAllAlbumsResponseDto getAllAlbumsResponseDto = AlbumControllerMapper.mapSliceToGetAllAlbumsResponseDto(allAlbumsSlice);
+        return ResponseEntity.ok(getAllAlbumsResponseDto);
     }
 
     @PutMapping("{albumId}/songs/{songId}")

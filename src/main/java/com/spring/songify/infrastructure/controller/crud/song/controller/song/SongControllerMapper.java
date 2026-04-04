@@ -1,15 +1,18 @@
-package com.spring.songify.infrastructure.controller.crud.song.controller;
+package com.spring.songify.infrastructure.controller.crud.song.controller.song;
 
+import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.SongDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.request.CreateSongRequestDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.request.PartiallyUpdateSongRequestDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.request.UpdateSongRequestDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.response.CreateSongResponseDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.response.DeleteSongResponseDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.response.GetAllSongsResponseDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.response.GetSongResponseDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.response.PartiallyUpdateSongResponseDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.dto.response.UpdateSongResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.artist.response.GetAllArtistsResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.CreateSongRequestDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.PartiallyUpdateSongRequestDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.UpdateSongRequestDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.CreateSongResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.DeleteSongResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.GetAllSongsResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.GetSongResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.PartiallyUpdateSongResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.UpdateSongResponseDto;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -58,7 +61,9 @@ class SongControllerMapper {
         return new GetSongResponseDto(songDto);
     }
 
-    static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(Set<SongDto> songs) {
-        return new GetAllSongsResponseDto(songs);
+    static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(Slice<SongDto> slice) {
+        List<SongDto> content = slice.getContent();
+        boolean hasNext = slice.hasNext();
+        return new GetAllSongsResponseDto(content, hasNext);
     }
 }

@@ -2,6 +2,7 @@ package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.AlbumInfo;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -47,5 +48,5 @@ interface AlbumRepository extends Repository<Album, Long> {
     Optional<Album> findById(Long id);
 
     @Query("SELECT a FROM Album a")
-    List<Album> findAllAlbums(Pageable pageable);
+    Slice<Album> findAllAlbums(Pageable pageable);
 }

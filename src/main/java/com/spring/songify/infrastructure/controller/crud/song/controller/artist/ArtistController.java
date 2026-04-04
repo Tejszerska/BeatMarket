@@ -3,9 +3,11 @@ package com.spring.songify.infrastructure.controller.crud.song.controller.artist
 import com.spring.songify.domain.crud.SongifyCrudFacade;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.artist.response.GetAllArtistsResponseDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +34,10 @@ class ArtistController {
     }
 
     @GetMapping
-    ResponseEntity<AllArtistDto> getAllArtists(Pageable pageable) {
-        Set<ArtistDto> allArtists = songifyCrudFacade.findAllArtists(pageable);
-        AllArtistDto allArtistDto = new AllArtistDto(allArtists);
-        return ResponseEntity.ok(allArtistDto);
+    ResponseEntity<GetAllArtistsResponseDto> getAllArtists(Pageable pageable) {
+        Slice<ArtistDto> allArtistsSlice = songifyCrudFacade.findAllArtists(pageable);
+        GetAllArtistsResponseDto getAllArtistsResponseDto = ArtistControllerMapper.mapSliceToGetAllArtistsResponseDto(allArtistsSlice);
+        return ResponseEntity.ok(getAllArtistsResponseDto);
     }
 
     @DeleteMapping("/{artistId}")

@@ -3,8 +3,10 @@ package com.spring.songify.infrastructure.controller.crud.song.controller.genre;
 import com.spring.songify.domain.crud.SongifyCrudFacade;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.GenreRequestDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.genre.response.GetAllGenresResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +30,9 @@ class GenreController {
     }
     @GetMapping
     ResponseEntity<GetAllGenresResponseDto> getGenres(Pageable pageable){
-        Set<GenreDto> genresDto = songifyCrudFacade.findAllGenres(pageable);
-        return ResponseEntity.ok(new GetAllGenresResponseDto(genresDto));
+        Slice<GenreDto> allGenresSlice = songifyCrudFacade.findAllGenres(pageable);
+        GetAllGenresResponseDto getAllGenresResponseDto = GenreControllerMapper.mapSliceToGetAllGenresResponseDto(allGenresSlice);
+        return ResponseEntity.ok(getAllGenresResponseDto);
     }
 
     @GetMapping("/{genreId}")

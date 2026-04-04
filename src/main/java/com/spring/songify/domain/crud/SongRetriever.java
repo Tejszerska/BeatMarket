@@ -5,6 +5,7 @@ import com.spring.songify.domain.crud.dto.SongDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +18,13 @@ import java.util.stream.Collectors;
 class SongRetriever {
     private final SongRepository songRepository;
 
-    Set<SongDto> findAll(Pageable pageable) {
+    Slice<SongDto> findAll(Pageable pageable) {
         log.info("retrieving all songs: ");
-        return songRepository.findAllSongsWithGenre(pageable).stream().map(song -> SongDto.builder()
+        return songRepository.findAllSongsWithGenre(pageable).map(song -> SongDto.builder()
                         .id(song.getId())
                         .name(song.getName())
                         .genre(new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
-                        .build())
-                .collect(Collectors.toSet());
+                        .build());
     }
 
     SongDto findSongDtoById(Long id) {

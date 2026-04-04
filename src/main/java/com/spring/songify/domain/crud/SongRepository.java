@@ -1,6 +1,7 @@
 package com.spring.songify.domain.crud;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -16,14 +17,14 @@ import java.util.Set;
 @org.springframework.stereotype.Repository
 interface SongRepository extends Repository<Song, Long> {
 
-    @Query("SELECT s FROM Song s")
-    Page<Song> findAll(Pageable pageable);
+//    @Query("SELECT s FROM Song s")
+//    Slice<Song> findAll(Pageable pageable);
 
     @Query("SELECT s FROM Song s WHERE s.id = :id")
     Optional<Song> findById(Long id);
 
     @Query("SELECT s FROM Song s JOIN FETCH s.genre")
-    Page<Song> findAllSongsWithGenre(Pageable pageable);
+    Slice<Song> findAllSongsWithGenre(Pageable pageable);
 
     @Query("SELECT s FROM Song s JOIN FETCH s.genre WHERE s.id = :id")
     Optional<Song> findSongByIdWithGenre(Long id);

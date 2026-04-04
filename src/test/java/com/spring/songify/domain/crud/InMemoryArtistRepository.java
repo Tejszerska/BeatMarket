@@ -2,9 +2,13 @@ package com.spring.songify.domain.crud;
 
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -29,10 +33,16 @@ class InMemoryArtistRepository implements ArtistRepository {
     }
 
     @Override
-    public Set<Artist> findAll(final Pageable pageable) {
-        return new HashSet<>(db.values());
+    public Slice<Artist> findAll(final Pageable pageable) {
+        List<Artist> list = new ArrayList<>(db.values());
+        int start = (int) pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+        if (start >= list.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);
+        int end = Math.min(start + pageSize, list.size());
+        List<Artist> currentSlice = list.subList(start, end);
+        boolean hasNext = (start + pageSize) < list.size();
+        return new SliceImpl<>(currentSlice, pageable, hasNext);
     }
-
     @Override
     public Optional<Artist> findById(final Long artistId) {
         return Optional.ofNullable(db.get(artistId));

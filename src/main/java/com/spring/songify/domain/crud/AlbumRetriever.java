@@ -9,6 +9,7 @@ import com.spring.songify.domain.crud.dto.SongDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -58,12 +59,11 @@ class AlbumRetriever {
                 .orElseThrow(() -> new AlbumNotFoundException("Album by id=" + albumId + "was not found"));
     }
 
-    Set<AlbumDto> findAllAlbums(Pageable pageable) {
-        return albumRepository.findAllAlbums(pageable).stream()
+    Slice<AlbumDto> findAllAlbums(Pageable pageable) {
+        return albumRepository.findAllAlbums(pageable)
                 .map(album -> AlbumDto.builder()
                         .id(album.getId())
                         .title(album.getTitle())
-                        .build())
-                .collect(Collectors.toSet());
+                        .build());
     }
 }

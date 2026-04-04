@@ -1,6 +1,8 @@
 package com.spring.songify.domain.crud;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,8 +40,16 @@ class InMemoryGenreRepository implements GenreRepository {
     }
 
     @Override
-    public List<Genre> findAll(final Pageable pageable) {
-        return new ArrayList<>(db.values());
+    public Slice<Genre> findAll(final Pageable pageable) {
+            List<Genre> list = new ArrayList<>(db.values());
+            int start = (int) pageable.getOffset();
+            int pageSize = pageable.getPageSize();
+            if (start >= list.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);
+            int end = Math.min(start + pageSize, list.size());
+            List<Genre> currentSlice = list.subList(start, end);
+            boolean hasNext = (start + pageSize) < list.size();
+            return new SliceImpl<>(currentSlice, pageable, hasNext);
+
     }
 
     @Override

@@ -3,10 +3,13 @@ package com.spring.songify.domain.crud;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,18 +19,20 @@ class InMemorySongRepository implements SongRepository {
     AtomicInteger index = new AtomicInteger(0);
 
     @Override
-    public Page<Song> findAll(final Pageable pageable) {
-        return new PageImpl<>(new ArrayList<>(db.values()));
-    }
-
-    @Override
     public Optional<Song> findById(final Long id) {
         return Optional.ofNullable(db.get(id));
     }
 
     @Override
-    public Page<Song> findAllSongsWithGenre(final Pageable pageable) {
-        return null;
+    public Slice<Song> findAllSongsWithGenre(final Pageable pageable) {
+        List<Song> list = new ArrayList<>(db.values());
+        int start = (int) pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+        if (start >= list.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);
+        int end = Math.min(start + pageSize, list.size());
+        List<Song> currentSlice = list.subList(start, end);
+        boolean hasNext = (start + pageSize) < list.size();
+        return new SliceImpl<>(currentSlice, pageable, hasNext);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.spring.songify.infrastructure.controller.crud.song.controller.dto.response;
+package com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response;
 
 
 import com.spring.songify.domain.crud.dto.SongDto;

@@ -3,6 +3,8 @@ package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.AlbumInfo;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,7 +68,14 @@ class InMemoryAlbumRepository implements AlbumRepository {
     }
 
     @Override
-    public List<Album> findAllAlbums(final Pageable pageable) {
-        return new ArrayList<>(db.values());
+    public Slice<Album> findAllAlbums(final Pageable pageable) {
+        List<Album> albumList = new ArrayList<>(db.values());
+        int start = (int) pageable.getOffset();
+        int pageSize = pageable.getPageSize();
+        if (start >= albumList.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);
+        int end = Math.min(start + pageSize, albumList.size());
+        List<Album> currentSlice = albumList.subList(start, end);
+        boolean hasNext = (start + pageSize) < albumList.size();
+        return new SliceImpl<>(currentSlice, pageable, hasNext);
     }
 }
