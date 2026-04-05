@@ -1,6 +1,6 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request;
 
-import com.spring.songify.domain.crud.dto.SongLanguageDto;
+import com.spring.songify.domain.crud.SongLanguage;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,7 +19,7 @@ public record CreateSongRequestDto(
         Long duration,
 
         @NotNull(message = "language must be declared")
-        SongLanguageDto language
+        SongLanguage language
 ) {
 }
 

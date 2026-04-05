@@ -6,12 +6,10 @@ import com.spring.songify.domain.crud.dto.AlbumRequestDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
 import com.spring.songify.domain.crud.dto.SongDto;
-import com.spring.songify.domain.crud.dto.SongLanguageDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 import java.time.Instant;
 import java.util.List;
@@ -88,7 +86,7 @@ class SongifyCrudFacadeTest {
 
         SongRequestDto song = SongRequestDto.builder()
                 .name("song1")
-                .languageDto(SongLanguageDto.ENGLISH)
+                .language(SongLanguage.ENGLISH)
                 .build();
         SongDto songDto = songifyCrudFacade.addSong(song);
         Long songId = songDto.id();
@@ -118,7 +116,7 @@ class SongifyCrudFacadeTest {
         // given
         SongRequestDto songRequestDto = SongRequestDto.builder()
                 .name("song1")
-                .languageDto(SongLanguageDto.ENGLISH)
+                .language(SongLanguage.ENGLISH)
                 .build();
         SongDto songDto = songifyCrudFacade.addSong(songRequestDto);
         Long songId = songDto.id();
@@ -155,7 +153,7 @@ class SongifyCrudFacadeTest {
 
         SongRequestDto song1 = SongRequestDto.builder()
                 .name("song-1")
-                .languageDto(SongLanguageDto.ENGLISH)
+                .language(SongLanguage.ENGLISH)
                 .build();
         SongDto songDto1 = songifyCrudFacade.addSong(song1);
         Long songId1 = songDto1.id();
@@ -176,7 +174,7 @@ class SongifyCrudFacadeTest {
 
         SongRequestDto song2 = SongRequestDto.builder()
                 .name("song-2")
-                .languageDto(SongLanguageDto.ENGLISH)
+                .language(SongLanguage.ENGLISH)
                 .build();
         SongDto songDto2 = songifyCrudFacade.addSong(song2);
         Long songId2 = songDto2.id();
@@ -226,7 +224,7 @@ class SongifyCrudFacadeTest {
         // given
         SongRequestDto songRequestDto = SongRequestDto.builder()
                 .name("test-song")
-                .languageDto(SongLanguageDto.ENGLISH)
+                .language(SongLanguage.ENGLISH)
                 .build();
         SongDto songDto = songifyCrudFacade.addSong(songRequestDto);
         Long songId = songDto.id();
@@ -260,7 +258,7 @@ class SongifyCrudFacadeTest {
 
         SongRequestDto songRequestDto = SongRequestDto.builder()
                 .name("test-song")
-                .languageDto(SongLanguageDto.ENGLISH)
+                .language(SongLanguage.ENGLISH)
                 .build();
         SongDto songDto = songifyCrudFacade.addSong(songRequestDto);
         Long songId = songDto.id();
@@ -292,7 +290,7 @@ class SongifyCrudFacadeTest {
         SongRequestDto requestDto = SongRequestDto.builder()
                 .name("test-song")
                 .releaseDate(instantNow)
-                .languageDto(SongLanguageDto.OTHER)
+                .language(SongLanguage.OTHER)
                 .duration(100L)
                 .build();
         assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged())).isEmpty();
