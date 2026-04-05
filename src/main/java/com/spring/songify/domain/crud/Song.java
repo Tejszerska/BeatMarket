@@ -31,7 +31,7 @@ import java.time.Instant;
         {
                 @Index(
                         name = "idx_song_name",
-                        columnList = "name"
+                        columnList = "title"
                 )
         })
 class Song extends BaseEntity {
@@ -49,7 +49,7 @@ class Song extends BaseEntity {
     private Genre genre;
 
     @Column(nullable = false)
-    private String name;
+    private String title;
 
     private Instant releaseDate;
 
@@ -61,12 +61,12 @@ class Song extends BaseEntity {
     @ManyToOne
     private Album album;
 
-    public Song(String name) {
-        this.name = name;
+    public Song(String title) {
+        this.title = title;
     }
 
-    Song(final String name, final Instant releaseDate, final Long duration, final SongLanguage songLanguage, final Genre genre) {
-        this.name = name;
+    Song(final String title, final Instant releaseDate, final Long duration, final SongLanguage songLanguage, final Genre genre) {
+        this.title = title;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.language = songLanguage;

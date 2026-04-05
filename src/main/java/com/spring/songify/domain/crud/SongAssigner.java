@@ -24,7 +24,7 @@ class SongAssigner {
                 .build();
         SongDto songDto = SongDto.builder()
                 .id(song.getId())
-                .name(song.getName())
+                .title(song.getTitle())
                 .genre(new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
                 .build();
 

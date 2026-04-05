@@ -1,1 +1,1 @@
-CREATE INDEX idx_song_name ON song (name);
+CREATE INDEX idx_song_name ON song (title);

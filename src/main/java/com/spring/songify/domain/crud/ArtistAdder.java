@@ -42,7 +42,7 @@ class ArtistAdder {
 
         Song song = new Song();
         UUID songUuid = song.uuid;
-        song.setName("Default song:" + songUuid);
+        song.setTitle("Default song:" + songUuid);
 
         album.addSongToAlbum(song);
         artist.setAlbums(Set.of(album));

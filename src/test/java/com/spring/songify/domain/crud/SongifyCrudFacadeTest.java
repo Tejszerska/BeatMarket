@@ -299,7 +299,7 @@ class SongifyCrudFacadeTest {
         // then
         assertThat(songifyCrudFacade.findAllSongs(Pageable.unpaged()).getContent().size()).isEqualTo(1);
         assertThat(songDto.id()).isNotNull();
-        assertThat(songDto.name()).isEqualTo(requestDto.name());
+        assertThat(songDto.title()).isEqualTo(requestDto.name());
     }
 
 

@@ -18,7 +18,7 @@ class SongRetriever {
         log.info("retrieving all songs: ");
         return songRepository.findAllSongsWithGenre(pageable).map(song -> SongDto.builder()
                         .id(song.getId())
-                        .name(song.getName())
+                        .title(song.getTitle())
                         .genre(new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
                         .build());
     }
@@ -27,7 +27,7 @@ class SongRetriever {
         Song s = findSongById(id);
         return SongDto.builder()
                 .id(s.getId())
-                .name(s.getName())
+                .title(s.getTitle())
                 .genre(new GenreDto(s.getGenre().getId(), s.getGenre().getName()))
                 .build();
     }

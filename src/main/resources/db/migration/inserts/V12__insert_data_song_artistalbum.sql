@@ -5,7 +5,7 @@ INSERT INTO artist_albums (artists_id, albums_id) VALUES
                                                       (4, 4),
                                                       (5, 5);
 
-INSERT INTO song (album_id, genre_id, created_on, uuid, language, duration, release_date, name) VALUES
+INSERT INTO song (album_id, genre_id, created_on, uuid, language, duration, release_date, title) VALUES
 -- The Beatles (Abbey Road)
 (1, 1, '2023-01-01 10:00:00+00', 'f1111111-ffff-ffff-ffff-ffffffffffff', 'ENGLISH', 259, '1969-09-26 00:00:00', 'Come Together'),
 (1, 1, '2023-01-01 10:00:00+00', 'f1111112-ffff-ffff-ffff-ffffffffffff', 'ENGLISH', 182, '1969-09-26 00:00:00', 'Something'),

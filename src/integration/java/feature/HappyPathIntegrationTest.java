@@ -14,7 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
@@ -56,7 +55,7 @@ class HappyPathIntegrationTest {
         mockMvc.perform(post("/songs")
                         .content("""
                                 {
-                                    "name": "Till i collapse",
+                                    "title": "Till i collapse",
                                     "releaseDate": "2026-01-01T11:52:52.841Z",
                                     "duration": 100,
                                     "languageDto": "ENGLISH"
@@ -72,7 +71,7 @@ class HappyPathIntegrationTest {
         mockMvc.perform(post("/songs")
                         .content("""
                                 {
-                                    "name": "Lose Yourself",
+                                    "title": "Lose Yourself",
                                     "releaseDate": "2026-01-01T11:52:52.841Z",
                                     "duration": 100,
                                     "languageDto": "ENGLISH"
@@ -95,7 +94,7 @@ class HappyPathIntegrationTest {
         mockMvc.perform(post("/genres")
                         .content("""
                                 {
-                                  "name": "Rap"
+                                  "title": "Rap"
                                 }
                                 """)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -103,7 +102,7 @@ class HappyPathIntegrationTest {
                 .andExpect(jsonPath("$.id", is(2)))
                 .andExpect(jsonPath("$.name", is("Rap")));
 
-        // 6. when I go to /song/1 then I can see default genre with id 1 and name default
+        // 6. when I go to /song/1 then I can see default genre with id 1 and title default
         mockMvc.perform(get("/songs/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -153,7 +152,7 @@ class HappyPathIntegrationTest {
         mockMvc.perform(post("/artists")
                         .content("""
                                 {
-                                "name": "Eminem"
+                                "title": "Eminem"
                                 }
                                 """)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -165,7 +164,7 @@ class HappyPathIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("Artist added to album - to be tested!")));
-        ;
+
         // 14. when I go to /albums/1 then I can see album with single song with id 1 and single artist with id 1
         mockMvc.perform(get("/albums/1")
                         .contentType(MediaType.APPLICATION_JSON))

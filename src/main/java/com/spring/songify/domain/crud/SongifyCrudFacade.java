@@ -102,7 +102,7 @@ public class SongifyCrudFacade {
 
     public void updateSongById(Long id, SongDto newSongDto) {
         songRetriever.existsById(id);
-        Song songValidatedAndReadyToUpdate = new Song(newSongDto.name());
+        Song songValidatedAndReadyToUpdate = new Song(newSongDto.title());
         songUpdater.updateById(id, songValidatedAndReadyToUpdate);
     }
 
@@ -110,10 +110,10 @@ public class SongifyCrudFacade {
         songRetriever.existsById(id);
         Song songFromDatabase = songRetriever.findSongById(id);
         Song toSave = new Song();
-        if (songFromRequest.name() != null) {
-            toSave.setName(songFromRequest.name());
+        if (songFromRequest.title() != null) {
+            toSave.setTitle(songFromRequest.title());
         } else {
-            toSave.setName(songFromDatabase.getName());
+            toSave.setTitle(songFromDatabase.getTitle());
         }
 //        todo
 //        if (songFromRequest.getArtist() != null) {
@@ -124,7 +124,7 @@ public class SongifyCrudFacade {
         songUpdater.updateById(id, toSave);
         return SongDto.builder()
                 .id(toSave.getId())
-                .name(toSave.getName())
+                .title(toSave.getTitle())
                 .build();
     }
 
