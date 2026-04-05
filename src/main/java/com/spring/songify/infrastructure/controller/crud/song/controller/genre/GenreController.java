@@ -3,7 +3,7 @@ package com.spring.songify.infrastructure.controller.crud.song.controller.genre;
 import com.spring.songify.domain.crud.SongifyCrudFacade;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.GenreRequestDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.genre.response.GetAllGenresResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.genre.dto.response.GetAllGenresResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

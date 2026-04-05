@@ -6,7 +6,7 @@ import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumRequestDto;
 import com.spring.songify.domain.crud.dto.AlbumSongsDto;
 import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.album.response.GetAllAlbumsResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.album.dto.response.GetAllAlbumsResponseDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

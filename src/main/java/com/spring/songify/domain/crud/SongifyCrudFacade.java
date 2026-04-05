@@ -142,8 +142,8 @@ public class SongifyCrudFacade {
         return genreRetriever.findGenreDtoById(genreId);
     }
 
-    public  void assignGenreByIdToSongById(final Long songId, final Long genreId) {
-        genreAssigner.assignGenreByIdToSongById(songId, genreId);
+    public SongDto assignGenreByIdToSongById(final Long songId, final Long genreId) {
+        return genreAssigner.assignGenreByIdToSongById(songId, genreId);
     }
 
     public AlbumSongsDto assignSongByIdToAlbumById(final Long albumId, final Long songId) {

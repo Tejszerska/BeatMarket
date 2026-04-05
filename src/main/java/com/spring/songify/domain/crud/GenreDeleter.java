@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 @Transactional
 class GenreDeleter {
     private final GenreRepository genreRepository;
-    private final GenreRetriever genreRetriever;
 
     boolean deleteById(Long id) {
         int i = genreRepository.deleteGenreById(id);

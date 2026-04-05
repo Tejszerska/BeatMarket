@@ -1,4 +1,4 @@
-package com.spring.songify.infrastructure.controller.crud.song.controller.artist.response;
+package com.spring.songify.infrastructure.controller.crud.song.controller.artist.dto.response;
 
 import com.spring.songify.domain.crud.dto.ArtistDto;
 

@@ -33,8 +33,8 @@ interface AlbumRepository extends Repository<Album, Long> {
     Optional<AlbumInfo> findAlbumByIdReturnAlbumInfo(Long id);
 
     @Query("""
-            select a from Album a 
-            inner join a.artists artists 
+            select a from Album a
+            inner join a.artists artists
             where artists.id = :id
             """)
     List<Album> findAllAlbumsByArtistId(Long id);

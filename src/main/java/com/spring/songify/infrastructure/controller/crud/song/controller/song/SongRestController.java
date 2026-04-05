@@ -3,8 +3,10 @@ package com.spring.songify.infrastructure.controller.crud.song.controller.song;
 import com.spring.songify.domain.crud.SongifyCrudFacade;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.CreateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.PartiallyUpdateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.UpdateSongRequestDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.CreateSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.DeleteSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.GetAllSongsResponseDto;
@@ -29,11 +31,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToDeleteSongResponseDto;
-import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToGetAllSongsResponseDto;
-import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToGetSongResponseDto;
-import static com.spring.songify.infrastructure.controller.crud.song.controller.song.SongControllerMapper.mapFromSongToUpdateSongResponseDto;
-
 @RestController
 @Log4j2
 @RequestMapping("/songs")
@@ -44,9 +41,9 @@ class SongRestController {
     private final SongifyCrudFacade songFacade;
 
     @GetMapping
-    ResponseEntity<GetAllSongsResponseDto> getAllSongs(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    ResponseEntity<GetAllSongsResponseDto> getAllSongs(@PageableDefault(page = 0, size = 5) Pageable pageable) {
         Slice<SongDto> allSongs = songFacade.findAllSongs(pageable);
-        GetAllSongsResponseDto response = mapFromSongToGetAllSongsResponseDto(allSongs);
+        GetAllSongsResponseDto response = SongControllerMapper.mapFromSongToGetAllSongsResponseDto(allSongs);
         return ResponseEntity.ok(response);
     }
 
@@ -54,13 +51,14 @@ class SongRestController {
     ResponseEntity<GetSongResponseDto> getSongById(@PathVariable Long id, @RequestHeader(required = false) String requestId) {
         log.info(requestId);
         SongDto song = songFacade.findSongDtoById(id);
-        GetSongResponseDto response = mapFromSongToGetSongResponseDto(song);
+        GetSongResponseDto response = SongControllerMapper.mapFromSongToGetSongResponseDto(song);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    ResponseEntity<CreateSongResponseDto> postSong(@RequestBody @Valid SongRequestDto request) {
-        SongDto savedSong = songFacade.addSong(request);
+    ResponseEntity<CreateSongResponseDto> postSong(@RequestBody @Valid CreateSongRequestDto createSongRequestDto) {
+        SongRequestDto domainRequest = SongControllerMapper.mapFromSongCreateSongRequestDtoToDomainRequest(createSongRequestDto);
+        SongDto savedSong = songFacade.addSong(domainRequest);
         CreateSongResponseDto body = new CreateSongResponseDto(savedSong);
         return ResponseEntity.ok(body);
     }
@@ -68,7 +66,7 @@ class SongRestController {
     @DeleteMapping("/{id}")
     ResponseEntity<DeleteSongResponseDto> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
         songFacade.deleteSongById(id);
-        DeleteSongResponseDto body = mapFromSongToDeleteSongResponseDto(id);
+        DeleteSongResponseDto body = SongControllerMapper.mapFromSongToDeleteSongResponseDto(id);
         return ResponseEntity.ok(body);
     }
 
@@ -77,7 +75,7 @@ class SongRestController {
                                                  @RequestBody @Valid UpdateSongRequestDto request) {
         SongDto newSongDto = SongControllerMapper.mapFromUpdateSongRequestDtoToSongDto(request);
         songFacade.updateSongById(id, newSongDto);
-        UpdateSongResponseDto body = mapFromSongToUpdateSongResponseDto(newSongDto);
+        UpdateSongResponseDto body = SongControllerMapper.mapFromSongToUpdateSongResponseDto(newSongDto);
         return ResponseEntity.ok(body);
     }
 
@@ -91,8 +89,9 @@ class SongRestController {
     }
 
     @PutMapping("/{songId}/genre/{genreId}")
-    ResponseEntity<String> assignGenreByIdToSongById(@PathVariable Long songId, @PathVariable Long genreId){
-        songFacade.assignGenreByIdToSongById(songId, genreId);
-        return ResponseEntity.ok("Updated");
+    ResponseEntity<AssignGenreToSongResponseDto> assignGenreByIdToSongById(@PathVariable Long songId, @PathVariable Long genreId) {
+        SongDto songDto = songFacade.assignGenreByIdToSongById(songId, genreId);
+        AssignGenreToSongResponseDto assignGenreToSongResponseDto = SongControllerMapper.mapFromSongDtoToAssignGenreToSongResponseDto(songDto);
+        return ResponseEntity.ok(assignGenreToSongResponseDto);
     }
 }

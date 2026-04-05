@@ -3,7 +3,7 @@ package com.spring.songify.infrastructure.controller.crud.song.controller.artist
 import com.spring.songify.domain.crud.SongifyCrudFacade;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.artist.response.GetAllArtistsResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.artist.dto.response.GetAllArtistsResponseDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;

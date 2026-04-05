@@ -1,16 +1,25 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request;
 
-import jakarta.validation.constraints.NotEmpty;
+import com.spring.songify.domain.crud.dto.SongLanguageDto;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.time.Instant;
 
 public record CreateSongRequestDto(
-        @NotNull(message = "name must not be null")
-        @NotEmpty(message = "name must not be empty")
+        @NotBlank(message = "songName must be declared")
         String songName,
 
-        @NotNull(message = "artist must not be null")
-        @NotEmpty(message = "artist must not be empty")
-        String artist
+        @NotNull(message = "releaseDate must be declared")
+        Instant releaseDate,
+
+        @NotNull(message = "duration must be declared")
+        @Positive(message = "duration must be a positive number")
+        Long duration,
+
+        @NotNull(message = "language must be declared")
+        SongLanguageDto language
 ) {
 }
 

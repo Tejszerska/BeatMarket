@@ -13,7 +13,6 @@ import java.util.Set;
 @Transactional
 class SongDeleter {
     private final SongRepository songRepository;
-    private final SongRetriever songRetriever;
 
     void deleteById(Long id) {
         log.info("deleting song by id: " + id);

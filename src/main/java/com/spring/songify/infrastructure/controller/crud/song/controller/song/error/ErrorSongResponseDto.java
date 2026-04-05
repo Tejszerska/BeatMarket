@@ -1,4 +1,4 @@
-package com.spring.songify.infrastructure.controller.crud.song.controller.error;
+package com.spring.songify.infrastructure.controller.crud.song.controller.song.error;
 
 import org.springframework.http.HttpStatus;
 public record ErrorSongResponseDto(String message, HttpStatus status) {

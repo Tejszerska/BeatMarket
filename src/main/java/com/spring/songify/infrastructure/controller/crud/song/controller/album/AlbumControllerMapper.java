@@ -1,7 +1,7 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.album;
 
 import com.spring.songify.domain.crud.dto.AlbumDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.album.response.GetAllAlbumsResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.album.dto.response.GetAllAlbumsResponseDto;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;

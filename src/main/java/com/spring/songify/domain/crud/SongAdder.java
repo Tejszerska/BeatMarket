@@ -17,7 +17,7 @@ class SongAdder {
     private final GenreRetriever genreRetriever;
 
     SongDto addSong(final SongRequestDto dto) {
-        String languageFromDto = dto.languageDto().name();
+        String languageFromDto = dto.language().name();
         SongLanguage songLanguage = SongLanguage.valueOf(languageFromDto);
         Genre defaultGenre = genreRetriever.findGenreById(1L);
         Song song = new Song(dto.name(), dto.releaseDate(), dto.duration(), songLanguage, defaultGenre);

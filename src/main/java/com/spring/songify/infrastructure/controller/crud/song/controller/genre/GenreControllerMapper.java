@@ -1,7 +1,7 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.genre;
 
 import com.spring.songify.domain.crud.dto.GenreDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.genre.response.GetAllGenresResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.genre.dto.response.GetAllGenresResponseDto;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;

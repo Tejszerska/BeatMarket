@@ -1,10 +1,11 @@
 package com.spring.songify.infrastructure.controller.crud.song.controller.song;
 
 import com.spring.songify.domain.crud.dto.SongDto;
+import com.spring.songify.domain.crud.dto.SongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.CreateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.PartiallyUpdateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.request.UpdateSongRequestDto;
-import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.CreateSongResponseDto;
+import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.DeleteSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.GetAllSongsResponseDto;
 import com.spring.songify.infrastructure.controller.crud.song.controller.song.dto.response.GetSongResponseDto;
@@ -17,10 +18,17 @@ import java.util.List;
 
 class SongControllerMapper {
 
-    static SongDto mapFromCreateSongRequestDtoToSongDto(CreateSongRequestDto dto) {
-        return SongDto
-                .builder()
-                .name(dto.songName())
+
+    static AssignGenreToSongResponseDto mapFromSongDtoToAssignGenreToSongResponseDto(SongDto dto) {
+        return new AssignGenreToSongResponseDto(dto);
+    }
+
+    static SongRequestDto mapFromSongCreateSongRequestDtoToDomainRequest(CreateSongRequestDto createSongRequestDto) {
+        return SongRequestDto.builder()
+                .name(createSongRequestDto.songName())
+                .duration(createSongRequestDto.duration())
+                .releaseDate(createSongRequestDto.releaseDate())
+                .language(createSongRequestDto.language())
                 .build();
     }
 
@@ -38,16 +46,12 @@ class SongControllerMapper {
                 .build();
     }
 
-    static CreateSongResponseDto mapFromSongToCreateSongResponseDto(SongDto songDto) {
-        return new CreateSongResponseDto(songDto);
-    }
-
     static DeleteSongResponseDto mapFromSongToDeleteSongResponseDto(Long id) {
         return new DeleteSongResponseDto("You deleted song with id: " + id, HttpStatus.OK);
     }
 
-    static UpdateSongResponseDto mapFromSongToUpdateSongResponseDto(SongDto newSong) {
-        return new UpdateSongResponseDto(newSong.name(), "testt");
+    static UpdateSongResponseDto mapFromSongToUpdateSongResponseDto(SongDto songDto) {
+        return new UpdateSongResponseDto(songDto);
     }
 
     static PartiallyUpdateSongResponseDto mapFromSongDtoToPartiallyUpdateSongResponseDto(SongDto songDto) {
