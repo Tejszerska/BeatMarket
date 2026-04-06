@@ -7,6 +7,7 @@ import com.spring.songify.domain.crud.dto.AlbumSongsDto;
 import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
+import com.spring.songify.domain.crud.dto.ArtistWithAlbumDto;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.GenreRequestDto;
 import com.spring.songify.domain.crud.dto.SongDto;
@@ -84,8 +85,8 @@ public class SongifyCrudFacade {
         return albumAdder.addAlbum(dto.songId(), dto.title(), dto.releaseDate());
     }
 
-    public void addArtistToAlbum(Long artistId, Long albumId) {
-        artistAssigner.addArtistToAlbum(artistId, albumId);
+    public ArtistWithAlbumDto addArtistToAlbum(Long artistId, Long albumId) {
+        return artistAssigner.addArtistToAlbum(artistId, albumId);
     }
 
     public SongDto addSong(final SongRequestDto dto) {

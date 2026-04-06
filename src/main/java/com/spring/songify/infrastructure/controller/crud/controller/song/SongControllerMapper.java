@@ -7,14 +7,12 @@ import com.spring.songify.infrastructure.controller.crud.controller.song.dto.req
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.request.UpdateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.CreateSongResponseDto;
-import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.DeleteSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.GetAllSongsResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.GetSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.PartiallyUpdateSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.SongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.UpdateSongResponseDto;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -51,10 +49,6 @@ class SongControllerMapper {
                 .builder()
                 .title(dto.title())
                 .build();
-    }
-
-    static DeleteSongResponseDto mapFromSongToDeleteSongResponseDto(Long id) {
-        return new DeleteSongResponseDto("You deleted song with id: " + id, HttpStatus.OK);
     }
 
     static UpdateSongResponseDto mapFromSongToUpdateSongResponseDto(SongDto songDto) {

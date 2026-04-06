@@ -8,7 +8,6 @@ import com.spring.songify.infrastructure.controller.crud.controller.song.dto.req
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.request.UpdateSongRequestDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.CreateSongResponseDto;
-import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.DeleteSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.GetAllSongsResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.GetSongResponseDto;
 import com.spring.songify.infrastructure.controller.crud.controller.song.dto.response.PartiallyUpdateSongResponseDto;
@@ -44,7 +43,7 @@ class SongRestController {
 
     @GetMapping
     ResponseEntity<GetAllSongsResponseDto> getAllSongs(
-            @ParameterObject @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Slice<SongDto> allSongs = songFacade.findAllSongs(pageable);
         GetAllSongsResponseDto response = SongControllerMapper.mapFromSongToGetAllSongsResponseDto(allSongs);
         return ResponseEntity.ok(response);
@@ -67,10 +66,9 @@ class SongRestController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<DeleteSongResponseDto> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
+    ResponseEntity<Void> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
         songFacade.deleteSongById(id);
-        DeleteSongResponseDto body = SongControllerMapper.mapFromSongToDeleteSongResponseDto(id);
-        return ResponseEntity.ok(body);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
