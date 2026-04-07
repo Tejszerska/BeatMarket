@@ -17,7 +17,7 @@ class SongInfoTestImpl implements AlbumInfo.SongInfo {
     }
 
     @Override
-    public String getName() {
+    public String getTitle() {
         return song.getTitle();
     }
 

@@ -19,7 +19,7 @@ public interface AlbumInfo {
     interface SongInfo {
         Long getId();
 
-        String getName();
+        String getTitle();
 
         Instant getReleaseDate();
 
