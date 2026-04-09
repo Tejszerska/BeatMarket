@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ class ArtistController {
         ArtistRequestDto artistRequestDto = ArtistControllerMapper.mapFromCreateArtistRequestToDomainDto(createArtistRequest);
         ArtistDto artistDto = songifyCrudFacade.addArtist(artistRequestDto);
         CreateArtistResponse createArtistResponse = ArtistControllerMapper.mapFromArtistDtoToCreateArtistResponse(artistDto);
-        return ResponseEntity.ok(createArtistResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createArtistResponse);
     }
 
     @GetMapping
@@ -77,6 +78,6 @@ class ArtistController {
         ArtistRequestDto requestDto = ArtistControllerMapper.mapFromCreateArtistWithDefaultAlbumAndSongRequestToDomainDto(userRequest);
         ArtistDto artistDto = songifyCrudFacade.addArtistWithDefaultAlbumAndSong(requestDto);
         CreateArtistWithDefaultAlbumAndSongResponse controllerResponse = ArtistControllerMapper.mapFromArtistDtoToCreateArtistWithDefaultAlbumAndSongResponse(artistDto);
-        return ResponseEntity.ok(controllerResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(controllerResponse);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +37,7 @@ class AlbumController {
         AlbumRequestDto albumRequestDto = AlbumControllerMapper.mapFromCreateAlbumRequestToDomainDto(createAlbumRequest);
         AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(albumRequestDto);
         CreateAlbumResponse createAlbumResponse = AlbumControllerMapper.mapFromAlbumDtoToCreateAlbumResponse(albumDto);
-        return ResponseEntity.ok(createAlbumResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createAlbumResponse);
     }
 
     @GetMapping("/{albumId}")

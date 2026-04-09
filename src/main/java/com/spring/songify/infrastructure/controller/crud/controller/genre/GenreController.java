@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,12 +32,12 @@ class GenreController {
         GenreRequestDto genreRequestDto = GenreControllerMapper.mapFromCreateGenreRequestDtoToDomainRequest(createGenreRequest);
         GenreDto genreDto = songifyCrudFacade.addGenre(genreRequestDto);
         CreateGenreResponse createGenreResponse = GenreControllerMapper.mapFromGenreDtoToCreateGenreResponse(genreDto);
-        return ResponseEntity.ok(createGenreResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createGenreResponse);
     }
 
     @GetMapping
     ResponseEntity<GetAllGenresResponseDto> getGenres(
-            @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         Slice<GenreDto> allGenresSlice = songifyCrudFacade.findAllGenres(pageable);
         GetAllGenresResponseDto getAllGenresResponseDto = GenreControllerMapper.mapSliceToGetAllGenresResponseDto(allGenresSlice);
         return ResponseEntity.ok(getAllGenresResponseDto);
