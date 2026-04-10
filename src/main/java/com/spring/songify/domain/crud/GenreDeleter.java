@@ -1,5 +1,6 @@
 package com.spring.songify.domain.crud;
 
+import com.spring.songify.domain.crud.exception.GenreNotfoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,8 @@ class GenreDeleter {
     private final GenreRepository genreRepository;
 
     boolean deleteById(Long id) {
-        int i = genreRepository.deleteGenreById(id);
-        if( i != 1) throw new GenreNotDeletedException("Genre by id=" + id + " was not deleted");
+        int deletedRows = genreRepository.deleteGenreById(id);
+        if( deletedRows == 0) throw new GenreNotfoundException("Genre by id=" + id + " was not found");
         return true;
     }
 

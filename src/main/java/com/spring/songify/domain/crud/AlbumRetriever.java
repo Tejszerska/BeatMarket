@@ -6,6 +6,7 @@ import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.SongDto;
+import com.spring.songify.domain.crud.exception.AlbumNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,7 @@
 package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.GenreDto;
+import com.spring.songify.domain.crud.exception.GenreNotfoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ class GenreRetriever {
     }
     Genre findGenreById(final Long genreId) {
         return genreRepository.findGenreById(genreId)
-                .orElseThrow(() -> new GenreNotfound("Genre by id=" + genreId + "wasn't found"));
+                .orElseThrow(() -> new GenreNotfoundException("Genre by id=" + genreId + "wasn't found"));
 
     }
 }

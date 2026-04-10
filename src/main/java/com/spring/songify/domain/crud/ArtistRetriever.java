@@ -1,6 +1,7 @@
 package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.ArtistDto;
+import com.spring.songify.domain.crud.exception.ArtistNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
