@@ -19,7 +19,6 @@ class InMemoryAlbumRepository implements AlbumRepository {
     AtomicInteger index = new AtomicInteger(0);
 
     @Override
-
     public Album save(final Album album) {
         if (album.getId() == null) {
             long index = this.index.getAndIncrement();
@@ -70,6 +69,9 @@ class InMemoryAlbumRepository implements AlbumRepository {
     @Override
     public Slice<Album> findAllAlbums(final Pageable pageable) {
         List<Album> albumList = new ArrayList<>(db.values());
+        if (pageable.isUnpaged()) {
+            return new SliceImpl<>(albumList);
+        }
         int start = (int) pageable.getOffset();
         int pageSize = pageable.getPageSize();
         if (start >= albumList.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);

@@ -24,6 +24,9 @@ class InMemorySongRepository implements SongRepository {
     @Override
     public Slice<Song> findAllSongsWithGenre(final Pageable pageable) {
         List<Song> list = new ArrayList<>(db.values());
+        if (pageable.isUnpaged()) {
+            return new SliceImpl<>(list);
+        }
         int start = (int) pageable.getOffset();
         int pageSize = pageable.getPageSize();
         if (start >= list.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);
@@ -35,7 +38,7 @@ class InMemorySongRepository implements SongRepository {
 
     @Override
     public Optional<Song> findSongByIdWithGenre(final Long id) {
-        return Optional.empty();
+        return Optional.ofNullable(db.get(id));
     }
 
     @Override

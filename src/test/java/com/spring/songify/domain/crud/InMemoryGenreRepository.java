@@ -35,13 +35,15 @@ class InMemoryGenreRepository implements GenreRepository {
 
     @Override
     public Integer deleteGenreById(final Long genreId) {
-        db.remove(genreId);
-        return 1;
+        return db.remove(genreId) != null ? 1 : 0;
     }
 
     @Override
     public Slice<Genre> findAll(final Pageable pageable) {
             List<Genre> list = new ArrayList<>(db.values());
+        if (pageable.isUnpaged()) {
+            return new SliceImpl<>(list);
+        }
             int start = (int) pageable.getOffset();
             int pageSize = pageable.getPageSize();
             if (start >= list.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);
