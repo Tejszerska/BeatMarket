@@ -27,5 +27,12 @@ class AlbumAdder {
         return new AlbumDto(album.getId(), album.getTitle());
     }
 
-
+    AlbumDto addDefaultAlbum (final Long songId){
+        Song songById = songRetriever.findSongById(songId);
+        Album album = new Album();
+        album.assignDefaultTitle();
+        album.addSongToAlbum(songById);
+        albumRepository.save(album);
+        return new AlbumDto(album.getId(), album.getTitle());
+    }
 }

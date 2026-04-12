@@ -60,4 +60,9 @@ class InMemoryArtistRepository implements ArtistRepository {
             return 0;
         }
     }
+
+    @Override
+    public boolean existsById(final Long id) {
+        return db.containsKey(id);
+    }
 }

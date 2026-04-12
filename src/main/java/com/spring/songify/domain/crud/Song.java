@@ -73,4 +73,10 @@ class Song extends BaseEntity {
         this.genre = genre;
     }
 
+    void assignDefaultTitle(){
+        this.title = "Default song:" + this.uuid.toString();
+    }
+
+
+
 }

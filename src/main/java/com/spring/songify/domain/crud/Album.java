@@ -38,7 +38,7 @@ class Album extends BaseEntity {
     private String title;
     private Instant releaseDate;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany
     @JoinColumn(name = "album_id")
     private Set<Song> songs = new HashSet<>();
 
@@ -58,5 +58,7 @@ class Album extends BaseEntity {
         artists.add(artist);
     }
 
-
+    void assignDefaultTitle(){
+        this.title = "Default album:" + this.uuid.toString();
+    }
 }

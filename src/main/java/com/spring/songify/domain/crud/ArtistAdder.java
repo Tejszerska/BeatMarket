@@ -1,7 +1,9 @@
 package com.spring.songify.domain.crud;
 
+import com.spring.songify.domain.crud.dto.AlbumDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
+import com.spring.songify.domain.crud.dto.SongDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,10 @@ import java.util.UUID;
 @Transactional
 class ArtistAdder {
     private final ArtistRepository artistRepository;
+    private final AlbumAdder albumAdder;
+    private final SongAdder songAdder;
+    private final AlbumRetriever albumRetriever;
+    private final SongRetriever songRetriever;
 
     ArtistDto addArtist(final String name) {
         Artist artist = new Artist(name);
@@ -34,18 +40,14 @@ class ArtistAdder {
 
     private Artist saveArtistWithDefaultAlbumAndSong(final String name) {
         Artist artist = new Artist(name);
+        Artist savedArtist = artistRepository.save(artist);
 
-        Album album = new Album();
-        UUID albumUuid = album.uuid;
-        album.setTitle("Default album:" + albumUuid);
-        album.setReleaseDate(LocalDateTime.now().toInstant(ZoneOffset.UTC));
+        SongDto songDto = songAdder.addDefaultSong();
+        AlbumDto albumDto = albumAdder.addDefaultAlbum(songDto.id());
+        Album album = albumRetriever.findById(albumDto.id());
 
-        Song song = new Song();
-        UUID songUuid = song.uuid;
-        song.setTitle("Default song:" + songUuid);
-
-        album.addSongToAlbum(song);
         artist.setAlbums(Set.of(album));
-        return artistRepository.save(artist);
+        album.addArtist(artist);
+        return savedArtist;
     }
 }
