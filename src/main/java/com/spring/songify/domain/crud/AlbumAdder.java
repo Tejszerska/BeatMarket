@@ -1,6 +1,7 @@
 package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.AlbumDto;
+import com.spring.songify.domain.crud.exception.TitleIsBlankException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ class AlbumAdder {
 
 
     AlbumDto addAlbum(final Long songId, final String title, final Instant instant) {
+        if(title == null || title.isBlank()) throw new TitleIsBlankException("Album needs a specified title!");
         Song songById = songRetriever.findSongById(songId);
         Album album = new Album();
         album.setTitle(title);

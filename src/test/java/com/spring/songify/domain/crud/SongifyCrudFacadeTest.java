@@ -12,9 +12,14 @@ import com.spring.songify.domain.crud.dto.SongRequestDto;
 import com.spring.songify.domain.crud.exception.AlbumNotFoundException;
 import com.spring.songify.domain.crud.exception.ArtistNotFoundException;
 import com.spring.songify.domain.crud.exception.GenreNotfoundException;
+import com.spring.songify.domain.crud.exception.NameIsBlankException;
 import com.spring.songify.domain.crud.exception.SongNotFoundException;
+import com.spring.songify.domain.crud.exception.TitleIsBlankException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -470,6 +475,22 @@ class SongifyCrudFacadeTest {
 
     //    public GenreDto addGenre(GenreRequestDto dto) {
 
+    @ParameterizedTest
+    @DisplayName("Should throw NameIsBlankException when invalid name for Genre was sent")
+    @NullAndEmptySource
+    @ValueSource(strings = {"  ", "\t", "\n"})
+    void should_throw_exception_when_invalid_name_for_genre(String invalidName) {
+        // given
+        assertThat(songifyCrudFacade.findAllGenres(Pageable.unpaged()).getContent())
+                .hasSize(1);// there always is the default genre in db
+        GenreRequestDto genreRequestDto = new GenreRequestDto(invalidName);
+
+        // when & then
+        assertThatThrownBy(() -> songifyCrudFacade.addGenre(genreRequestDto))
+                .isInstanceOf(NameIsBlankException.class)
+                .hasMessage("Genre needs a specified name!");
+    }
+
     @Test
     @DisplayName("Should add genre")
     void should_add_genre() {
@@ -510,6 +531,28 @@ class SongifyCrudFacadeTest {
         assertThat(songifyCrudFacade.findAllAlbums(Pageable.unpaged()).getContent()).hasSize(1);
         AlbumInfo albumWithSongs = songifyCrudFacade.findAlbumByIdReturnAlbumInfo(albumDto.id());
         assertTrue(albumWithSongs.getSongs().stream().anyMatch(song -> song.getId().equals(songDto.id())));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Should throw NameIsBlankException when invalid name for Artist was sent")
+    @NullAndEmptySource
+    @ValueSource(strings = {"  ", "\t", "\n"})
+    void should_throw_exception_when_invalid_title_for_album(String invalidName) {
+        // given
+        SongDto songDto = createSong("song1");
+        assertThat(songifyCrudFacade.findAllAlbums(Pageable.unpaged())).isEmpty();
+
+        AlbumRequestDto albumRequest = AlbumRequestDto.builder()
+                .title(invalidName)
+                .songId(songDto.id())
+                .releaseDate(Instant.now())
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> songifyCrudFacade.addAlbumWithSong(albumRequest))
+                .isInstanceOf(TitleIsBlankException.class)
+                .hasMessage("Album needs a specified title!");
+        assertThat(songifyCrudFacade.findAllAlbums(Pageable.unpaged())).isEmpty();
     }
 
     //    public ArtistWithAlbumDto addArtistToAlbum(Long artistId, Long albumId) {
@@ -559,6 +602,22 @@ class SongifyCrudFacadeTest {
     }
 
     //    public ArtistDto addArtist(ArtistRequestDto dto)
+
+    @ParameterizedTest
+    @DisplayName("Should throw NameIsBlankException when invalid name for Artist was sent")
+    @NullAndEmptySource
+    @ValueSource(strings = {"  ", "\t", "\n"})
+    void should_throw_exception_when_invalid_name_for_artist(String invalidName) {
+        // given
+        ArtistRequestDto artistRequestDto = ArtistRequestDto.builder()
+                .name(invalidName)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> songifyCrudFacade.addArtist(artistRequestDto))
+                .isInstanceOf(NameIsBlankException.class)
+                .hasMessage("Artist needs a specified name!");
+    }
 
     @Test
     @DisplayName("Should add artist 'bono' with id=0 when 'bono' was sent")

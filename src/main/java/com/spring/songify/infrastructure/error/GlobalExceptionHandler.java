@@ -3,7 +3,9 @@ package com.spring.songify.infrastructure.error;
 import com.spring.songify.domain.crud.exception.AlbumNotFoundException;
 import com.spring.songify.domain.crud.exception.ArtistNotFoundException;
 import com.spring.songify.domain.crud.exception.GenreNotfoundException;
+import com.spring.songify.domain.crud.exception.NameIsBlankException;
 import com.spring.songify.domain.crud.exception.SongNotFoundException;
+import com.spring.songify.domain.crud.exception.TitleIsBlankException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -46,6 +48,19 @@ class GlobalExceptionHandler {
         List<String> errorsFromException = getErrorsFromException(exception);
         ListOfStringsErrorResponseDto response = new ListOfStringsErrorResponseDto(errorsFromException, HttpStatus.BAD_REQUEST);
 
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
+    }
+
+    @ExceptionHandler({
+            TitleIsBlankException.class,
+            NameIsBlankException.class
+    })
+    public ResponseEntity<SingleStringErrorResponseDto> handleBlankException(IllegalArgumentException exception){
+        log.warn("Resource can't be blank: {}", exception.getMessage());
+
+        SingleStringErrorResponseDto response = new SingleStringErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);

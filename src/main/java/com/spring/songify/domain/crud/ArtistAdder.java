@@ -4,6 +4,7 @@ import com.spring.songify.domain.crud.dto.AlbumDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
 import com.spring.songify.domain.crud.dto.SongDto;
+import com.spring.songify.domain.crud.exception.NameIsBlankException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,9 @@ class ArtistAdder {
     private final AlbumAdder albumAdder;
     private final SongAdder songAdder;
     private final AlbumRetriever albumRetriever;
-    private final SongRetriever songRetriever;
 
     ArtistDto addArtist(final String name) {
+        if(name == null || name.isBlank()) throw new NameIsBlankException("Artist needs a specified name!");
         Artist artist = new Artist(name);
         Artist save = artistRepository.save(artist);
         return new ArtistDto(save.getId(), save.getName());
@@ -34,6 +35,8 @@ class ArtistAdder {
 
     ArtistDto addArtistWithDefaultAlbumAndSong(final ArtistRequestDto dto) {
         String artistName = dto.name();
+        if(artistName == null || artistName.isBlank()) throw new NameIsBlankException("Artist needs a specified name!");
+
         Artist artist = saveArtistWithDefaultAlbumAndSong(artistName);
         return new ArtistDto(artist.getId(), artist.getName());
     }
