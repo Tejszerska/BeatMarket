@@ -4,7 +4,6 @@ import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.request.CreateSongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.request.PartiallyUpdateSongRequestDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.request.UpdateSongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.CreateSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetAllSongsResponseDto;
@@ -37,12 +36,6 @@ class SongControllerMapper {
                 .build();
     }
 
-    static SongDto mapFromUpdateSongRequestDtoToSongDto(UpdateSongRequestDto dto) {
-        return SongDto
-                .builder()
-                .title(dto.title())
-                .build();
-    }
 
     static SongDto mapFromPartiallyUpdateSongRequestDtoToSong(PartiallyUpdateSongRequestDto dto) {
         return SongDto

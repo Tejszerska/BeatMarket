@@ -813,13 +813,27 @@ class SongifyCrudFacadeTest {
         //given
         Long nonExistingGenreId = 999L;
         //when & then
-        assertThatThrownBy( () -> songifyCrudFacade.findGenreById(nonExistingGenreId))
+        assertThatThrownBy(() -> songifyCrudFacade.findGenreById(nonExistingGenreId))
                 .isInstanceOf(GenreNotfoundException.class)
                 .hasMessage("Genre by id=" + nonExistingGenreId + "wasn't found");
-    ;
-
     }
 
+//    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
+
+    @Test
+    public void should_update_song_partially_just_the_title() {
+        //given
+        SongDto original = createSong("old-title");
+        SongDto newSongTitle = SongDto.builder().title("new-title").build();
+        //when
+        SongDto updated = songifyCrudFacade.updateSongPartiallyById(original.id(), newSongTitle);
+        //then
+        assertThat(updated.id()).isEqualTo(original.id());
+        assertThat(updated.title()).isEqualTo("new-title");
+        SongDto songFromDb = songifyCrudFacade.findSongDtoById(original.id());
+        assertThat(songFromDb.title()).isEqualTo("new-title");
+        assertThat(songFromDb.genre()).isEqualTo(original.genre());
+    }
 
     // --- HELPER METHODS ---
 

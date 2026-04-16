@@ -53,7 +53,7 @@ class InMemorySongRepository implements SongRepository {
 
     @Override
     public void updateById(final Long id, final Song newSong) {
-
+        db.put(id, newSong);
     }
 
     @Override

@@ -5,13 +5,11 @@ import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.request.CreateSongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.request.PartiallyUpdateSongRequestDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.request.UpdateSongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.CreateSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetAllSongsResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.PartiallyUpdateSongResponseDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.UpdateSongResponseDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -70,15 +68,6 @@ class SongRestController {
     ResponseEntity<Void> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
         songFacade.deleteSongById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}")
-    ResponseEntity<UpdateSongResponseDto> update(@PathVariable Long id,
-                                                 @RequestBody @Valid UpdateSongRequestDto request) {
-        SongDto newSongDto = SongControllerMapper.mapFromUpdateSongRequestDtoToSongDto(request);
-        songFacade.updateSongById(id, newSongDto);
-        UpdateSongResponseDto body = SongControllerMapper.mapFromSongToUpdateSongResponseDto(newSongDto);
-        return ResponseEntity.ok(body);
     }
 
     @PatchMapping("/{id}")

@@ -4,7 +4,6 @@ import com.spring.songify.domain.crud.dto.AlbumDto;
 import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumRequestDto;
 import com.spring.songify.domain.crud.dto.AlbumSongsDto;
-import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
 import com.spring.songify.domain.crud.dto.ArtistWithAlbumDto;
@@ -120,34 +119,7 @@ public class SongifyCrudFacade {
         return songAssigner.assignSongByIdToAlbumById(albumId, songId);
     }
 
-    public ArtistDto findArtistById(final Long artistId){
-       return artistRetriever.findByIdReturnDto(artistId);
-    }
-
-
-    public void updateSongById(Long id, SongDto newSongDto) {
-        songUpdater.updateByIdAndDto(id, newSongDto);
-    }
-
     public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
-        songRetriever.existsById(id);
-        Song songFromDatabase = songRetriever.findSongById(id);
-        Song toSave = new Song();
-        if (songFromRequest.title() != null) {
-            toSave.setTitle(songFromRequest.title());
-        } else {
-            toSave.setTitle(songFromDatabase.getTitle());
-        }
-//        todo
-//        if (songFromRequest.getArtist() != null) {
-//            builder.artist(songFromRequest.getArtist());
-//        } else {
-//            builder.artist(songFromDatabase.getArtist());
-//        }
-        songUpdater.updateById(id, toSave);
-        return SongDto.builder()
-                .id(toSave.getId())
-                .title(toSave.getTitle())
-                .build();
+        return songUpdater.updatePartiallyByIdAndDto(id, songFromRequest);
     }
 }

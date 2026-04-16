@@ -1,5 +1,6 @@
 package com.spring.songify.domain.crud;
 
+import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.exception.GenreNotfoundException;
 import com.spring.songify.domain.crud.exception.TitleIsBlankException;
@@ -25,21 +26,26 @@ class SongUpdater {
         songRepository.updateById(id, newSong);
     }
 
-    void updateByIdAndDto(Long id, SongDto newSongDto) {
-        String title = newSongDto.title();
-        if (title == null || title.isBlank()) {
-            throw new TitleIsBlankException("Song needs a title specified!");
+    public SongDto updatePartiallyByIdAndDto(Long id, SongDto requestDto) {
+        Song songFromDatabase = songRetriever.findSongById(id);
+
+
+        if (requestDto.title() != null) {
+            if (requestDto.title().isBlank()) {
+                throw new TitleIsBlankException("Song title cannot be blank!");
+            }
+            songFromDatabase.setTitle(requestDto.title());
         }
 
-        if (newSongDto.genre() == null || newSongDto.genre().id() == null) {
-            throw new GenreNotfoundException("Song's Genre must be specified!");
+        if (requestDto.genre() != null && requestDto.genre().id() != null) {
+            Genre genreById = genreRetriever.findGenreById(requestDto.genre().id());
+            songFromDatabase.setGenre(genreById);
         }
 
-        Genre genreById = genreRetriever.findGenreById(newSongDto.genre().id());
-
-        Song songToUpdate = new Song(title);
-        songToUpdate.setGenre(genreById);
-
-        updateById(id, songToUpdate);
+        return SongDto.builder()
+                .id(songFromDatabase.getId())
+                .title(songFromDatabase.getTitle())
+                .genre(new GenreDto(songFromDatabase.getGenre().getId(), songFromDatabase.getGenre().getName()))
+                .build();
     }
 }
