@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 class GenreRetriever {
     private final GenreRepository genreRepository;
+    private final static Long DEFAULT_GENRE_ID = 1L;
 
     Slice<GenreDto> findAllGenres(Pageable pageable) {
         return genreRepository.findAll(pageable).map(g -> new GenreDto(g.getId(), g.getName()));
@@ -28,6 +29,6 @@ class GenreRetriever {
     }
 
     Genre retrieveDefaultGenre(){
-       return findGenreById(1L);
+       return findGenreById(DEFAULT_GENRE_ID);
     }
 }
