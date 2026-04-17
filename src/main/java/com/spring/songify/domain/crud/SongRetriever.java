@@ -1,6 +1,5 @@
 package com.spring.songify.domain.crud;
 
-import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.exception.SongNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,23 +13,18 @@ import org.springframework.stereotype.Service;
 @Service
 class SongRetriever {
     private final SongRepository songRepository;
+    private final SongMapper songMapper;
 
     Slice<SongDto> findAll(Pageable pageable) {
         log.info("retrieving all songs: ");
-        return songRepository.findAllSongsWithGenre(pageable).map(song -> SongDto.builder()
-                        .id(song.getId())
-                        .title(song.getTitle())
-                        .genre(new GenreDto(song.getGenre().getId(), song.getGenre().getName()))
-                        .build());
+        return songRepository.findAllSongsWithGenre(pageable)
+                .map(songMapper::mapFromEntityToSongDto);
+
     }
 
     SongDto findSongDtoById(Long id) {
         Song s = findSongById(id);
-        return SongDto.builder()
-                .id(s.getId())
-                .title(s.getTitle())
-                .genre(new GenreDto(s.getGenre().getId(), s.getGenre().getName()))
-                .build();
+        return songMapper.mapFromEntityToSongDto(s);
     }
 
     Song findSongById(Long id) {

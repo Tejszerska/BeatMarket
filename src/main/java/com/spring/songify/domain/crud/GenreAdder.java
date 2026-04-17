@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 @Service
 class GenreAdder {
     private final GenreRepository genreRepository;
+    private final GenreMapper genreMapper;
 
 
     GenreDto addGenre(final String name) {
         Genre genre = new Genre(name);
         if(name == null || name.isBlank()) throw new NameIsBlankException("Genre needs a specified name!");
-        Genre save = genreRepository.save(genre);
-        return new GenreDto(save.getId(), save.getName());
+        return genreMapper.mapFromEntityToGenreDto(
+                           genreRepository.save(genre)
+        );
     }
 }

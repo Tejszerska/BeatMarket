@@ -1,6 +1,5 @@
 package com.spring.songify.domain.crud;
 
-import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.exception.TitleIsBlankException;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +12,10 @@ import org.springframework.stereotype.Service;
 class SongUpdater {
     private final SongRetriever songRetriever;
     private final GenreRetriever genreRetriever;
+    private final SongMapper songMapper;
 
     public SongDto updatePartiallyByIdAndDto(Long id, SongDto requestDto) {
         Song songFromDatabase = songRetriever.findSongById(id);
-
 
         if (requestDto.title() != null) {
             if (requestDto.title().isBlank()) {
@@ -30,10 +29,6 @@ class SongUpdater {
             songFromDatabase.setGenre(genreById);
         }
 
-        return SongDto.builder()
-                .id(songFromDatabase.getId())
-                .title(songFromDatabase.getTitle())
-                .genre(new GenreDto(songFromDatabase.getGenre().getId(), songFromDatabase.getGenre().getName()))
-                .build();
+        return songMapper.mapFromEntityToSongDto(songFromDatabase);
     }
 }

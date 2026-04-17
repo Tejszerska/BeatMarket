@@ -40,9 +40,12 @@ class SongifyCrudFacadeTest {
             new InMemorySongRepository(),
             new InMemoryGenreRepository(),
             new InMemoryArtistRepository(),
-            new InMemoryAlbumRepository()
+            new InMemoryAlbumRepository(),
+            new SongMapperImpl(new GenreMapperImpl()),
+            new GenreMapperImpl(),
+            new ArtistMapperImpl(),
+            new AlbumMapperImpl()
     );
-
     //    public Set<AlbumDto> findAlbumsDtoByArtistId(Long artistId)
     @Test
     @DisplayName("Should return one Album by Artists's ID")
@@ -664,7 +667,6 @@ class SongifyCrudFacadeTest {
                 .isInstanceOf(ArtistNotFoundException.class)
                 .hasMessageContaining("Artist by id=" + nonExistingId);
     }
-
 
     //    public void deleteSongById(Long id) {
 

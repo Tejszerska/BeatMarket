@@ -19,21 +19,22 @@ class ArtistAdder {
     private final AlbumAdder albumAdder;
     private final SongAdder songAdder;
     private final AlbumRetriever albumRetriever;
+    private final ArtistMapper artistMapper;
+
 
     ArtistDto addArtist(final String name) {
-        if(name == null || name.isBlank()) throw new NameIsBlankException("Artist needs a specified name!");
+        if (name == null || name.isBlank()) throw new NameIsBlankException("Artist needs a specified name!");
         Artist artist = new Artist(name);
-        Artist save = artistRepository.save(artist);
-        return new ArtistDto(save.getId(), save.getName());
+        return artistMapper.mapFromEntityToArtistDto(
+                artistRepository.save(artist));
 
     }
 
     ArtistDto addArtistWithDefaultAlbumAndSong(final ArtistRequestDto dto) {
         String artistName = dto.name();
-        if(artistName == null || artistName.isBlank()) throw new NameIsBlankException("Artist needs a specified name!");
-
-        Artist artist = saveArtistWithDefaultAlbumAndSong(artistName);
-        return new ArtistDto(artist.getId(), artist.getName());
+        if (artistName == null || artistName.isBlank())
+            throw new NameIsBlankException("Artist needs a specified name!");
+        return artistMapper.mapFromEntityToArtistDto(saveArtistWithDefaultAlbumAndSong(artistName));
     }
 
     private Artist saveArtistWithDefaultAlbumAndSong(final String name) {

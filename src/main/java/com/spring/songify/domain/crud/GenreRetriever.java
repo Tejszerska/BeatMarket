@@ -14,14 +14,15 @@ import org.springframework.stereotype.Service;
 class GenreRetriever {
     private final GenreRepository genreRepository;
     private final static Long DEFAULT_GENRE_ID = 1L;
+    private final GenreMapper genreMapper;
 
     Slice<GenreDto> findAllGenres(Pageable pageable) {
-        return genreRepository.findAll(pageable).map(g -> new GenreDto(g.getId(), g.getName()));
+        return genreRepository.findAll(pageable)
+                .map(genreMapper::mapFromEntityToGenreDto);
     }
 
     GenreDto findGenreDtoById(final Long genreId) {
-        Genre genre = findGenreById(genreId);
-        return new GenreDto(genre.getId(),genre.getName());
+        return genreMapper.mapFromEntityToGenreDto(findGenreById(genreId));
     }
     Genre findGenreById(final Long genreId) {
         return genreRepository.findGenreById(genreId)

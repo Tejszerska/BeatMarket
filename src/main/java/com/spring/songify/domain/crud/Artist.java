@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +20,8 @@ import java.util.Set;
 @Builder
 @Entity
 @NoArgsConstructor
-@Setter(AccessLevel.PACKAGE)
-@Getter(AccessLevel.PACKAGE)
+@Setter
+@Getter
 @AllArgsConstructor
 class Artist extends BaseEntity {
     @Id

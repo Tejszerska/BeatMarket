@@ -122,8 +122,6 @@ public class SongifyCrudFacade {
         return genreAssigner.assignGenreByIdToSongById(songId, genreId);
     }
 
-    // --- UNTESTED & NO ENDPOINTS
-
     public AlbumSongsDto assignSongByIdToAlbumById(final Long albumId, final Long songId) {
         return songAssigner.assignSongByIdToAlbumById(albumId, songId);
     }

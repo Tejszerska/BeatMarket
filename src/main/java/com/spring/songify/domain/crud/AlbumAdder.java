@@ -14,6 +14,7 @@ import java.time.Instant;
 class AlbumAdder {
     private final SongRetriever songRetriever;
     private final AlbumRepository albumRepository;
+    private final AlbumMapper albumMapper;
 
 
     AlbumDto addAlbum(final Long songId, final String title, final Instant instant) {
@@ -23,8 +24,7 @@ class AlbumAdder {
         album.setTitle(title);
         album.addSongToAlbum(songById);
         album.setReleaseDate(instant);
-        albumRepository.save(album);
-        return new AlbumDto(album.getId(), album.getTitle());
+        return albumMapper.mapFromEntityToAlbumDto(albumRepository.save(album));
     }
 
     AlbumDto addDefaultAlbum (final Long songId){
@@ -32,7 +32,6 @@ class AlbumAdder {
         Album album = new Album();
         album.assignDefaultTitle();
         album.addSongToAlbum(songById);
-        albumRepository.save(album);
-        return new AlbumDto(album.getId(), album.getTitle());
+        return albumMapper.mapFromEntityToAlbumDto(albumRepository.save(album));
     }
 }

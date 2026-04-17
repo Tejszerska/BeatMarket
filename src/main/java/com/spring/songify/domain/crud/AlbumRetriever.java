@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 class AlbumRetriever {
     private final AlbumRepository albumRepository;
     private final ArtistRetriever artistRetriever;
+    private final AlbumMapper albumMapper;
 
     AlbumInfo findAlbumByReturnAlbumInfo(final Long id) {
         return albumRepository.findAlbumByIdReturnAlbumInfo(id)
@@ -35,8 +36,7 @@ class AlbumRetriever {
 
     Set<AlbumDto> findAlbumsDtoByArtistId(final Long artistId) {
         return findAlbumsByArtistId(artistId)
-                .stream().map(
-                        album -> new AlbumDto(album.getId(), album.getTitle()))
+                .stream().map(albumMapper::mapFromEntityToAlbumDto)
                 .collect(Collectors.toSet());
     }
 
@@ -47,9 +47,6 @@ class AlbumRetriever {
 
     Slice<AlbumDto> findAllAlbums(Pageable pageable) {
         return albumRepository.findAllAlbums(pageable)
-                .map(album -> AlbumDto.builder()
-                        .id(album.getId())
-                        .title(album.getTitle())
-                        .build());
+                .map(albumMapper::mapFromEntityToAlbumDto);
     }
 }

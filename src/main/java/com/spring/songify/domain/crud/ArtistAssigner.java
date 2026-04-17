@@ -11,22 +11,17 @@ import org.springframework.stereotype.Service;
 class ArtistAssigner {
     private final ArtistRetriever artistRetriever;
     private final AlbumRetriever albumRetriever;
+    private final ArtistMapper artistMapper;
+    private final AlbumMapper albumMapper;
+
 
     ArtistWithAlbumDto addArtistToAlbum(final Long artistId, final Long albumId) {
         Artist artist = artistRetriever.findById(artistId);
         Album album = albumRetriever.findById(albumId);
         artist.addAlbum(album);
-        ArtistDto artistDto = ArtistDto.builder()
-                .id(artist.getId())
-                .name(artist.getName())
-                .build();
 
-        AlbumDto albumDto = AlbumDto.builder()
-                .id(album.getId())
-                .title(album.getTitle())
-                .build();
-
+        ArtistDto artistDto = artistMapper.mapFromEntityToArtistDto(artist);
+        AlbumDto albumDto = albumMapper.mapFromEntityToAlbumDto(album);
         return new ArtistWithAlbumDto(artistDto, albumDto);
-
     }
 }

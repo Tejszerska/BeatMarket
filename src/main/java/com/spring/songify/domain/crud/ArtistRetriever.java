@@ -13,10 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 class ArtistRetriever {
     private final ArtistRepository artistRepository;
+    private final ArtistMapper artistMapper;
 
     Slice<ArtistDto> findAllArtist(Pageable pageable) {
         Slice<Artist> all = artistRepository.findAll(pageable);
-        return all.map(a -> new ArtistDto(a.getId(), a.getName()));
+        return all.map(artistMapper::mapFromEntityToArtistDto);
     }
 
     Artist findById(final Long artistId) {
@@ -25,11 +26,7 @@ class ArtistRetriever {
     }
 
     ArtistDto findByIdReturnDto(final Long artistId){
-        Artist artist = findById(artistId);
-        return ArtistDto.builder()
-                .id(artist.getId())
-                .name(artist.getName())
-                .build();
+      return artistMapper.mapFromEntityToArtistDto(findById(artistId));
     }
 
     boolean existsById(final Long artistId) {
