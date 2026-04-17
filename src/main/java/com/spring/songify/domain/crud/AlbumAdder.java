@@ -2,7 +2,6 @@ package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.AlbumDto;
 import com.spring.songify.domain.crud.exception.TitleIsBlankException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import java.time.Instant;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional
 class AlbumAdder {
     private final SongRetriever songRetriever;
     private final AlbumRepository albumRepository;

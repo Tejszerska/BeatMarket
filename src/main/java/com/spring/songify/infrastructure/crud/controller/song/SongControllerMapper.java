@@ -10,7 +10,6 @@ import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetAl
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.PartiallyUpdateSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.SongResponseDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.UpdateSongResponseDto;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
@@ -42,10 +41,6 @@ class SongControllerMapper {
                 .builder()
                 .title(dto.title())
                 .build();
-    }
-
-    static UpdateSongResponseDto mapFromSongToUpdateSongResponseDto(SongDto songDto) {
-        return new UpdateSongResponseDto(songDto.id(), songDto.title());
     }
 
     static PartiallyUpdateSongResponseDto mapFromSongDtoToPartiallyUpdateSongResponseDto(SongDto songDto) {

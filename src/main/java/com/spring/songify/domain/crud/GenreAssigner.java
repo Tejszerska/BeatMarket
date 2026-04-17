@@ -2,11 +2,9 @@ package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.SongDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Transactional
 @RequiredArgsConstructor
 @Service
 class GenreAssigner {

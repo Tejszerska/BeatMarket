@@ -1,7 +1,6 @@
 package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.util.BaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

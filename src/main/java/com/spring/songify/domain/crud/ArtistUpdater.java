@@ -2,13 +2,11 @@ package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.exception.NameIsBlankException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 class ArtistUpdater {
     private final ArtistRetriever artistRetriever;
 

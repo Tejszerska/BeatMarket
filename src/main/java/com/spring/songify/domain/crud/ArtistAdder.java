@@ -5,20 +5,15 @@ import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.exception.NameIsBlankException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Set;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional
 class ArtistAdder {
     private final ArtistRepository artistRepository;
     private final AlbumAdder albumAdder;

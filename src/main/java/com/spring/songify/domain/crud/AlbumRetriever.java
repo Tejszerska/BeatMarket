@@ -2,10 +2,6 @@ package com.spring.songify.domain.crud;
 
 import com.spring.songify.domain.crud.dto.AlbumDto;
 import com.spring.songify.domain.crud.dto.AlbumInfo;
-import com.spring.songify.domain.crud.dto.AlbumWithArtistsAndSongsDto;
-import com.spring.songify.domain.crud.dto.ArtistDto;
-import com.spring.songify.domain.crud.dto.GenreDto;
-import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.exception.AlbumNotFoundException;
 import com.spring.songify.domain.crud.exception.ArtistNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +20,6 @@ import java.util.stream.Collectors;
 class AlbumRetriever {
     private final AlbumRepository albumRepository;
     private final ArtistRetriever artistRetriever;
-
 
     AlbumInfo findAlbumByReturnAlbumInfo(final Long id) {
         return albumRepository.findAlbumByIdReturnAlbumInfo(id)

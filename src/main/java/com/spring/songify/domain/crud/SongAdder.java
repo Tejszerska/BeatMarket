@@ -3,7 +3,6 @@ package com.spring.songify.domain.crud;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional
 class SongAdder {
     private final SongRepository songRepository;
     private final GenreRetriever genreRetriever;

@@ -1,6 +1,5 @@
 package com.spring.songify.domain.crud;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 class ArtistDeleter {
     private final ArtistRetriever artistRetriever;
     private final AlbumRetriever albumRetriever;

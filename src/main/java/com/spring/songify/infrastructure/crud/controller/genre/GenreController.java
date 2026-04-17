@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,18 +38,23 @@ class GenreController {
 
     @GetMapping
     ResponseEntity<GetAllGenresResponseDto> getGenres(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Slice<GenreDto> allGenresSlice = songifyCrudFacade.findAllGenres(pageable);
         GetAllGenresResponseDto getAllGenresResponseDto = GenreControllerMapper.mapSliceToGetAllGenresResponseDto(allGenresSlice);
         return ResponseEntity.ok(getAllGenresResponseDto);
     }
 
     @GetMapping("/{genreId}")
-    ResponseEntity<GetGenreResponseDto> getGenreById(@PathVariable Long genreId){
+    ResponseEntity<GetGenreResponseDto> getGenreById(@PathVariable Long genreId) {
         GenreDto dto = songifyCrudFacade.findGenreById(genreId);
         GetGenreResponseDto getGenreResponseDto = GenreControllerMapper.mapGenreDtoToGetGenreResponseDto(dto);
 
         return ResponseEntity.ok(getGenreResponseDto);
     }
 
+    @DeleteMapping("/{genreId}")
+    ResponseEntity<Void> deleteGenreById(@PathVariable Long genreId) {
+        songifyCrudFacade.deleteGenreById(genreId);
+        return ResponseEntity.noContent().build();
+    }
 }

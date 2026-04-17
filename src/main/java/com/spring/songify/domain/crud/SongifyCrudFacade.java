@@ -38,6 +38,7 @@ public class SongifyCrudFacade {
     private final GenreRetriever genreRetriever;
     private final GenreAssigner genreAssigner;
     private final SongAssigner songAssigner;
+    private final GenreDeleter genreDeleter;
 
     public Set<AlbumDto> findAlbumsDtoByArtistId(Long artistId) {
         return albumRetriever.findAlbumsDtoByArtistId(artistId);
@@ -109,17 +110,22 @@ public class SongifyCrudFacade {
         return genreRetriever.findGenreDtoById(genreId);
     }
 
-    // --- UNTESTED & NO ENDPOINTS
+    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
+        return songUpdater.updatePartiallyByIdAndDto(id, songFromRequest);
+    }
+
+    public int deleteGenreById(final Long genreId) {
+      return  genreDeleter.deleteById(genreId);
+    }
 
     public SongDto assignGenreByIdToSongById(final Long songId, final Long genreId) {
         return genreAssigner.assignGenreByIdToSongById(songId, genreId);
     }
 
+    // --- UNTESTED & NO ENDPOINTS
+
     public AlbumSongsDto assignSongByIdToAlbumById(final Long albumId, final Long songId) {
         return songAssigner.assignSongByIdToAlbumById(albumId, songId);
     }
 
-    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
-        return songUpdater.updatePartiallyByIdAndDto(id, songFromRequest);
-    }
 }

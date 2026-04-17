@@ -26,6 +26,7 @@ import org.springframework.data.domain.Slice;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -821,6 +822,7 @@ class SongifyCrudFacadeTest {
 //    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
 
     @Test
+    @DisplayName("Should update just Song's title")
     public void should_update_song_partially_just_the_title() {
         //given
         SongDto original = createSong("old-title");
@@ -835,7 +837,68 @@ class SongifyCrudFacadeTest {
         assertThat(songFromDb.genre()).isEqualTo(original.genre());
     }
 
-    // --- HELPER METHODS ---
+//    public int deleteGenreById(final Long genreId) {
+
+    @Test
+    @DisplayName("Should delete Genre By Id")
+    public void should_delete_genre_by_id(){
+        //given
+        Long genreId = createGenre("test").id();
+        assertThat(songifyCrudFacade.findAllGenres(Pageable.unpaged()).getSize()).isEqualTo(2);
+        //when & then
+        assertThat(songifyCrudFacade.deleteGenreById(genreId)).isEqualTo(1);
+        assertThat(songifyCrudFacade.findAllGenres(Pageable.unpaged()).getSize()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when deleting Genre By nonexistent Id")
+    public void should_not_delete_genre_by_id(){
+        //given
+        Long nonExistent = 999L;
+        assertThat(songifyCrudFacade.findAllGenres(Pageable.unpaged()).getSize()).isEqualTo(1);
+        //when & then
+        assertThatThrownBy( () -> songifyCrudFacade.deleteGenreById(nonExistent))
+                .isInstanceOf(GenreNotfoundException.class)
+                .hasMessage("Genre by id=999 was not found");
+    }
+
+    //    public SongDto assignGenreByIdToSongById(final Long songId, final Long genreId) {
+    @Test
+    @DisplayName("Should assign Genre By id=2 to Song by id=0")
+    public void should_assign_genre_by_id_to_song_by_id(){
+        //given
+        SongDto song = createSong("song");
+        GenreDto genre = createGenre("genre");
+        assertThat(song.genre().id()).isNotEqualTo(genre.id());
+        //when
+        SongDto updated = songifyCrudFacade.assignGenreByIdToSongById(song.id(), genre.id());
+        //then
+        assertThat(updated.genre().id()).isEqualTo(genre.id());
+    }
+
+    // public AlbumSongsDto assignSongByIdToAlbumById(final Long albumId, final Long songId) {
+    @Test
+    @DisplayName("Should assign Song By id=0 to Album by id=0")
+    public void should_assign_song_by_id_to_album_by_id(){
+        //given
+        SongDto song1 = createSong("song1");
+        SongDto song2 = createSong("song2");
+        AlbumDto album = createAlbum("album", song1.id());
+        Set<AlbumInfo.SongInfo> songsBefore = songifyCrudFacade.findAlbumByIdReturnAlbumInfo(album.id()).getSongs();
+        assertThat(songsBefore.size()).isEqualTo(1);
+        //when
+        songifyCrudFacade.assignSongByIdToAlbumById(album.id(), song2.id());
+        //then
+        Set<AlbumInfo.SongInfo> songsAfter = songifyCrudFacade.findAlbumByIdReturnAlbumInfo(album.id()).getSongs();
+        Set<Long> songIdsAfter = songsAfter.stream().map(AlbumInfo.SongInfo::getId).collect(Collectors.toSet());
+        assertThat(songIdsAfter.size())
+                .isEqualTo(2);
+        assertThat(songIdsAfter)
+                .contains(song1.id(), song2.id());
+    }
+
+
+        // --- HELPER METHODS ---
 
     private ArtistDto createArtist(String name) {
         ArtistRequestDto request = ArtistRequestDto.builder()
