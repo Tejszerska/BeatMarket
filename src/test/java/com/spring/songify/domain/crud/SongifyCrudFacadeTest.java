@@ -5,6 +5,7 @@ import com.spring.songify.domain.crud.dto.AlbumInfo;
 import com.spring.songify.domain.crud.dto.AlbumRequestDto;
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import com.spring.songify.domain.crud.dto.ArtistRequestDto;
+import com.spring.songify.domain.crud.dto.ArtistWithAlbumDto;
 import com.spring.songify.domain.crud.dto.GenreDto;
 import com.spring.songify.domain.crud.dto.GenreRequestDto;
 import com.spring.songify.domain.crud.dto.SongDto;
@@ -44,7 +45,8 @@ class SongifyCrudFacadeTest {
             new SongMapperImpl(new GenreMapperImpl()),
             new GenreMapperImpl(),
             new ArtistMapperImpl(),
-            new AlbumMapperImpl()
+            new AlbumMapperImpl(),
+            new ArtistWithAlbumMapperImpl(new ArtistMapperImpl(), new AlbumMapperImpl())
     );
     //    public Set<AlbumDto> findAlbumsDtoByArtistId(Long artistId)
     @Test

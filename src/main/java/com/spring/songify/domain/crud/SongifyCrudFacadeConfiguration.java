@@ -8,11 +8,12 @@ class SongifyCrudFacadeConfiguration {
                                                       final SongMapper songMapper,
                                                       final GenreMapper genreMapper,
                                                       final ArtistMapper artistMapper,
-                                                      final AlbumMapper albumMapper
+                                                      final AlbumMapper albumMapper,
+                                                      final ArtistWithAlbumMapper artistWithAlbumMapper
                                                       ){
         GenreRetriever genreRetriever = new GenreRetriever(genreRepository, genreMapper);
         SongRetriever songRetriever = new SongRetriever(songRepository, songMapper);
-        SongUpdater songUpdater = new SongUpdater(songRetriever, genreRetriever, songMapper);
+        SongUpdater songUpdater = new SongUpdater(songRetriever, songMapper);
         AlbumAdder albumAdder = new AlbumAdder(songRetriever, albumRepository, albumMapper);
         ArtistRetriever artistRetriever = new ArtistRetriever(artistRepository, artistMapper);
         AlbumRetriever albumRetriever = new AlbumRetriever(albumRepository, artistRetriever, albumMapper);
@@ -22,7 +23,7 @@ class SongifyCrudFacadeConfiguration {
         GenreAdder genreAdder = new GenreAdder(genreRepository, genreMapper);
         AlbumDeleter albumDeleter = new AlbumDeleter(albumRepository);
         ArtistDeleter artistDeleter = new ArtistDeleter(artistRetriever, albumRetriever, artistRepository, songDeleter, albumDeleter);
-        ArtistAssigner artistAssigner = new ArtistAssigner(artistRetriever, albumRetriever, artistMapper, albumMapper);
+        ArtistAssigner artistAssigner = new ArtistAssigner(artistRetriever, albumRetriever, artistWithAlbumMapper);
         ArtistUpdater artistUpdater = new ArtistUpdater(artistRetriever, artistMapper);
         GenreAssigner genreAssigner = new GenreAssigner(songRetriever, genreRetriever, songMapper);
         SongAssigner songAssigner = new SongAssigner(albumRetriever, songRetriever, songMapper, albumMapper);

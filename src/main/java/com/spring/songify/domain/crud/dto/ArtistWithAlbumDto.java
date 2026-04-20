@@ -1,4 +1,4 @@
 package com.spring.songify.domain.crud.dto;
 
-public record ArtistWithAlbumDto(ArtistDto artistDto, AlbumDto albumDto) {
+public record ArtistWithAlbumDto(ArtistDto artist, AlbumDto album) {
 }

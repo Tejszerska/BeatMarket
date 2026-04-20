@@ -31,10 +31,10 @@ class ArtistControllerMapper {
 
     static ArtistWithAlbumResponseDto mapFromDomainDtoToArtistWithAlbumResponseDto(ArtistWithAlbumDto domain) {
         return ArtistWithAlbumResponseDto.builder()
-                .artistId(domain.artistDto().id())
-                .artistName(domain.artistDto().name())
-                .albumId(domain.albumDto().id())
-                .albumTitle(domain.albumDto().title())
+                .artistId(domain.artist().id())
+                .artistName(domain.artist().name())
+                .albumId(domain.album().id())
+                .albumTitle(domain.album().title())
                 .build();
     }
 

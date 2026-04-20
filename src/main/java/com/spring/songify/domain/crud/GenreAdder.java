@@ -15,8 +15,8 @@ class GenreAdder {
 
 
     GenreDto addGenre(final String name) {
-        Genre genre = new Genre(name);
         if(name == null || name.isBlank()) throw new NameIsBlankException("Genre needs a specified name!");
+        Genre genre = new Genre(name);
         return genreMapper.mapFromEntityToGenreDto(
                            genreRepository.save(genre)
         );
