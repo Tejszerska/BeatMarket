@@ -58,14 +58,14 @@ class HappyPathIntegrationTest {
                                     "title": "Till i collapse",
                                     "releaseDate": "2026-01-01T11:52:52.841Z",
                                     "duration": 100,
-                                    "languageDto": "ENGLISH"
+                                    "language": "ENGLISH"
                                 }
                                 """)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.song.id", is(1)))
-                .andExpect(jsonPath("$.song.name", is("Till i collapse")));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.title", is("Till i collapse")));
 
         // 3. when I post to /song with Song "Lose Yourself" then Song "Lose Yourself" is returned with id 2
         mockMvc.perform(post("/songs")
@@ -74,14 +74,14 @@ class HappyPathIntegrationTest {
                                     "title": "Lose Yourself",
                                     "releaseDate": "2026-01-01T11:52:52.841Z",
                                     "duration": 100,
-                                    "languageDto": "ENGLISH"
+                                    "language": "ENGLISH"
                                 }
                                 """)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.song.id", is(2)))
-                .andExpect(jsonPath("$.song.name", is("Lose Yourself")));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(2)))
+                .andExpect(jsonPath("$.title", is("Lose Yourself")));
 
         // 4. when I go to /genre then I can see only default genre with id 1
         mockMvc.perform(get("/genres")
@@ -94,11 +94,11 @@ class HappyPathIntegrationTest {
         mockMvc.perform(post("/genres")
                         .content("""
                                 {
-                                  "title": "Rap"
+                                  "name": "Rap"
                                 }
                                 """)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(2)))
                 .andExpect(jsonPath("$.name", is("Rap")));
 
@@ -106,22 +106,23 @@ class HappyPathIntegrationTest {
         mockMvc.perform(get("/songs/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.song.genre.id", is(1)))
-                .andExpect(jsonPath("$.song.genre.name", is("Default")));
+                .andExpect(jsonPath("$.genreId", is(1)))
+                .andExpect(jsonPath("$.genreName", is("Default")));
 
         // 7. when I put to  then Genre with id 2 ("Rap") is added to Song with id 1 ("Til i collapse")
         mockMvc.perform(put("/songs/1/genre/2")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is("Updated")));
+                .andExpect(jsonPath("$.songId", is(1)))
+                .andExpect(jsonPath("$.genreId", is(2)));
 
         // 8. when I go to /songs/1 then I can see "Rap" genre
         mockMvc.perform(get("/songs/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.song.genre.id", is(2)))
-                .andExpect(jsonPath("$.song.genre.name", is("Rap")));
+                .andExpect(jsonPath("$.genreId", is(2)))
+                .andExpect(jsonPath("$.genreName", is("Rap")));
 
         // 9. when I go to /albums then I can see no albums
         mockMvc.perform(get("/albums")
@@ -138,7 +139,7 @@ class HappyPathIntegrationTest {
                                 }
                                 """)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is("EminemAlbum1")));
 
@@ -152,18 +153,21 @@ class HappyPathIntegrationTest {
         mockMvc.perform(post("/artists")
                         .content("""
                                 {
-                                "title": "Eminem"
+                                "name": "Eminem"
                                 }
                                 """)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Eminem")));
         // 13. when I put to /artists/1/albums/1 then Artist with id 1 ("Eminem") is added to Album with id 1 ("EminemAlbum1")
         mockMvc.perform(put("/artists/1/albums/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is("Artist added to album - to be tested!")));
+                .andExpect(jsonPath("$.artistId", is(1)))
+                .andExpect(jsonPath("$.artistName", is("Eminem")))
+                .andExpect(jsonPath("$.albumId", is(1)))
+                .andExpect(jsonPath("$.albumTitle", is("EminemAlbum1")));
 
         // 14. when I go to /albums/1 then I can see album with single song with id 1 and single artist with id 1
         mockMvc.perform(get("/albums/1")
@@ -178,8 +182,8 @@ class HappyPathIntegrationTest {
         mockMvc.perform(put("/albums/1/songs/2").
                 contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.album.id", is(1)))
-                .andExpect(jsonPath("$.song.id", is(2))
+                .andExpect(jsonPath("$.albumId", is(1)))
+                .andExpect(jsonPath("$.songId", is(2))
                 );
 
         // 16. when I go to /albums/1 then I can see album with 2 songs (id1 and id2)

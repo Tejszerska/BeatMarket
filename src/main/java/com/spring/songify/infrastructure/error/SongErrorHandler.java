@@ -1,4 +1,4 @@
-package com.spring.songify.infrastructure.crud.controller.song.error;
+package com.spring.songify.infrastructure.error;
 
 import com.spring.songify.domain.crud.exception.SongNotFoundException;
 import lombok.extern.log4j.Log4j2;

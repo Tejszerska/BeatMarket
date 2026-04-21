@@ -10,43 +10,30 @@ import com.spring.songify.infrastructure.crud.controller.artist.dto.response.Art
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.CreateArtistResponse;
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.CreateArtistWithDefaultAlbumAndSongResponse;
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.GetAllArtistsResponseDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.data.domain.Slice;
 
-import java.util.List;
-
-class ArtistControllerMapper {
-    static GetAllArtistsResponseDto mapSliceToGetAllArtistsResponseDto(Slice<ArtistDto> slice) {
-        List<ArtistDto> content = slice.getContent();
-        boolean hasNext = slice.hasNext();
-        return new GetAllArtistsResponseDto(content, hasNext);
+@Mapper(componentModel = "spring")
+interface ArtistControllerMapper {
+    default GetAllArtistsResponseDto mapSliceToGetAllArtistsResponseDto(Slice<ArtistDto> slice){
+        return new GetAllArtistsResponseDto(slice.getContent(), slice.hasNext());
     }
 
-    static ArtistRequestDto mapFromCreateArtistRequestToDomainDto(CreateArtistRequest createArtistRequest) {
-        return new ArtistRequestDto(createArtistRequest.name());
-    }
+    ArtistRequestDto mapFromCreateArtistRequestToDomainDto(CreateArtistRequest createArtistRequest);
 
-    static CreateArtistResponse mapFromArtistDtoToCreateArtistResponse(ArtistDto artistDto) {
-        return new CreateArtistResponse(artistDto.id(), artistDto.name());
-    }
+    CreateArtistResponse mapFromArtistDtoToCreateArtistResponse(ArtistDto artistDto);
 
-    static ArtistWithAlbumResponseDto mapFromDomainDtoToArtistWithAlbumResponseDto(ArtistWithAlbumDto domain) {
-        return ArtistWithAlbumResponseDto.builder()
-                .artistId(domain.artist().id())
-                .artistName(domain.artist().name())
-                .albumId(domain.album().id())
-                .albumTitle(domain.album().title())
-                .build();
-    }
+    @Mapping(source = "artist.id", target = "artistId")
+    @Mapping(source = "artist.name", target = "artistName")
+    @Mapping(source = "album.id", target = "albumId")
+    @Mapping(source = "album.title", target = "albumTitle")
+    ArtistWithAlbumResponseDto mapFromDomainDtoToArtistWithAlbumResponseDto(ArtistWithAlbumDto domain);
 
-    static ArtistUpdateNameResponseDto mapFromArtistDtoToArtistUpdateNameResponseDto(ArtistDto artistDto) {
-        return new ArtistUpdateNameResponseDto(artistDto.id(), artistDto.name());
-    }
+    ArtistUpdateNameResponseDto mapFromArtistDtoToArtistUpdateNameResponseDto(ArtistDto artistDto);
 
-    static ArtistRequestDto mapFromCreateArtistWithDefaultAlbumAndSongRequestToDomainDto(CreateArtistWithDefaultAlbumAndSongRequest createArtistWithDefaultAlbumAndSongRequest) {
-        return new ArtistRequestDto(createArtistWithDefaultAlbumAndSongRequest.name());
-    }
+    ArtistRequestDto mapFromCreateArtistWithDefaultAlbumAndSongRequestToDomainDto(CreateArtistWithDefaultAlbumAndSongRequest createArtistWithDefaultAlbumAndSongRequest);
 
-    static CreateArtistWithDefaultAlbumAndSongResponse mapFromArtistDtoToCreateArtistWithDefaultAlbumAndSongResponse(ArtistDto artistDto){
-        return new CreateArtistWithDefaultAlbumAndSongResponse(artistDto.id(), artistDto.name());
-    }
+    CreateArtistWithDefaultAlbumAndSongResponse mapFromArtistDtoToCreateArtistWithDefaultAlbumAndSongResponse(ArtistDto artistDto);
+
 }

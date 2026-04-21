@@ -4,64 +4,39 @@ import com.spring.songify.domain.crud.dto.SongDto;
 import com.spring.songify.domain.crud.dto.SongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.request.CreateSongRequestDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.request.PartiallyUpdateSongRequestDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.AssignGenreToSongResponseDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.CreateSongResponseDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetAllSongsResponseDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetSongResponseDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.PartiallyUpdateSongResponseDto;
-import com.spring.songify.infrastructure.crud.controller.song.dto.response.SongResponseDto;
+import com.spring.songify.infrastructure.crud.controller.song.dto.response.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
-class SongControllerMapper {
+@Mapper(componentModel = "spring")
+public interface SongControllerMapper {
 
+    @Mapping(source = "id", target = "songId")
+    @Mapping(source = "title", target = "songTitle")
+    @Mapping(source = "genre.id", target = "genreId")
+    @Mapping(source = "genre.name", target = "genreName")
+    AssignGenreToSongResponseDto mapFromSongDtoToAssignGenreToSongResponseDto(SongDto dto);
 
-    static AssignGenreToSongResponseDto mapFromSongDtoToAssignGenreToSongResponseDto(SongDto dto) {
-        return AssignGenreToSongResponseDto.builder()
-                .songId(dto.id())
-                .songTitle(dto.title())
-                .genreId(dto.genre().id())
-                .genreName(dto.genre().name())
-                .build();
-    }
+    @Mapping(source = "title", target = "name")
+    SongRequestDto mapFromSongCreateSongRequestDtoToDomainRequest(CreateSongRequestDto createSongRequestDto);
 
-    static SongRequestDto mapFromSongCreateSongRequestDtoToDomainRequest(CreateSongRequestDto createSongRequestDto) {
-        return SongRequestDto.builder()
-                .name(createSongRequestDto.title())
-                .duration(createSongRequestDto.duration())
-                .releaseDate(createSongRequestDto.releaseDate())
-                .language(createSongRequestDto.language())
-                .build();
-    }
+    SongDto mapFromPartiallyUpdateSongRequestDtoToSong(PartiallyUpdateSongRequestDto dto);
+    PartiallyUpdateSongResponseDto mapFromSongDtoToPartiallyUpdateSongResponseDto(SongDto songDto);
+    @Mapping(source = "genre.id", target= "genreId")
+    @Mapping(source = "genre.name", target= "genreName")
+    GetSongResponseDto mapFromSongToGetSongResponseDto(SongDto songDto);
+    SongResponseDto mapFromDomainSongDtoToSongResponseDto(SongDto songDto);
+    CreateSongResponseDto mapFromSongDtoToCreateSongResponseDto(SongDto savedSong);
 
+    List<SongResponseDto> mapToListOfSongResponseDto(List<SongDto> list);
 
-    static SongDto mapFromPartiallyUpdateSongRequestDtoToSong(PartiallyUpdateSongRequestDto dto) {
-        return SongDto
-                .builder()
-                .title(dto.title())
-                .build();
-    }
-
-    static PartiallyUpdateSongResponseDto mapFromSongDtoToPartiallyUpdateSongResponseDto(SongDto songDto) {
-        return new PartiallyUpdateSongResponseDto(songDto.id(), songDto.title());
-    }
-
-    static GetSongResponseDto mapFromSongToGetSongResponseDto(SongDto songDto) {
-        return new GetSongResponseDto(songDto.id(), songDto.title());
-    }
-
-    static GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(Slice<SongDto> slice) {
-        List<SongDto> content = slice.getContent();
-        List<SongResponseDto> responseContent = content.stream().map(SongControllerMapper::mapFromDomainSongDtoToSongResponseDto).toList();
-        boolean hasNext = slice.hasNext();
-        return new GetAllSongsResponseDto(responseContent, hasNext);
-    }
-    static SongResponseDto mapFromDomainSongDtoToSongResponseDto (SongDto songDto){
-        return new SongResponseDto(songDto.id(), songDto.title());
-    }
-
-    static CreateSongResponseDto mapFromSongDtoToCreateSongResponseDto(final SongDto savedSong) {
-        return new CreateSongResponseDto(savedSong.id(), savedSong.title());
+    default GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(Slice<SongDto> slice) {
+        return new GetAllSongsResponseDto(
+                mapToListOfSongResponseDto(slice.getContent()),
+                slice.hasNext()
+        );
     }
 }

@@ -8,6 +8,7 @@ import com.spring.songify.infrastructure.crud.controller.genre.dto.response.Crea
 import com.spring.songify.infrastructure.crud.controller.genre.dto.response.GetAllGenresResponseDto;
 import com.spring.songify.infrastructure.crud.controller.genre.dto.response.GetGenreResponseDto;
 import lombok.AllArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -27,29 +28,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/genres")
 class GenreController {
     private final SongifyCrudFacade songifyCrudFacade;
+    private final GenreControllerMapper genreControllerMapper;
 
     @PostMapping
     ResponseEntity<CreateGenreResponse> postGenre(@RequestBody CreateGenreRequest createGenreRequest) {
-        GenreRequestDto genreRequestDto = GenreControllerMapper.mapFromCreateGenreRequestDtoToDomainRequest(createGenreRequest);
+        GenreRequestDto genreRequestDto = genreControllerMapper.mapFromCreateGenreRequestDtoToDomainRequest(createGenreRequest);
         GenreDto genreDto = songifyCrudFacade.addGenre(genreRequestDto);
-        CreateGenreResponse createGenreResponse = GenreControllerMapper.mapFromGenreDtoToCreateGenreResponse(genreDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createGenreResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(genreControllerMapper.mapFromGenreDtoToCreateGenreResponse(genreDto));
     }
 
     @GetMapping
     ResponseEntity<GetAllGenresResponseDto> getGenres(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+          @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Slice<GenreDto> allGenresSlice = songifyCrudFacade.findAllGenres(pageable);
-        GetAllGenresResponseDto getAllGenresResponseDto = GenreControllerMapper.mapSliceToGetAllGenresResponseDto(allGenresSlice);
-        return ResponseEntity.ok(getAllGenresResponseDto);
+        return ResponseEntity.ok(genreControllerMapper.mapSliceToGetAllGenresResponseDto(allGenresSlice));
     }
 
     @GetMapping("/{genreId}")
     ResponseEntity<GetGenreResponseDto> getGenreById(@PathVariable Long genreId) {
         GenreDto dto = songifyCrudFacade.findGenreById(genreId);
-        GetGenreResponseDto getGenreResponseDto = GenreControllerMapper.mapGenreDtoToGetGenreResponseDto(dto);
-
-        return ResponseEntity.ok(getGenreResponseDto);
+        return ResponseEntity.ok(genreControllerMapper.mapGenreDtoToGetGenreResponseDto(dto));
     }
 
     @DeleteMapping("/{genreId}")

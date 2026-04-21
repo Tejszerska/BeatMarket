@@ -31,33 +31,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/albums")
 class AlbumController {
     private final SongifyCrudFacade songifyCrudFacade;
+    private final AlbumControllerMapper albumControllerMapper;
 
     @PostMapping
     ResponseEntity<CreateAlbumResponse> postAlbum(@RequestBody CreateAlbumRequest createAlbumRequest) {
-        AlbumRequestDto albumRequestDto = AlbumControllerMapper.mapFromCreateAlbumRequestToDomainDto(createAlbumRequest);
+        AlbumRequestDto albumRequestDto = albumControllerMapper.mapFromCreateAlbumRequestToDomainDto(createAlbumRequest);
         AlbumDto albumDto = songifyCrudFacade.addAlbumWithSong(albumRequestDto);
-        CreateAlbumResponse createAlbumResponse = AlbumControllerMapper.mapFromAlbumDtoToCreateAlbumResponse(albumDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createAlbumResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(albumControllerMapper.mapFromAlbumDtoToCreateAlbumResponse(albumDto));
     }
 
     @GetMapping("/{albumId}")
     ResponseEntity<GetAlbumDetailsResponse> getAlbumById(@PathVariable Long albumId) {
         AlbumInfo albumInfo = songifyCrudFacade.findAlbumByIdReturnAlbumInfo(albumId);
-        GetAlbumDetailsResponse getAlbumDetailsResponse = AlbumControllerMapper.mapFromAlbumInfoToGetAlbumDetailsResponse(albumInfo);
-        return ResponseEntity.ok(getAlbumDetailsResponse);
+        return ResponseEntity.ok(albumControllerMapper.mapFromAlbumInfoToGetAlbumDetailsResponse(albumInfo));
     }
 
     @GetMapping
     ResponseEntity<GetAllAlbumsResponseDto> getAllAlbums(@ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Slice<AlbumDto> allAlbumsSlice = songifyCrudFacade.findAllAlbums(pageable);
-        GetAllAlbumsResponseDto getAllAlbumsResponseDto = AlbumControllerMapper.mapSliceToGetAllAlbumsResponseDto(allAlbumsSlice);
-        return ResponseEntity.ok(getAllAlbumsResponseDto);
+        return ResponseEntity.ok(albumControllerMapper.mapSliceToGetAllAlbumsResponseDto(allAlbumsSlice));
     }
 
     @PutMapping("{albumId}/songs/{songId}")
     ResponseEntity<AssignAlbumSongResponseDto> assignSongToAlbum(@PathVariable Long albumId, @PathVariable Long songId) {
         AlbumSongsDto albumSongsDto = songifyCrudFacade.assignSongByIdToAlbumById(albumId, songId);
-        AssignAlbumSongResponseDto assignAlbumSongResponseDto = AlbumControllerMapper.mapFromAlbumSongsDtoToAssignAlbumSongResponseDto(albumSongsDto);
-        return ResponseEntity.ok(assignAlbumSongResponseDto);
+        return ResponseEntity.ok(albumControllerMapper.mapFromAlbumSongsDtoToAssignAlbumSongResponseDto(albumSongsDto));
     }
 }

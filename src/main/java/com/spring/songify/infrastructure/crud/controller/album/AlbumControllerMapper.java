@@ -9,61 +9,30 @@ import com.spring.songify.infrastructure.crud.controller.album.dto.response.Assi
 import com.spring.songify.infrastructure.crud.controller.album.dto.response.CreateAlbumResponse;
 import com.spring.songify.infrastructure.crud.controller.album.dto.response.GetAlbumDetailsResponse;
 import com.spring.songify.infrastructure.crud.controller.album.dto.response.GetAllAlbumsResponseDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.data.domain.Slice;
 
-import java.util.List;
+@Mapper(componentModel = "spring")
+public interface AlbumControllerMapper {
 
-class AlbumControllerMapper {
-    static GetAllAlbumsResponseDto mapSliceToGetAllAlbumsResponseDto(Slice<AlbumDto> slice) {
-        List<AlbumDto> content = slice.getContent();
-        boolean hasNext = slice.hasNext();
-        return new GetAllAlbumsResponseDto(content, hasNext);
+    AlbumRequestDto mapFromCreateAlbumRequestToDomainDto(CreateAlbumRequest createAlbumRequest);
+
+    CreateAlbumResponse mapFromAlbumDtoToCreateAlbumResponse(AlbumDto albumDto);
+
+    default GetAllAlbumsResponseDto mapSliceToGetAllAlbumsResponseDto(Slice<AlbumDto> slice) {
+        return new GetAllAlbumsResponseDto(slice.getContent(), slice.hasNext());
     }
 
-    static AlbumRequestDto mapFromCreateAlbumRequestToDomainDto(CreateAlbumRequest createAlbumRequest) {
-        return AlbumRequestDto.builder()
-                .songId(createAlbumRequest.songId())
-                .title(createAlbumRequest.title())
-                .releaseDate(createAlbumRequest.releaseDate()).build();
-    }
+    GetAlbumDetailsResponse mapFromAlbumInfoToGetAlbumDetailsResponse(AlbumInfo albumInfo);
 
-    static CreateAlbumResponse mapFromAlbumDtoToCreateAlbumResponse(AlbumDto albumDto) {
-        return new CreateAlbumResponse(albumDto.id(), albumDto.title());
-    }
+    GetAlbumDetailsResponse.ArtistSummary mapArtistInfoToArtistSummary(AlbumInfo.ArtistInfo artistInfo);
 
-    static GetAlbumDetailsResponse mapFromAlbumInfoToGetAlbumDetailsResponse(AlbumInfo albumInfo) {
-        List<GetAlbumDetailsResponse.SongSummary> songSummaryList = albumInfo.getSongs()
-                .stream()
-                .map(AlbumControllerMapper::mapSongInfoToSongSummary)
-                .toList();
+    GetAlbumDetailsResponse.SongSummary mapSongInfoToSongSummary(AlbumInfo.SongInfo songInfo);
 
-        List<GetAlbumDetailsResponse.ArtistSummary> artistSummaryList = albumInfo.getArtists()
-                .stream()
-                .map(AlbumControllerMapper::mapArtistInfoToArtistSummary)
-                .toList();
-
-        return GetAlbumDetailsResponse.builder()
-                .id(albumInfo.getId())
-                .title(albumInfo.getTitle())
-                .songs(songSummaryList)
-                .artists(artistSummaryList)
-                .build();
-    }
-
-    static GetAlbumDetailsResponse.ArtistSummary mapArtistInfoToArtistSummary(AlbumInfo.ArtistInfo artistInfo) {
-        return new GetAlbumDetailsResponse.ArtistSummary(artistInfo.getId(), artistInfo.getName());
-    }
-
-    static GetAlbumDetailsResponse.SongSummary mapSongInfoToSongSummary(AlbumInfo.SongInfo songInfo) {
-        return new GetAlbumDetailsResponse.SongSummary(songInfo.getId(), songInfo.getTitle());
-    }
-
-    static AssignAlbumSongResponseDto mapFromAlbumSongsDtoToAssignAlbumSongResponseDto (AlbumSongsDto albumSongsDto){
-        return AssignAlbumSongResponseDto.builder()
-                .albumId(albumSongsDto.album().id())
-                .albumTitle(albumSongsDto.album().title())
-                .songId(albumSongsDto.song().id())
-                .songTitle(albumSongsDto.song().title())
-                .build();
-    }
+    @Mapping(source = "album.id", target = "albumId")
+    @Mapping(source = "album.title", target = "albumTitle")
+    @Mapping(source = "song.id", target = "songId")
+    @Mapping(source = "song.title", target = "songTitle")
+    AssignAlbumSongResponseDto mapFromAlbumSongsDtoToAssignAlbumSongResponseDto(AlbumSongsDto albumSongsDto);
 }
