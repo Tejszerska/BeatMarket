@@ -8,19 +8,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collection;
 import java.util.HashSet;
-
+@Builder
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-class User extends BaseEntity {
+@AllArgsConstructor
+public class User extends BaseEntity {
     @Id
     @GeneratedValue( generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
@@ -37,13 +40,6 @@ class User extends BaseEntity {
     private String password;
 
     private boolean enabled = true;
-
     private Collection<String> authorities = new HashSet<>();
 
-    User(final String email, final String password, final boolean enabled, final Collection<String> authorities) {
-        this.email = email;
-        this.password = password;
-        this.enabled = enabled;
-        this.authorities = authorities;
-    }
 }
