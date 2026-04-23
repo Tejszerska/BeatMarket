@@ -27,6 +27,7 @@ class UserDetailsServiceImpl implements UserDetailsManager {
                 .email(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .authorities(List.of(DEFAULT_USER_ROLE))
+                .enabled(true)
                 .build();
 
         User savedUser = userRepository.save(createdUser);
