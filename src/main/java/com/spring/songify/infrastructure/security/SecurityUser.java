@@ -6,10 +6,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-class SecurityUser implements UserDetails {
+public class SecurityUser implements UserDetails {
     private final User user;
 
     @Override
@@ -17,6 +18,10 @@ class SecurityUser implements UserDetails {
         return user.getAuthorities()
                 .stream().map(authority -> (GrantedAuthority) () -> authority)
                 .collect(Collectors.toSet());
+    }
+
+    public List<String> getAuthoritiesAsString() {
+        return getAuthorities().stream().map(Object::toString).toList();
     }
 
     @Override
