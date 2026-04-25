@@ -21,7 +21,7 @@ public class SecurityUser implements UserDetails {
     }
 
     public List<String> getAuthoritiesAsString() {
-        return getAuthorities().stream().map(Object::toString).toList();
+        return getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     }
 
     @Override
