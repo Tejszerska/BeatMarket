@@ -1,7 +1,6 @@
 package com.spring.songify.infrastructure.security;
 
 import com.spring.songify.domain.usercrud.UserRepository;
-import com.spring.songify.infrastructure.security.jwt.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -39,13 +37,12 @@ class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(c -> c.disable());
         http.cors(corsConfigurerCustomizer());
         http.formLogin(c -> c.disable());
         http.httpBasic(c -> c.disable());
         http.sessionManagement( c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(authorize -> authorize
                 // SWAGGER
                 .requestMatchers("/swagger-ui/**").permitAll()
@@ -53,7 +50,6 @@ class SecurityConfig {
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 // LOGIN & REGISTER
                 .requestMatchers("/users/register/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/token").permitAll()
                 // GENRES endpoint rules
                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/genres/**").hasRole("ADMIN")
