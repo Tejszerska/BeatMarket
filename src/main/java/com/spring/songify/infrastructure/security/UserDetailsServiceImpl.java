@@ -43,17 +43,17 @@ class UserDetailsServiceImpl implements UserDetailsManager {
 
     @Override
     public void updateUser(final UserDetails user) {
-
+        throw new UnsupportedOperationException("Updating user is not implemented yet");
     }
 
     @Override
     public void deleteUser(final String username) {
-
+        throw new UnsupportedOperationException("Updating user is not implemented yet");
     }
 
     @Override
     public void changePassword(final String oldPassword, final String newPassword) {
-
+        throw new UnsupportedOperationException("Updating user is not implemented yet");
     }
 
     @Override
