@@ -1,6 +1,11 @@
 package com.spring.songify.infrastructure.crud.controller.song.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 
-public record CreateSongResponseDto(Long id, String title) {
+@Schema(description = "Response payload after successfully creating a song")
+public record CreateSongResponseDto(
+        @Schema(description = "Unique ID of the new song", example = "10") Long id,
+        @Schema(description = "Title of the new song", example = "In the End") String title
+) {
 }
 

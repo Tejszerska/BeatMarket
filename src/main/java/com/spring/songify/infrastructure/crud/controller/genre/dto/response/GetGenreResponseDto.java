@@ -1,4 +1,12 @@
 package com.spring.songify.infrastructure.crud.controller.genre.dto.response;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-public record GetGenreResponseDto(Long id, String name){
+@Schema(description = "Detailed information about a specific genre")
+public record GetGenreResponseDto(
+        @Schema(description = "Unique ID of the genre", example = "1")
+        Long id,
+
+        @Schema(description = "Name of the genre", example = "Rock")
+        String name
+){
 }

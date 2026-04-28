@@ -12,6 +12,10 @@ import com.spring.songify.infrastructure.crud.controller.artist.dto.response.Art
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.CreateArtistResponse;
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.CreateArtistWithDefaultAlbumAndSongResponse;
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.GetAllArtistsResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -31,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "4. Artists", description = "Endpoints for managing artists, their profiles, and relationships with albums.")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/artists")
@@ -38,6 +43,11 @@ class ArtistController {
     private final SongifyCrudFacade songifyCrudFacade;
     private final ArtistControllerMapper artistControllerMapper;
 
+    @Operation(summary = "Create a new artist", description = "Adds a new artist to the database.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Artist created successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., blank name).")
+    })
     @PostMapping
     ResponseEntity<CreateArtistResponse> postArtist(@RequestBody CreateArtistRequest createArtistRequest) {
         ArtistRequestDto artistRequestDto = artistControllerMapper.mapFromCreateArtistRequestToDomainDto(createArtistRequest);
@@ -45,24 +55,44 @@ class ArtistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(artistControllerMapper.mapFromArtistDtoToCreateArtistResponse(artistDto));
     }
 
+    @Operation(summary = "Get all artists", description = "Returns a paginated list of all artists.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of artists retrieved successfully.")
+    })
     @GetMapping
     ResponseEntity<GetAllArtistsResponseDto> getAllArtists(@ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Slice<ArtistDto> allArtistsSlice = songifyCrudFacade.findAllArtists(pageable);
         return ResponseEntity.ok(artistControllerMapper.mapSliceToGetAllArtistsResponseDto(allArtistsSlice));
     }
 
+    @Operation(summary = "Delete artist", description = "Removes an artist from the database by their ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Artist deleted successfully."),
+            @ApiResponse(responseCode = "404", description = "Artist not found.")
+    })
     @DeleteMapping("/{artistId}")
     ResponseEntity<Void> deleteArtistByIdWithAlbumsAndSongs(@PathVariable Long artistId) {
         songifyCrudFacade.deleteArtistByIdWithAlbumsAndSongs(artistId);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Add artist to album", description = "Links an existing artist to an existing album.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Artist successfully linked to the album."),
+            @ApiResponse(responseCode = "404", description = "Artist or Album not found.")
+    })
     @PutMapping("/{artistId}/albums/{albumId}")
     ResponseEntity<ArtistWithAlbumResponseDto> addArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId) {
         ArtistWithAlbumDto artistWithAlbumDto = songifyCrudFacade.addArtistToAlbum(artistId, albumId);
         return ResponseEntity.ok(artistControllerMapper.mapFromDomainDtoToArtistWithAlbumResponseDto(artistWithAlbumDto));
     }
 
+    @Operation(summary = "Update artist's name", description = "Changes the name of an existing artist.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Artist's name updated successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid name provided."),
+            @ApiResponse(responseCode = "404", description = "Artist not found.")
+    })
     @PatchMapping("/{artistId}")
     ResponseEntity<ArtistUpdateNameResponseDto> updateArtistNameById(@PathVariable Long artistId,
                                                                      @Valid @RequestBody ArtistUpdateRequestDto updateRequestDto) {
@@ -70,6 +100,11 @@ class ArtistController {
         return ResponseEntity.ok(artistControllerMapper.mapFromArtistDtoToArtistUpdateNameResponseDto(artistDto));
     }
 
+    @Operation(summary = "Create artist with default album and song", description = "Quickly creates a new artist along with a default placeholder album and song.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Artist, default album, and default song created successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid input data.")
+    })
     @PostMapping("/default")
     ResponseEntity<CreateArtistWithDefaultAlbumAndSongResponse> addArtistWithDefaultAlbumAndSong(@RequestBody CreateArtistWithDefaultAlbumAndSongRequest userRequest) {
         ArtistRequestDto requestDto = artistControllerMapper.mapFromCreateArtistWithDefaultAlbumAndSongRequestToDomainDto(userRequest);
