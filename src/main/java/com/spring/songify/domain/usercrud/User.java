@@ -39,7 +39,10 @@ public class User extends BaseEntity {
 
     private String password;
 
-    private boolean enabled = true;
+    private boolean enabled = false;
+
     private Collection<String> authorities = new HashSet<>();
+
+    private String confirmationToken;
 
 }

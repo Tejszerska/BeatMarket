@@ -42,15 +42,18 @@ class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, JwtAuthConverter converter, CookieTokenResolver resolver) throws Exception {
         http.csrf(c -> c.disable());
-        http.cors(corsConfigurerCustomizer());
         http.formLogin(c -> c.disable());
         http.httpBasic(c -> c.disable());
-        http.oauth2Login(c -> c.successHandler(successHandler));
-//        http.oauth2Login(c -> c.successHandler(successHandler)
-//                                                                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService)));
-        http.oauth2ResourceServer(c -> c.jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
+
+        http.oauth2Login(oauth2 -> oauth2
+                .successHandler(successHandler)
+        );
+        http.oauth2ResourceServer(c ->
+                c.jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
                 .bearerTokenResolver(resolver));
         http.sessionManagement( c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
         http.authorizeHttpRequests(authorize -> authorize
                 // SWAGGER
                 .requestMatchers("/swagger-ui/**").permitAll()
@@ -59,6 +62,7 @@ class SecurityConfig {
                 // LOGIN & REGISTER
                 .requestMatchers("/users/register/**").permitAll()
                 //MAIN
+                .requestMatchers(HttpMethod.GET, "/token").authenticated()
                 .requestMatchers("/").permitAll()
                 // GENRES endpoint rules
                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
@@ -86,21 +90,5 @@ class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/artists/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
         return http.build();
-    }
-
-    public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurerCustomizer() {
-        return c -> {
-            CorsConfigurationSource source = request -> {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(
-                        List.of("https://localhost:3000"));
-                config.setAllowedMethods(
-                        List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-                config.setAllowedHeaders(List.of("*"));
-                config.setAllowCredentials(true);
-                return config;
-            };
-            c.configurationSource(source);
-        };
     }
 }

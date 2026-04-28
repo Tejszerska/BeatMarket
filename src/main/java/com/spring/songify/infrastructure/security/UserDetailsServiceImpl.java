@@ -13,9 +13,10 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 class UserDetailsServiceImpl implements UserDetailsManager {
+    private final static String DEFAULT_USER_ROLE = "ROLE_USER";
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final static String DEFAULT_USER_ROLE = "ROLE_USER";
 
     @Override
     public void createUser(final UserDetails user) {
@@ -31,7 +32,6 @@ class UserDetailsServiceImpl implements UserDetailsManager {
                 .build();
 
         User savedUser = userRepository.save(createdUser);
-
         log.info("Created and saved new user by id={}", savedUser.getId());
     }
 

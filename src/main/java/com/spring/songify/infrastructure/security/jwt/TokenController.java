@@ -1,7 +1,7 @@
 package com.spring.songify.infrastructure.security.jwt;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 class TokenController {
     @GetMapping("/token")
     public ResponseEntity<JwtTokenResponseDto> getToken(Authentication authentication) {
-        if (authentication != null && authentication.getPrincipal() instanceof OidcUser oidcUser) {
-            String token = oidcUser.getIdToken().getTokenValue();
-            return ResponseEntity.ok(new JwtTokenResponseDto(token));
+        if (authentication != null) {
+            return ResponseEntity.ok(new JwtTokenResponseDto("Authenticated as: " + authentication.getName()));
         }
-        return ResponseEntity.notFound().build();
-    }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();    }
 }
