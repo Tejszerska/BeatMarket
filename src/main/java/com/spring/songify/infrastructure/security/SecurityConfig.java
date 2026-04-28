@@ -1,32 +1,26 @@
 package com.spring.songify.infrastructure.security;
 
+import com.spring.songify.domain.usercrud.UserConformer;
 import com.spring.songify.domain.usercrud.UserRepository;
 import com.spring.songify.infrastructure.security.jwt.JwtAuthConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 class SecurityConfig {
     @Bean
-    public UserDetailsManager userDetailsService(UserRepository userRepository) {
-        return new UserDetailsServiceImpl(userRepository, passwordEncoder());
+    public UserDetailsManager userDetailsService(UserRepository userRepository, UserConformer userConformer) {
+        return new UserDetailsServiceImpl(userRepository, passwordEncoder(), userConformer);
     }
 
     @Bean
@@ -61,9 +55,9 @@ class SecurityConfig {
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 // LOGIN & REGISTER
                 .requestMatchers("/users/register/**").permitAll()
+                .requestMatchers("/users/confirm/**").permitAll()
                 //MAIN
                 .requestMatchers(HttpMethod.GET, "/token").authenticated()
-                .requestMatchers("/").permitAll()
                 // GENRES endpoint rules
                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/genres/**").hasRole("ADMIN")
