@@ -3,6 +3,7 @@ package com.spring.songify.infrastructure.security;
 import com.spring.songify.domain.usercrud.UserConformer;
 import com.spring.songify.domain.usercrud.UserRepository;
 import com.spring.songify.infrastructure.security.jwt.JwtAuthConverter;
+import com.spring.songify.infrastructure.security.jwt.JwtAuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 class SecurityConfig {
@@ -34,7 +36,7 @@ class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, JwtAuthConverter converter, CookieTokenResolver resolver) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, JwtAuthConverter converter, CookieTokenResolver resolver, JwtAuthTokenFilter jwtAuthTokenFilter) throws Exception {
         http.csrf(c -> c.disable());
         http.formLogin(c -> c.disable());
         http.httpBasic(c -> c.disable());
@@ -46,7 +48,7 @@ class SecurityConfig {
                 c.jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
                 .bearerTokenResolver(resolver));
         http.sessionManagement( c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+        http.addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(authorize -> authorize
                 // SWAGGER
@@ -56,7 +58,7 @@ class SecurityConfig {
                 // LOGIN & REGISTER
                 .requestMatchers("/users/register/**").permitAll()
                 .requestMatchers("/users/confirm/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/token/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/identity/**").permitAll()
                 //MAIN
                 .requestMatchers(HttpMethod.GET, "/token").authenticated()
                 // GENRES endpoint rules
