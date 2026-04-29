@@ -38,7 +38,7 @@ class CustomSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler
 
         setResponseCookie(response, oidcUser.getIdToken().getTokenValue());
         this.setAlwaysUseDefaultTargetUrl(true);
-        this.setDefaultTargetUrl("/token");
+        this.setDefaultTargetUrl("/identity/oauth");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 

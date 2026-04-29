@@ -56,6 +56,7 @@ class SecurityConfig {
                 // LOGIN & REGISTER
                 .requestMatchers("/users/register/**").permitAll()
                 .requestMatchers("/users/confirm/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/token/**").permitAll()
                 //MAIN
                 .requestMatchers(HttpMethod.GET, "/token").authenticated()
                 // GENRES endpoint rules
