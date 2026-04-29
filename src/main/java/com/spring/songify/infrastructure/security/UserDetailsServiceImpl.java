@@ -16,8 +16,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 class UserDetailsServiceImpl implements UserDetailsManager {
-    private final static String DEFAULT_USER_ROLE = "ROLE_USER";
-
+    private final static List<String> DEFAULT_USER_ROLES = List.of("ROLE_ADMIN", "ROLE_USER");
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserConformer userConformer;
@@ -31,7 +30,7 @@ class UserDetailsServiceImpl implements UserDetailsManager {
         User createdUser = User.builder()
                 .email(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
-                .authorities(List.of(DEFAULT_USER_ROLE))
+                .authorities(DEFAULT_USER_ROLES)
                 .enabled(false)
                 .confirmationToken(UUID.randomUUID().toString())
                 .build();
