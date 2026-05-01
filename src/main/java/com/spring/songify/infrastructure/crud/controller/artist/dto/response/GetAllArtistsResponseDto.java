@@ -2,6 +2,7 @@ package com.spring.songify.infrastructure.crud.controller.artist.dto.response;
 
 import com.spring.songify.domain.crud.dto.ArtistDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 @Schema(description = "Paginated list of artists")

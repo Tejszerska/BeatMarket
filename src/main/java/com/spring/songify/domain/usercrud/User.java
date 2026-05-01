@@ -45,13 +45,6 @@ public class User extends BaseEntity {
 
     private String confirmationToken;
 
-    User(final String email, final String password, final Collection<String> authorities, final String confirmationToken) {
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-        this.confirmationToken = confirmationToken;
-    }
-
     public boolean confirm(){
         this.setEnabled(true);
         this.setConfirmationToken(null);

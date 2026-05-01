@@ -2,6 +2,8 @@ package com.spring.songify.infrastructure.security;
 
 import com.spring.songify.domain.usercrud.User;
 import com.spring.songify.domain.usercrud.UserRepository;
+import com.spring.songify.infrastructure.security.jwt.CookieService;
+import com.spring.songify.infrastructure.security.jwt.JwtTokenGenerator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +22,8 @@ import java.util.List;
 class CustomSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final static List<String> DEFAULT_USER_ROLES = List.of("ROLE_ADMIN", "ROLE_USER");
     private final UserRepository userRepository;
+    private final JwtTokenGenerator jwtTokenGenerator;
+    private final CookieService cookieService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -35,19 +39,13 @@ class CustomSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler
                     .build();
             userRepository.save(newUser);
         }
+        String customToken = jwtTokenGenerator.generateTokenForOAuthUser(email);
 
-        setResponseCookie(response, oidcUser.getIdToken().getTokenValue());
-        this.setAlwaysUseDefaultTargetUrl(true);
-        this.setDefaultTargetUrl("/identity/oauth");
-        super.onAuthenticationSuccess(request, response, authentication);
-    }
-
-    private void setResponseCookie(HttpServletResponse response, String tokenValue) {
-        Cookie cookie = new Cookie("accessToken", tokenValue);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60); // 1 hour
+        Cookie cookie = cookieService.createAccessTokenCookie(customToken, 360);
         response.addCookie(cookie);
+
+        this.setAlwaysUseDefaultTargetUrl(true);
+        this.setDefaultTargetUrl("https://localhost:8443/swagger-ui/index.html");
+        super.onAuthenticationSuccess(request, response, authentication);
     }
 }

@@ -13,15 +13,11 @@ import org.springframework.context.annotation.Configuration;
                 title = "Songify API",
                 version = "1.0",
                 description = """
-                        API for managing a music database.
+                        ### API for managing a music database.
                         
-                        ### 🔒 Security Architecture (Hybrid)
-                        The application features an advanced authentication system combining traditional registration with Social Login:
-                        * **Google Login (OAuth2):** Navigate to `/oauth2/authorization/google`. An account is automatically created upon the first login (Stateless).
-                        * **Manual Registration:** Available at `/users/register`. Requires account activation via an email confirmation link.
-                        
-                        **Important Technical Note:**\s
-                        The API utilizes `HttpOnly Secure` cookies. After a successful Google login, the JWT is stored in a cookie and automatically attached to every subsequent request by the browser. **You do not need to manually copy the token into the 'Authorize' lock.**"""
+                        To create new user use `POST /users/register` endpoint
+                        or navigate to `https://localhost:8443//oauth2/authorization/google`
+                        """
         ),
         security = @SecurityRequirement(name = "bearerAuth")
 )

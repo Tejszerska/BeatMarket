@@ -10,7 +10,10 @@ import com.spring.songify.infrastructure.crud.controller.song.dto.response.Creat
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetAllSongsResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.GetSongResponseDto;
 import com.spring.songify.infrastructure.crud.controller.song.dto.response.PartiallyUpdateSongResponseDto;
+import com.spring.songify.infrastructure.error.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,7 +63,8 @@ class SongRestController {
     @Operation(summary = "Get song by ID", description = "Retrieves detailed information about a specific song by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Song found and returned successfully."),
-            @ApiResponse(responseCode = "404", description = "Song with the provided ID does not exist.")
+            @ApiResponse(responseCode = "404", description = "Song with the provided ID does not exist.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     })
     @GetMapping("/{id}")
     ResponseEntity<GetSongResponseDto> getSongById(@PathVariable Long id, @RequestHeader(required = false) String requestId) {
@@ -72,7 +76,8 @@ class SongRestController {
     @Operation(summary = "Create a new song", description = "Adds a new song to the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Song created successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., negative duration).")
+            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., negative duration).",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     })
     @PostMapping
     ResponseEntity<CreateSongResponseDto> postSong(@RequestBody @Valid CreateSongRequestDto createSongRequestDto) {
@@ -83,8 +88,10 @@ class SongRestController {
 
     @Operation(summary = "Delete song", description = "Removes a song from the database by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Song deleted successfully (No Content)."),
-            @ApiResponse(responseCode = "404", description = "Song not found.")
+            @ApiResponse(responseCode = "204", description = "Song deleted successfully (No Content).",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Song not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     })
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
@@ -95,8 +102,10 @@ class SongRestController {
     @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Song updated successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid input data."),
-            @ApiResponse(responseCode = "404", description = "Song not found.")
+            @ApiResponse(responseCode = "400", description = "Invalid input data.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Song not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PatchMapping("/{id}")
     ResponseEntity<PartiallyUpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long id,
@@ -109,7 +118,8 @@ class SongRestController {
     @Operation(summary = "Assign genre to song", description = "Links an existing musical genre to a specific song.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Genre successfully assigned to the song."),
-            @ApiResponse(responseCode = "404", description = "Song or Genre not found.")
+            @ApiResponse(responseCode = "404", description = "Song or Genre not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PutMapping("/{songId}/genre/{genreId}")
     ResponseEntity<AssignGenreToSongResponseDto> assignGenreByIdToSongById(@PathVariable Long songId, @PathVariable Long genreId) {

@@ -10,7 +10,10 @@ import com.spring.songify.infrastructure.crud.controller.album.dto.response.Assi
 import com.spring.songify.infrastructure.crud.controller.album.dto.response.CreateAlbumResponse;
 import com.spring.songify.infrastructure.crud.controller.album.dto.response.GetAlbumDetailsResponse;
 import com.spring.songify.infrastructure.crud.controller.album.dto.response.GetAllAlbumsResponseDto;
+import com.spring.songify.infrastructure.error.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +43,8 @@ class AlbumController {
     @Operation(summary = "Create a new album", description = "Creates an album and assigns an initial song to it.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Album created successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid input data.")
+            @ApiResponse(responseCode = "400", description = "Invalid input data.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PostMapping
     ResponseEntity<CreateAlbumResponse> postAlbum(@RequestBody CreateAlbumRequest createAlbumRequest) {
@@ -52,7 +56,8 @@ class AlbumController {
     @Operation(summary = "Get album by ID", description = "Retrieves full details of an album, including its artists and tracklist.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Album found and returned successfully."),
-            @ApiResponse(responseCode = "404", description = "Album with the provided ID does not exist.")
+            @ApiResponse(responseCode = "404", description = "Album with the provided ID does not exist.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @GetMapping("/{albumId}")
     ResponseEntity<GetAlbumDetailsResponse> getAlbumById(@PathVariable Long albumId) {
@@ -73,7 +78,8 @@ class AlbumController {
     @Operation(summary = "Assign song to album", description = "Links an existing song to a specific album.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Song successfully assigned to the album."),
-            @ApiResponse(responseCode = "404", description = "Either the album or the song with the given ID was not found.")
+            @ApiResponse(responseCode = "404", description = "Either the album or the song with the given ID was not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PutMapping("{albumId}/songs/{songId}")
     ResponseEntity<AssignAlbumSongResponseDto> assignSongToAlbum(@PathVariable Long albumId, @PathVariable Long songId) {

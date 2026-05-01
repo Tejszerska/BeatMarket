@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,25 +29,47 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
-        if (authorization == null) {
-            filterChain.doFilter(request, response);
-            return;
+        // getting token from custom JWT
+        String token = null;
+
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
         }
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getPublic(), null))
-                .build();
+            if (token == null) {
+                String authorization = request.getHeader("Authorization");
+                if (authorization != null && authorization.startsWith("Bearer ")) {
+                    token = authorization.substring(7);
+                }
+            }
 
-        String token = authorization.substring(7);
-        DecodedJWT decodedToken = jwtVerifier.verify(token);
-        String login = decodedToken.getSubject();
-        List<SimpleGrantedAuthority> roles = decodedToken.getClaim("roles")
-                .asList(String.class)
-                .stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+            if (token == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(login, null, roles);
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        filterChain.doFilter(request, response);
+            try {
+                JWTVerifier jwtVerifier = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getPublic(), null)).build();
+                DecodedJWT decodedToken = jwtVerifier.verify(token);
+
+                String login = decodedToken.getSubject();
+                List<SimpleGrantedAuthority> roles = decodedToken.getClaim("roles")
+                        .asList(String.class)
+                        .stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                        = new UsernamePasswordAuthenticationToken(login, null, roles);
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            } catch (Exception e) {
+                log.error("Token verification failed: {}", e.getMessage());
+            }
+
+            filterChain.doFilter(request, response);
+        }
     }
-}

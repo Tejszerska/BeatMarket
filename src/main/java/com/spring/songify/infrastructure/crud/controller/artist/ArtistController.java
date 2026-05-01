@@ -12,7 +12,10 @@ import com.spring.songify.infrastructure.crud.controller.artist.dto.response.Art
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.CreateArtistResponse;
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.CreateArtistWithDefaultAlbumAndSongResponse;
 import com.spring.songify.infrastructure.crud.controller.artist.dto.response.GetAllArtistsResponseDto;
+import com.spring.songify.infrastructure.error.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,7 +49,8 @@ class ArtistController {
     @Operation(summary = "Create a new artist", description = "Adds a new artist to the database.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Artist created successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., blank name).")
+            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., blank name).",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PostMapping
     ResponseEntity<CreateArtistResponse> postArtist(@RequestBody CreateArtistRequest createArtistRequest) {
@@ -68,7 +72,8 @@ class ArtistController {
     @Operation(summary = "Delete artist", description = "Removes an artist from the database by their ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist deleted successfully."),
-            @ApiResponse(responseCode = "404", description = "Artist not found.")
+            @ApiResponse(responseCode = "404", description = "Artist not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @DeleteMapping("/{artistId}")
     ResponseEntity<Void> deleteArtistByIdWithAlbumsAndSongs(@PathVariable Long artistId) {
@@ -79,7 +84,8 @@ class ArtistController {
     @Operation(summary = "Add artist to album", description = "Links an existing artist to an existing album.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist successfully linked to the album."),
-            @ApiResponse(responseCode = "404", description = "Artist or Album not found.")
+            @ApiResponse(responseCode = "404", description = "Artist or Album not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PutMapping("/{artistId}/albums/{albumId}")
     ResponseEntity<ArtistWithAlbumResponseDto> addArtistToAlbum(@PathVariable Long artistId, @PathVariable Long albumId) {
@@ -90,8 +96,10 @@ class ArtistController {
     @Operation(summary = "Update artist's name", description = "Changes the name of an existing artist.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist's name updated successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid name provided."),
-            @ApiResponse(responseCode = "404", description = "Artist not found.")
+            @ApiResponse(responseCode = "400", description = "Invalid name provided.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Artist not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PatchMapping("/{artistId}")
     ResponseEntity<ArtistUpdateNameResponseDto> updateArtistNameById(@PathVariable Long artistId,
@@ -103,7 +111,8 @@ class ArtistController {
     @Operation(summary = "Create artist with default album and song", description = "Quickly creates a new artist along with a default placeholder album and song.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Artist, default album, and default song created successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid input data.")
+            @ApiResponse(responseCode = "400", description = "Invalid input data.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PostMapping("/default")
     ResponseEntity<CreateArtistWithDefaultAlbumAndSongResponse> addArtistWithDefaultAlbumAndSong(@RequestBody CreateArtistWithDefaultAlbumAndSongRequest userRequest) {

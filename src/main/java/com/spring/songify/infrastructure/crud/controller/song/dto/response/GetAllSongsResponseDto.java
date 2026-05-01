@@ -1,6 +1,7 @@
 package com.spring.songify.infrastructure.crud.controller.song.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 @Schema(description = "Paginated list of songs")
