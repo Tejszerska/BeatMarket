@@ -58,6 +58,12 @@ docker-compose up -d --build
 Once the application is running, you can interact with the API and test the authentication flows using the Swagger UI:
 
 URL: https://localhost:8443/swagger-ui/index.html 
+
+### ⚠️ Note on Environment Variables
+For security reasons, sensitive data like the **Google OAuth2 Client Secret** and **SMTP Email Password** are not included in this repository.
+* The application will still successfully boot up using fallback dummy values.
+* Core CRUD operations and traditional manual JWT authentication will work perfectly.
+* *Features requiring external APIs (Google Login, Email Sending) will mock the flow or return an error unless you provide your own API keys via environment variables.*
 <br> (Note: requires accepting the self-signed SSL certificate for HTTPS).
 
 <img src="/images/swagger-ui.png" alt="Screenshot of Swagger interface for Songify API">

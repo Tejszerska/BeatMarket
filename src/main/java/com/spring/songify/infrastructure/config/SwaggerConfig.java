@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Configuration;
                         ### API for managing a music database.
                         
                         To create new user use `POST /users/register` endpoint
-                        or navigate to `https://localhost:8443//oauth2/authorization/google`
+                        or navigate to
+                        **[https://localhost:8443/oauth2/authorization/google](https://localhost:8443/oauth2/authorization/google)**
                         """
         ),
         security = @SecurityRequirement(name = "bearerAuth")
