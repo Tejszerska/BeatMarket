@@ -9,12 +9,15 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres
-  pgAdmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin4_container
+  app:
+    build: .
+    container_name: songify_app
     restart: always
     ports:
-      - "5050:80"
+      - "8443:8443"
+    depends_on:
+      - db
     environment:
-      PGADMIN_DEFAULT_EMAIL: a@a.pl
-      PGADMIN_DEFAULT_PASSWORD: admin
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=admin
