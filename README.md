@@ -63,7 +63,7 @@ URL: https://localhost:8443/swagger-ui/index.html
 ##  Important Note on Environment Variables & Security
 
 For security reasons, sensitive credentials (such as Google OAuth2 Client Secrets and Gmail SMTP passwords) are strictly excluded from this repository and ignored via `.gitignore`.
-* The application will still successfully boot up using fallback dummy values.
+* The application will still successfully boot up using fallback dummy values. 
 * Core CRUD operations and traditional manual JWT authentication will work perfectly with example user credentials
  ```bash
  {
