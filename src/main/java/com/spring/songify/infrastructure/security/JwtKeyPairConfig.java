@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -31,7 +30,7 @@ class JwtKeyPairConfig {
     }
 
     private void saveKeyToFile(String fileName, byte[] keyBytes, boolean isPublicKey) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(Paths.get("src", "main", "resources", fileName).toString())) {
+        try (FileOutputStream fos = new FileOutputStream(fileName)) {
             fos.write(getPemEncoded(keyBytes, isPublicKey));
         }
     }

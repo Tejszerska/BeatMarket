@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Hidden enviaramental variables
+.env
+
+# geneated pem keys
+*.pem
