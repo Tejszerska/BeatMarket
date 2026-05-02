@@ -4,7 +4,7 @@
 ##  About The Project
 Songify is a scalable RESTful API designed for managing a music database (Songs, Albums, Artists, and Genres).
 
-"The core CRUD operations are implemented with a strong emphasis on Clean Code principles, SOLID architecture, and REST API best practices, ensuring high maintainability and readability.
+The core CRUD operations are implemented with a strong emphasis on Clean Code principles, SOLID architecture, and REST API best practices, ensuring high maintainability and readability.
 <br>**Furthermore, the primary focus of this project is a highly secure Hybrid Authentication System**. It combines traditional manual registration with Google OAuth2 Login, unified under a custom RSA-signed JWT architecture.
 
 ## Tech Stack
@@ -57,12 +57,38 @@ docker-compose up -d --build
 ### API Documentation
 Once the application is running, you can interact with the API and test the authentication flows using the Swagger UI:
 
-URL: https://localhost:8443/swagger-ui/index.html 
+URL: https://localhost:8443/swagger-ui/index.html
+<br>**(Note: requires accepting the self-signed SSL certificate for HTTPS).**
 
-### ⚠️ Note on Environment Variables
-For security reasons, sensitive data like the **Google OAuth2 Client Secret** and **SMTP Email Password** are not included in this repository.
+##  Important Note on Environment Variables & Security
+
+For security reasons, sensitive credentials (such as Google OAuth2 Client Secrets and Gmail SMTP passwords) are strictly excluded from this repository and ignored via `.gitignore`.
 * The application will still successfully boot up using fallback dummy values.
-* Core CRUD operations and traditional manual JWT authentication will work perfectly.
+* Core CRUD operations and traditional manual JWT authentication will work perfectly with example user credentials
+ ```bash
+ {
+  "username": "a@dmin",
+  "password": "123"
+  }
+   ```
+at endpoint
+ ```bash
+ POST /intentity/token
+   ```
+
+Since the JWT token is automatically stored in a secure cookie upon login, you don't need to manually copy and paste it anywhere. Just log in and start testing the endpoints right away!
+
+### How to run the app with your own credentials:
+If you want to test the full flow (including Google Login and Email Verification), follow these steps before running Docker:
+
+1. Locate the `.env.example` file in the root directory.
+2. Create a copy of this file and rename it to exactly `.env`.
+3. Fill in the `.env` file with your actual credentials:
+   ```bash
+   MAIL_SENDER_PWD=your_16_character_google_app_password
+   OAUTH2_CLIENT_ID=your_google_oauth2_client_id
+   OAUTH2_SECRET=your_google_oauth2_client_secret
+
 <br><br> (Note: requires accepting the self-signed SSL certificate for HTTPS).
 
 <img src="/images/swagger-ui.png" alt="Screenshot of Swagger interface for Songify API">

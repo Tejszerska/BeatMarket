@@ -21,3 +21,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=admin
+      # from local .env file :
+      - MAIL_SENDER_PWD=${MAIL_SENDER_PWD}
+      - OAUTH2_CLIENT_ID=${OAUTH2_CLIENT_ID}
+      - OAUTH2_SECRET=${OAUTH2_SECRET}
