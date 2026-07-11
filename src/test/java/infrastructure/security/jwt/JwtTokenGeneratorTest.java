@@ -2,10 +2,10 @@ package infrastructure.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.spring.songify.domain.usercrud.User;
-import com.spring.songify.infrastructure.security.SecurityUser;
-import com.spring.songify.infrastructure.security.jwt.JwtConfigurationProperties;
-import com.spring.songify.infrastructure.security.jwt.JwtTokenGenerator;
+import com.spring.beatmarket.domain.usercrud.User;
+import com.spring.beatmarket.infrastructure.security.SecurityUser;
+import com.spring.beatmarket.infrastructure.security.jwt.JwtConfigurationProperties;
+import com.spring.beatmarket.infrastructure.security.jwt.JwtTokenGenerator;
 import jdk.jfr.Description;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class JwtTokenGeneratorTest {
         KeyPair testKeyPair = keyPairGenerator.generateKeyPair();
 
         Clock fixedClock = Clock.fixed(Instant.parse("2024-01-01T12:00:00Z"), ZoneId.of("UTC"));
-        JwtConfigurationProperties properties = new JwtConfigurationProperties(10, "SongifyApp");
+        JwtConfigurationProperties properties = new JwtConfigurationProperties(10, "BeatMarketApp");
 
         jwtTokenGenerator = new JwtTokenGenerator(
                 null,
@@ -70,7 +70,7 @@ class JwtTokenGeneratorTest {
         DecodedJWT decodedJWT = JWT.decode(token);
 
         assertThat(decodedJWT.getSubject()).isEqualTo("test@gmail.com");
-        assertThat(decodedJWT.getIssuer()).isEqualTo("SongifyApp");
+        assertThat(decodedJWT.getIssuer()).isEqualTo("BeatMarketApp");
         assertThat(decodedJWT.getClaim("roles").asList(String.class)).containsExactly("ROLE_USER");
         assertThat(decodedJWT.getExpiresAtAsInstant()).isEqualTo(Instant.parse("2024-01-01T12:10:00Z"));
     }

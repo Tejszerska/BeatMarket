@@ -1,4 +1,4 @@
-SONGIFY: APLIKACJA DO ZARZĄDZANIA ALBUMAMI, ARTYSTAMI I PIOSENKAMI
+beatmarket: APLIKACJA DO ZARZĄDZANIA ALBUMAMI, ARTYSTAMI I PIOSENKAMI
 
 1. można dodać artystę (nazwa artysty)
 2. można dodać gatunek muzyczny (nazwa gatunku)

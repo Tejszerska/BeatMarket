@@ -1,8 +1,8 @@
-# 🎵 Songify  🎵
+# 🎵 BeatMarket  🎵
 ### <i> Advanced Music Database REST API </i>
 
 ##  About The Project
-Songify is a scalable RESTful API designed for managing a music database (Songs, Albums, Artists, and Genres).
+BeatMarket is a scalable RESTful API designed for managing a music database (Songs, Albums, Artists, and Genres).
 
 The core CRUD operations are implemented with a strong emphasis on Clean Code principles, SOLID architecture, and REST API best practices, ensuring high maintainability and readability.
 <br>**Furthermore, the primary focus of this project is a highly secure Hybrid Authentication System**. It combines traditional manual registration with Google OAuth2 Login, unified under a custom RSA-signed JWT architecture.
@@ -43,11 +43,11 @@ As a junior developer, I wanted to go beyond standard Basic Auth. Here is how th
 ### Installation & Running
 1. Clone the repository:
 ```bash
-   git clone https://github.com/Tejszerska/songify
+   git clone https://github.com/Tejszerska/beatmarket
 ```
 Navigate to the project directory:
 ```bash
-cd songify
+cd beatmarket
 ```
 
 Build and start the entire ecosystem (App + Database) using Docker Compose:
@@ -91,4 +91,4 @@ If you want to test the full flow (including Google Login and Email Verification
 
 <br><br> (Note: requires accepting the self-signed SSL certificate for HTTPS).
 
-<img src="/images/swagger-ui.png" alt="Screenshot of Swagger interface for Songify API">
+<img src="/images/swagger-ui.png" alt="Screenshot of Swagger interface for BeatMarket API">

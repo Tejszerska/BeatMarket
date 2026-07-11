@@ -13,10 +13,10 @@
     </parent>
 
     <groupId>com.spring</groupId>
-    <artifactId>Songify</artifactId>
+    <artifactId>BeatMarket</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Songify</name>
-    <description>Songify REST API</description>
+    <name>BeatMarket</name>
+    <description>BeatMarket REST API</description>
 
     <properties>
         <java.version>17</java.version>
