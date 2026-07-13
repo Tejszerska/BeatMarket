@@ -1,7 +1,7 @@
 package com.spring.beatmarket.infrastructure.security;
 
-import com.spring.beatmarket.domain.usercrud.UserConformer;
-import com.spring.beatmarket.domain.usercrud.UserRepository;
+import com.spring.beatmarket.domain.account.UserConformer;
+import com.spring.beatmarket.domain.account.UserRepository;
 import com.spring.beatmarket.infrastructure.security.jwt.JwtAuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

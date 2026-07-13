@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.security;
 
-import com.spring.beatmarket.domain.usercrud.User;
+import com.spring.beatmarket.domain.account.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

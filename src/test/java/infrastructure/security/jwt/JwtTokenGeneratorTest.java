@@ -2,7 +2,7 @@ package infrastructure.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.spring.beatmarket.domain.usercrud.User;
+import com.spring.beatmarket.domain.account.User;
 import com.spring.beatmarket.infrastructure.security.SecurityUser;
 import com.spring.beatmarket.infrastructure.security.jwt.JwtConfigurationProperties;
 import com.spring.beatmarket.infrastructure.security.jwt.JwtTokenGenerator;

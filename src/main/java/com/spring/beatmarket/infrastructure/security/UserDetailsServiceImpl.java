@@ -1,8 +1,8 @@
 package com.spring.beatmarket.infrastructure.security;
 
-import com.spring.beatmarket.domain.usercrud.User;
-import com.spring.beatmarket.domain.usercrud.UserConformer;
-import com.spring.beatmarket.domain.usercrud.UserRepository;
+import com.spring.beatmarket.domain.account.User;
+import com.spring.beatmarket.domain.account.UserConformer;
+import com.spring.beatmarket.domain.account.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,11 +1,11 @@
 package com.spring.beatmarket.infrastructure.error;
 
-import com.spring.beatmarket.domain.crud.exception.AlbumNotFoundException;
-import com.spring.beatmarket.domain.crud.exception.ArtistNotFoundException;
-import com.spring.beatmarket.domain.crud.exception.GenreNotfoundException;
-import com.spring.beatmarket.domain.crud.exception.NameIsBlankException;
-import com.spring.beatmarket.domain.crud.exception.SongNotFoundException;
-import com.spring.beatmarket.domain.crud.exception.TitleIsBlankException;
+import com.spring.beatmarket.domain.catalog.exception.AlbumNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.ArtistNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.GenreNotfoundException;
+import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
+import com.spring.beatmarket.domain.catalog.exception.SongNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
