@@ -38,4 +38,4 @@ build/
 # geneated pem keys
 *.pem
 
-notatki-dla-mnie.txt
+docs/notatki-dla-mnie.txt

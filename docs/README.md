@@ -91,4 +91,4 @@ If you want to test the full flow (including Google Login and Email Verification
 
 <br><br> (Note: requires accepting the self-signed SSL certificate for HTTPS).
 
-<img src="/images/swagger-ui.png" alt="Screenshot of Swagger interface for BeatMarket API">
+<img src="/docs/images/swagger-ui.png" alt="Screenshot of Swagger interface for BeatMarket API">

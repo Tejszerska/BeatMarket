@@ -31,7 +31,7 @@ class RegisterController {
 
     @Operation(summary = "Register a new user", description = "Creates an inactive user account and triggers a confirmation email.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User created successfully. Confirmation email sent."),
+            @ApiResponse(responseCode = "201", description = "User created successfully. Confirmation email sent."),
             @ApiResponse(responseCode = "400", description = "Invalid registration data."),
             @ApiResponse(responseCode = "409", description = "User with this email already exists.")
     })
@@ -43,24 +43,26 @@ class RegisterController {
                 .password(request.password())
                 .build());
 
-        return ResponseEntity.ok(new RegisterUserResponseDto("User created"));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new RegisterUserResponseDto("User created successfully. Confirmation email sent."));
     }
 
     @Operation(summary = "Confirm email address", description = "Validates the token from the email link and activates the user account.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "302", description = "Account activated. Redirecting to Swagger UI."),
-            @ApiResponse(responseCode = "404", description = "Invalid or expired token.")
+            @ApiResponse(responseCode = "404", description = "Failed token.")
     })
     @GetMapping("/confirm")
-    public ResponseEntity<Object> confirm(@RequestParam String token) {
+    public ResponseEntity<RegisterUserResponseDto> confirm(@RequestParam String token) {
         boolean isConfirmed = userConformer.confirmUser(token);
         if (isConfirmed) {
             return ResponseEntity.status(HttpStatus.FOUND)
+
                     .location(URI.create("https://localhost:8443/swagger-ui/index.html"))
-                    .build();
+                    .body((new RegisterUserResponseDto("Account activated. Redirecting to Swagger UI")));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Confirmation failed. User can't login");
+                    .body((new RegisterUserResponseDto("Confirmation failed. User can't login")));
         }
     }
 }
