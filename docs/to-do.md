@@ -19,9 +19,13 @@
 
 3. Baza Danych (Skrypty Flyway)
 
-- [ ] Aktualizacja song: Dodać kolumny preview_url (do próbki) oraz file_url (do pełnego utworu) pod przyszłą integrację z AWS.
+- [ ] Aktualizacja song: Dodać kolumny preview_url (do próbki) oraz file_url (do pełnego utworu) pod przyszłą integrację z AWS, .
 
-- [ ] Nowa tabela song_prices: (Tego zabrakło na Twojej liście) Tabela relacyjna zawierająca kolumny z ceną, walutą, progiem licencyjnym (tier) oraz kluczem obcym do utworu.
+- [ ] Aktualizacja album: Dodać kolumnę cover_url 
+
+- [ ] Aktualizacja artist: Dodać kolumnę image_url
+
+- [ ] Nowa tabela song_prices: Tabela relacyjna zawierająca kolumny z ceną, walutą, progiem licencyjnym (tier) oraz kluczem obcym do utworu.
 
 - [ ] Nowa tabela payments: Powinna zawierać id użytkownika, status płatności, kwotę oraz obowiązkowo stripe_session_id.
 

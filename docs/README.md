@@ -1,4 +1,19 @@
 # 🎵 BeatMarket  🎵
+
+## Documentation
+
+Detailed project documentation is divided into the following sections:
+* [Project Requirements & Roadmap](docs/requirements.md)
+* [System Architecture & Flows](docs/architecture.md)
+* [API Contracts](docs/api-contracts.md)
+
+*** 
+*** 
+*** 
+*OLD:* 
+
+
+
 ### <i> Advanced Music Database REST API </i>
 
 ##  About The Project
