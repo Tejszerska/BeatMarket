@@ -10,6 +10,31 @@
 
 - [ ] Poprawić RegisterController - wywoływanie statusów 4xx .
 
+- [ ] Dopasować endpointy do API contracts
+
+- [ ] Biblioteka JsonNullable (Standard w OpenAPI) - będę jej używać do odcinania relacji przy PATCH np. /api/catalog/songs/{songId}
+Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie przysłanych (niezmienieanie wartości niewpisanych pól)
+
+- [ ] Poprawić Security Filter Chain - rozważyc grupowanie metod 
+
+```
+// SONGS endpoint rules
+  .requestMatchers(HttpMethod.GET, "/api/catalog/songs/**").permitAll()
+  .requestMatchers(
+  HttpMethod.POST,
+  HttpMethod.PUT,
+  HttpMethod.PATCH,
+  HttpMethod.DELETE
+  ).hasRole("ADMIN") // Zastosuje się do URL-i podanych w kontekście, lub można doprecyzować ścieżkę
+```
+
+- [ ] Poprawić sens biznesowy relacji dotychczasowych tabel:
+```
+- Song <-> Artist @ManyToMany (wł. Song) umożliwi "featy"
+- Song -> Album @ManyToOne (wł. Song) błąd mapowania po stronie Album użyć mappedBy = "album", usuwając @JoinColumn
+- Album <-> Artysta @ManyToMany zostaje, bo album ma głównego wykonawce
+```
+
 - [ ] Dodać wartość NONE do enuma SongLanguage (obsługa utworów instrumentalnych).
 
 - [ ] Utworzyć nowego enuma LicenseTier z wartościami STANDARD, COMMERCIAL, BROADCAST.
