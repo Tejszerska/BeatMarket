@@ -403,7 +403,7 @@ Uploads the full-length audio track and links the resource URL to the specified 
 ```json
 {
   "message": "Full length track uploaded successfully",
-  "previewUrl": "https://s3.aws.com/your-bucket/tracks/in-the-end.wav"
+  "trackUrl": "https://s3.aws.com/your-bucket/tracks/in-the-end.wav"
 }
 ```
 **Error Response (404 Not Found)**
@@ -565,7 +565,7 @@ Uploads album cover (image file) and links the resulting resource URL to the spe
 ```json
 {
   "message": "Cover uploaded successfully",
-  "previewUrl": "https://s3.aws.com/your-bucket/covers/cee-dee.png"
+  "coverUrl": "https://s3.aws.com/your-bucket/covers/cee-dee.png"
 }
 ```
 **Error Response (404 Not Found)**
@@ -758,7 +758,7 @@ Partially updates an existing artist's metadata and its relationships. All field
 ```json
 {
   "id": 10,
-  "name": "Mr. Mimbus",
+  "name": "Nr. Mimbus",
   "songs": [
     {
       "id": 2,
@@ -827,5 +827,126 @@ Removes an artist from the database by its ID.
 {
   "status": 404,
   "message": "Artist by id=5 not found."
+}
+```
+---
+
+### Genre
+
+#### POST /api/catalog/genres
+Adds a new genre to the system.
+
+**Request Body Fields:**
+*   `name` (string, required) *Name of the genre.*
+
+**Request Body Example:**
+```json
+{
+  "name": "K-POP"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 10,
+  "name": "K-POP"
+}
+```
+
+**Response (400 Bad Request):**
+*Invalid input data*
+```json
+{
+  "status": 400,
+  "message": "Genre name must be at least 3 characters long"
+}
+```
+---
+#### POST /api/catalog/genres/{id}/image
+Uploads genre's image (image file) and links the resulting resource URL to the specified genre. If an image is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
+
+**Parameters:**
+*   `id` (integer, path parameter, required) *Genre ID*
+
+**Request Headers:**
+*   `Content-Type: multipart/form-data`
+
+**Request Body (Form-Data):**
+*   `file` (file/binary, required) *The image file (e.g. JPG, PNG) to be uploaded.*
+
+**Response (200 OK):**
+*Returns the URL of the uploaded resource.*
+```json
+{
+  "message": "Genre image uploaded successfully",
+  "imageUrl": "https://s3.aws.com/your-bucket/genres/k-pop.png"
+}
+```
+**Error Response (404 Not Found)**
+*Returned when the genre ID does not exist in the database.*
+```json
+{
+  "status": 404,
+  "message": "Genre by id=10 was not found."
+}
+```
+**Error Response (400 Bad Request):**
+*Returned when the file is missing, empty, or of an unsupported format.*
+```json
+{
+  "status": 400,
+  "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
+}
+```
+---
+
+#### PATCH /api/catalog/genres/{id}
+Updates an existing genre's name.
+
+**Parameters:**
+*   `id` (integer, path parameter, required) *Genre ID*
+
+**Request Body Example:**
+```json
+{
+  "name": "K-Pop"
+}
+```
+
+
+**Response (204 No Content):** *Genre's name successfully updated.*
+
+**Response (404 Not Found):**
+*Genre not found.*
+```json
+{
+  "status": 404,
+  "message": "Genre by id=45 not found."
+}
+```
+**Error Response (400 Bad Request):**
+*Invalid input data*
+```json
+{
+  "status": 400,
+  "message": "Genre name must be at least 3 characters long"
+}
+```
+---
+#### DELETE /api/catalog/genres/{id}
+Removes a genre from the database by its ID.
+
+**Parameters:**
+*   `id` (integer, path parameter, required) *Genre ID*
+
+**Response (204 No Content):** *Genre deleted successfully. No response body is returned.*
+
+**Response (404 Not Found):** *Genre not found*
+
+```json
+{
+  "status": 404,
+  "message": "Genre by id=5 not found."
 }
 ```
