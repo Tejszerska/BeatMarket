@@ -506,6 +506,9 @@ Removes a song from the database by its ID.
   "message": "Song by id=5 not found."
 }
 ```
+
+---
+
 ### Album
 
 #### POST /api/catalog/albums
@@ -515,17 +518,15 @@ Adds a new album to the system.
 *   `title` (string, required) *Title of the album.*
 *   `releaseDate` (string, required) *Release date in YYYY-MM-DD format.*
 *   `songIds` (array[integer], optional) *List of song IDs. Use an empty array `[]` if no songs are assigned yet.*
+*   `artistIds` (array[integer], optional) *List of artist IDs. Use an empty array `[]` if no artists are assigned yet.*
 
 **Request Body Example:**
 ```json
 {
-  "title": "In the End",
-  "releaseDate": "2000-10-24",
-  "duration": 216,
-  "language": "EN",
-  "genreId": 1,
-  "artistIds": [1],
-  "albumId": 2
+  "title": "Cee Dee",
+  "releaseDate": "2010-10-10",
+  "songIds": [1, 2],
+  "artistIds": [1]
 }
 ```
 
@@ -534,45 +535,45 @@ Adds a new album to the system.
 ```json
 {
   "id": 10,
-  "title": "In the End"
+  "title": "Cee Dee"
 }
 ```
 
 **Response (400 Bad Request):**
-*Invalid input data (e.g., negative duration).*
+*Invalid input data (e.g., improper release date format).*
 ```json
 {
   "status": 400,
-  "message": "Duration must be more than 0"
+  "message": "Release date must be in YYYY-MM-DD format"
 }
 ```
 ---
-#### POST /api/catalog/songs/{id}/preview
-Uploads an audio preview file and links the resulting resource URL to the specified song. If a preview is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
+#### POST /api/catalog/albums/{id}/cover
+Uploads album cover (image file) and links the resulting resource URL to the specified album. If a cover is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
+*   `id` (integer, path parameter, required) *Album ID*
 
 **Request Headers:**
 *   `Content-Type: multipart/form-data`
 
 **Request Body (Form-Data):**
-*   `file` (file/binary, required) *The audio file (e.g., MP3, AAC (.m4a)) to be uploaded.*
+*   `file` (file/binary, required) *The image file (e.g. JPG, PNG) to be uploaded.*
 
 **Response (200 OK):**
 *Returns the URL of the uploaded resource.*
 ```json
 {
-  "message": "Preview uploaded successfully",
-  "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-prv.mp3"
+  "message": "Cover uploaded successfully",
+  "previewUrl": "https://s3.aws.com/your-bucket/covers/cee-dee.png"
 }
 ```
 **Error Response (404 Not Found)**
-*Returned when the song ID does not exist in the database.*
+*Returned when the album ID does not exist in the database.*
 ```json
 {
   "status": 404,
-  "message": "Song by id=10 was not found."
+  "message": "Album by id=10 was not found."
 }
 ```
 **Error Response (400 Bad Request):**
@@ -580,91 +581,50 @@ Uploads an audio preview file and links the resulting resource URL to the specif
 ```json
 {
   "status": 400,
-  "message": "Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported."
+  "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
 }
 ```
----
-#### POST /api/catalog/songs/{id}/track
-Uploads the full-length audio track and links the resource URL to the specified song. If a full file is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
-**Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
 
-**Request Headers:**
-*   `Content-Type: multipart/form-data`
-
-**Request Body (Form-Data):**
-*   `file` (file/binary, required) *High-quality audio file .WAV.*
-
-**Response (200 OK):**
-*Returns the URL of the uploaded resource.*
-```json
-{
-  "message": "Full length track uploaded successfully",
-  "previewUrl": "https://s3.aws.com/your-bucket/tracks/in-the-end.wav"
-}
-```
-**Error Response (404 Not Found)**
-*Returned when the song ID does not exist in the database.*
-```json
-{
-  "status": 404,
-  "message": "Song by id=10 was not found."
-}
-```
-**Error Response (400 Bad Request):**
-*Returned when the file is missing, empty, too big or of an unsupported format.*
-```json
-{
-  "status": 400,
-  "message": "Invalid file format. Only audio/wav (WAV) is supported for full tracks."
-}
-```
 ---
 
-#### PATCH /api/catalog/songs/{id}
-Partially updates an existing song's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
-**Note:** To explicitly remove an assignment (e.g., detach from an album), send `null` for that specific field.
+#### PATCH /api/catalog/albums/{id}
+Partially updates an existing album's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
+**Note:** To explicitly remove an assignment (e.g., detach from a song list), send `null` for that specific field.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
+*   `id` (integer, path parameter, required) *Album ID*
 
 **Request Body Example:**
 ```json
 {
-  "title": "Corrected Title",
-  "duration": 215,
   "releaseDate": "2026-07-18",
-  "language": "EN",
-  "genreId": 2,
-  "albumId": null,
   "artistIds": [1, 45]
 }
 ```
 
 
-**Response (200 OK):** *Song successfully updated. Returns the updated resource.*
+**Response (200 OK):** *Album successfully updated. Returns the updated resource.*
 ```json
 {
   "id": 10,
-  "title": "Corrected Title",
-  "duration": 215,
-  "releaseDate": "2026-07-18",
-  "language": "EN",
-  "genre": {
-    "id": 2,
-    "name": "Nu Metal"
-  },
-  "album": null,
+  "title": "Dee Dee",
+  "releaseDate": "2010-10-10",
+  "songs": [
+    {
+      "id": 2,
+      "name": "Bee Gee"
+    },
+    {
+      "id": 4,
+      "name": "Pee Gee"
+    }
+  ],
   "artists": [
     {
       "id": 1,
       "name": "Kety"
-    },
-    {
-      "id": 45,
-      "name": "New Artist"
     }
-  ]
+    ]
 }
 ```
 
@@ -673,33 +633,32 @@ Partially updates an existing song's metadata and its relationships. All fields 
 ```json
 {
   "status": 404,
-  "message": "Artist by id=45 not found."
+  "message": "Album by id=45 not found."
 }
 ```
-
 **Response (400 Bad Request):**
-*Invalid input data (e.g., negative duration).*
+*Invalid input data (e.g., improper release date format).*
 ```json
 {
   "status": 400,
-  "message": "Duration must be more than 0"
+  "message": "Release date must be in YYYY-MM-DD format"
 }
 ```
 ---
 
-#### DELETE /api/catalog/songs/{id}
-Removes a song from the database by its ID.
+#### DELETE /api/catalog/albums/{id}
+Removes an album from the database by its ID.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
+*   `id` (integer, path parameter, required) *Album ID*
 
-**Response (204 No Content):** *Song deleted successfully. No response body is returned.*
+**Response (204 No Content):** *Album deleted successfully. No response body is returned.*
 
-**Response (404 Not Found):** *Song not found*
+**Response (404 Not Found):** *Album not found*
 
 ```json
 {
   "status": 404,
-  "message": "Song by id=5 not found."
+  "message": "Album by id=5 not found."
 }
 ```
