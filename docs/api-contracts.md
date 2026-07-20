@@ -662,3 +662,170 @@ Removes an album from the database by its ID.
   "message": "Album by id=5 not found."
 }
 ```
+---
+
+### Artist
+
+#### POST /api/catalog/artists
+Adds a new artist to the system.
+
+**Request Body Fields:**
+*   `name` (string, required) *Name of the artist.*
+*   `songIds` (array[integer], optional) *List of song IDs. Use an empty array `[]` if no songs are assigned yet.*
+*   `albumIds` (array[integer], optional) *List of album IDs. Use an empty array `[]` if no album are assigned yet.*
+
+
+**Request Body Example:**
+```json
+{
+  "name": "Mr. Nimbus",
+  "songIds": [1, 2],
+  "albumIds": [1]
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 10,
+  "name": "Mr. Nimbus"
+}
+```
+
+**Response (404 Not Found):**
+*Invalid input data*
+```json
+{
+  "status": 404,
+  "message": "Song by id=1 was not found"
+}
+```
+---
+#### POST /api/catalog/artists/{id}/image
+Uploads artist's image (image file) and links the resulting resource URL to the specified artist. If an image is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
+
+**Parameters:**
+*   `id` (integer, path parameter, required) *Artist ID*
+
+**Request Headers:**
+*   `Content-Type: multipart/form-data`
+
+**Request Body (Form-Data):**
+*   `file` (file/binary, required) *The image file (e.g. JPG, PNG) to be uploaded.*
+
+**Response (200 OK):**
+*Returns the URL of the uploaded resource.*
+```json
+{
+  "message": "Artist image uploaded successfully",
+  "imageUrl": "https://s3.aws.com/your-bucket/artists/mr-nimbus.png"
+}
+```
+**Error Response (404 Not Found)**
+*Returned when the artist ID does not exist in the database.*
+```json
+{
+  "status": 404,
+  "message": "Artist by id=10 was not found."
+}
+```
+**Error Response (400 Bad Request):**
+*Returned when the file is missing, empty, or of an unsupported format.*
+```json
+{
+  "status": 400,
+  "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
+}
+```
+
+---
+
+#### PATCH /api/catalog/artists/{id}
+Partially updates an existing artist's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
+
+**Parameters:**
+*   `id` (integer, path parameter, required) *Artists ID*
+
+**Request Body Example:**
+```json
+{
+  "name": "Nr. Mimbus"
+}
+```
+
+
+**Response (200 OK):** *Artist successfully updated. Returns the updated resource.*
+```json
+{
+  "id": 10,
+  "name": "Mr. Mimbus",
+  "songs": [
+    {
+      "id": 2,
+      "name": "Bee Gee"
+    },
+    {
+    "id": 4,
+    "name": "Pee Gee"
+    }
+  ],
+"albums": [
+    {
+    "id": 17,
+    "name": "Shminty"
+    }
+  ]
+}
+```
+
+**Response (404 Not Found):**
+*Song, Album, or Artist(s) not found.*
+```json
+{
+  "status": 404,
+  "message": "Album by id=45 not found."
+}
+```
+**Response (400 Bad Request):**
+*Invalid input data.*
+```json
+{
+  "status": 400,
+  "message": "Only integers allowed in the albumIds array"
+}
+```
+---
+#### PUT /api/catalog/artists/{artistId}/albums/{albumId}
+Assigns an existing album to the specified artist.
+
+**Parameters:**
+*   `artistId` (integer, path parameter, required) *Artists ID*
+*   `albumId` (integer, path parameter, required) *Album ID*
+
+**Response (204 No Content):** *Artist successfully updated.*
+
+**Response (404 Not Found):**
+*Album, or Artist not found.*
+```json
+{
+  "status": 404,
+  "message": "Album by id=45 not found."
+}
+```
+---
+#### DELETE /api/catalog/artists/{id}
+Removes an artist from the database by its ID.
+
+**Parameters:**
+*   `id` (integer, path parameter, required) *Artist ID*
+
+**Response (204 No Content):** *Artist deleted successfully. No response body is returned.*
+
+**Response (404 Not Found):** *Artist not found*
+
+```json
+{
+  "status": 404,
+  "message": "Artist by id=5 not found."
+}
+```
