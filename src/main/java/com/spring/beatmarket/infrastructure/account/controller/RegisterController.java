@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
-@Tag(name = "1. Registration & Activation", description = "Endpoints for creating new accounts and verifying email addresses via tokens.")
+@Tag(name = "1.  Account Module", description = "Endpoints for handling user identity, security, and access control.")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")

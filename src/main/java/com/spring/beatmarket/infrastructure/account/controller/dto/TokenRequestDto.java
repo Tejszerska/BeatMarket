@@ -1,4 +1,4 @@
-package com.spring.beatmarket.infrastructure.security.jwt;
+package com.spring.beatmarket.infrastructure.account.controller.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

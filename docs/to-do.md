@@ -1,7 +1,7 @@
 1. Dokumentacja i Konfiguracja
 - [x] Skończyć dokumentację (rozpisanie kontraktów API Request/Response dla płatności).
 
-- [ ] Włączyć zapisywanie logów konsoli do pliku w opcjach startowych IDE, aby nie tracić błędów po restarcie.
+- [x] Włączyć zapisywanie logów konsoli do pliku w opcjach startowych IDE, aby nie tracić błędów po restarcie.
 
 
 2. Architektura i Kod Java
@@ -13,7 +13,7 @@
 - [ ] Dopasować endpointy do API contracts
 
 - [ ] Biblioteka JsonNullable (Standard w OpenAPI) - będę jej używać do odcinania relacji przy PATCH np. /api/catalog/songs/{songId}
-Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie przysłanych (niezmienieanie wartości niewpisanych pól)
+Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie przysłanych (niezmienianie wartości niewpisanych pól)
 
 - [ ] Poprawić Security Filter Chain - rozważyc grupowanie metod 
 
