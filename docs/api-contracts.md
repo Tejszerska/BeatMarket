@@ -950,3 +950,72 @@ Removes a genre from the database by its ID.
   "message": "Genre by id=5 not found."
 }
 ```
+
+### Payment Module (`payment`)
+
+#### POST /api/payments/
+Creates a new payment record in the local database (status: PENDING), initializes a Stripe Checkout session, and returns the session URL for the user to complete the transaction.
+
+**Request Body:** 
+```json
+{
+  "songId": 10,
+  "licenseType": "Commercial"
+}
+```
+
+**Response (201 Created):** *Payment record created and Stripe session initialized successfully.*
+```json
+{
+  "paymentId": 45,
+  "sessionUrl": "https://checkout.stripe.com/c/pay/cs_test_..."
+}
+```
+
+**Response (404 Not Found):**
+*Returned if the song does not exist in the catalog.*
+```json
+{
+  "status": 404,
+  "message": "Song by id=10 not found."
+}
+```
+
+**Error Response (500 Internal Server Error):**
+*Returned if communication with the Stripe API fails.*
+```json
+{
+  "status": 500,
+  "message": "Could not initialize payment session with Stripe."
+}
+```
+
+#### POST /api/webhook/payments
+Receives asynchronous event notifications from Stripe (e.g., checkout.session.completed, payment_intent.payment_failed).
+
+**Request Headers:**
+*   `Stripe-Signature` (string, required) *Used to verify that the event was sent by Stripe.*
+
+**Request Body:**
+*  *Raw JSON payload sent by Stripe containing event details.*
+
+
+**Response (204 No content):** *Event successfully received and processed. No body is required by Stripe.*
+
+**Error Response (400 Bad Request):** 
+*Returned when the webhook payload is invalid or the Stripe signature verification fails.*
+```json
+{
+  "status": 400,
+  "message": "Webhook signature verification failed."
+}
+```
+
+**Error Response(500 Internal Server Error):**
+*Returned if there is a server-side error while processing the event (e.g., database failure).*
+```json
+{
+  "status": 500,
+  "message": "Error processing webhook event."
+}
+```
