@@ -999,7 +999,6 @@ Receives asynchronous event notifications from Stripe (e.g., checkout.session.co
 **Request Body:**
 *  *Raw JSON payload sent by Stripe containing event details.*
 
-
 **Response (204 No content):** *Event successfully received and processed. No body is required by Stripe.*
 
 **Error Response (400 Bad Request):** 
@@ -1017,5 +1016,65 @@ Receives asynchronous event notifications from Stripe (e.g., checkout.session.co
 {
   "status": 500,
   "message": "Error processing webhook event."
+}
+```
+
+### Licensing Module (`licensing`)
+
+#### GET /api/licenses
+Retrieves a list of all licenses owned by the currently authenticated user.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "licenseId": 101,
+    "songId": 10,
+    "licenseType": "Commercial",
+    "issuedAt": "2026-07-26T10:15:30Z",
+    "status": "ACTIVE"
+  },
+  {
+    "licenseId": 102,
+    "songId": 15,
+    "licenseType": "Standard",
+    "issuedAt": "2026-07-25T14:20:00Z",
+    "status": "ACTIVE"
+  }
+]
+```
+---
+
+#### GET /api/licenses/{id}
+Retrieves the details of a specific license owned by the user.
+
+**Response (200 OK):**
+```json
+{
+  "licenseId": 101,
+  "songId": 10,
+  "songTitle": "Epic Cinematic Theme",
+  "licenseType": "Commercial",
+  "issuedAt": "2026-07-26T10:15:30Z",
+  "certificateUrl": "https://s3.aws.com/your-bucket/certificates/cert_101.pdf",
+  "status": "ACTIVE"
+}
+```
+
+**Error Response (403 Forbidden):**
+*Returned if the user attempts to access a license they do not own.*
+```json
+{
+  "status": 403,
+  "message": "Access denied. You do not own this license."
+}
+```
+
+**Error Response (404 Not Found):**
+*Returned if the license does not exist.*
+```json
+{
+  "status": 404,
+  "message": "License by id=101 not found."
 }
 ```

@@ -1,5 +1,5 @@
 1. Dokumentacja i Konfiguracja
-- [ ] Skończyć dokumentację (rozpisanie kontraktów API Request/Response dla płatności).
+- [x] Skończyć dokumentację (rozpisanie kontraktów API Request/Response dla płatności).
 
 - [ ] Włączyć zapisywanie logów konsoli do pliku w opcjach startowych IDE, aby nie tracić błędów po restarcie.
 
