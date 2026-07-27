@@ -1,17 +1,17 @@
 package com.spring.beatmarket.infrastructure.account.controller;
 
-import com.spring.beatmarket.domain.account.UserConformer;
+import com.spring.beatmarket.domain.account.UserExistsException;
+import com.spring.beatmarket.domain.account.UserFacade;
 import com.spring.beatmarket.infrastructure.account.controller.dto.RegisterUserRequestDto;
 import com.spring.beatmarket.infrastructure.account.controller.dto.RegisterUserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +26,9 @@ import java.net.URI;
 @AllArgsConstructor
 @RequestMapping("/users")
 class RegisterController {
-    private final UserDetailsManager userDetailsManager;
-    private final UserConformer userConformer;
+
+    private final UserFacade userFacade;
+    private final RegisterControllerMapper mapper;
 
     @Operation(summary = "Register a new user", description = "Creates an inactive user account and triggers a confirmation email.")
     @ApiResponses(value = {
@@ -36,12 +37,13 @@ class RegisterController {
             @ApiResponse(responseCode = "409", description = "User with this email already exists.")
     })
     @PostMapping("/register")
-    public ResponseEntity<RegisterUserResponseDto> register(@RequestBody RegisterUserRequestDto request) {
-
-        userDetailsManager.createUser(User.builder()
-                .username(request.email())
-                .password(request.password())
-                .build());
+    public ResponseEntity<RegisterUserResponseDto> register(@Valid @RequestBody RegisterUserRequestDto request) {
+        try {
+            userFacade.registerNewUser(mapper.mapFromRegisterUserRequestDtoToUserRequestDto(request));
+        } catch (UserExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new RegisterUserResponseDto("User with this email already exists."));
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new RegisterUserResponseDto("User created successfully. Confirmation email sent."));
@@ -54,7 +56,7 @@ class RegisterController {
     })
     @GetMapping("/confirm")
     public ResponseEntity<RegisterUserResponseDto> confirm(@RequestParam String token) {
-        boolean isConfirmed = userConformer.confirmUser(token);
+        boolean isConfirmed = userFacade.confirmUser(token);
         if (isConfirmed) {
             return ResponseEntity.status(HttpStatus.FOUND)
 

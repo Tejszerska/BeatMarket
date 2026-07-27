@@ -10,7 +10,38 @@
 
 - [ ] Poprawić RegisterController - wywoływanie statusów 4xx .
 
-- [ ] Dopasować endpointy do API contracts
+---
+- Dopasować endpointy `catalog` do API contracts
+  **Artists (Artyści)**
+* [ ] GET /api/catalog/artists
+* [ ] GET /api/catalog/artists/{id}
+* [ ] POST /api/catalog/artists
+* [ ] PUT /api/catalog/artists/{id}
+* [ ] DELETE /api/catalog/artists/{id}
+
+**Albums (Albumy)**
+* [ ] GET /api/catalog/albums
+* [ ] GET /api/catalog/albums/{id}
+* [ ] POST /api/catalog/albums
+* [ ] PUT /api/catalog/albums/{id}
+* [ ] DELETE /api/catalog/albums/{id}
+
+**Songs (Utwory)**
+* [ ] GET /api/catalog/songs
+* [ ] GET /api/catalog/songs/{id}
+* [ ] POST /api/catalog/songs
+* [ ] PUT /api/catalog/songs/{id}
+* [ ] DELETE /api/catalog/songs/{id}
+
+**Genres (Gatunki)**
+* [ ] GET /api/catalog/genres
+* [ ] GET /api/catalog/genres/{id}
+* [ ] POST /api/catalog/genres
+* [ ] PUT /api/catalog/genres/{id}
+* [ ] DELETE /api/catalog/genres/{id}
+
+---
+
 
 - [ ] Biblioteka JsonNullable (Standard w OpenAPI) - będę jej używać do odcinania relacji przy PATCH np. /api/catalog/songs/{songId}
 Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie przysłanych (niezmienianie wartości niewpisanych pól)

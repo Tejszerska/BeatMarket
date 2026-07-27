@@ -2,6 +2,7 @@ package com.spring.beatmarket.domain.account;
 
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @AllArgsConstructor
-public class UserConformer {
+@Slf4j
+class UserConformer {
 
     private final MailSender mailSender;
     private final UserRepository userRepository;
@@ -25,6 +27,8 @@ public class UserConformer {
         message.setSubject(subject);
         message.setText(text);
         mailSender.send(message);
+
+        log.info("Confirmation token sent to {}", user.getEmail());
     }
 
     @Transactional

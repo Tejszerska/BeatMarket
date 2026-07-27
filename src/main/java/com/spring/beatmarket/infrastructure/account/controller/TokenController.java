@@ -1,10 +1,10 @@
 package com.spring.beatmarket.infrastructure.account.controller;
 
+import com.spring.beatmarket.infrastructure.account.controller.dto.TokenRequestDto;
 import com.spring.beatmarket.infrastructure.security.jwt.CookieService;
 import com.spring.beatmarket.infrastructure.security.jwt.GetEmailDto;
 import com.spring.beatmarket.infrastructure.security.jwt.JwtResponseDto;
 import com.spring.beatmarket.infrastructure.security.jwt.JwtTokenGenerator;
-import com.spring.beatmarket.infrastructure.account.controller.dto.TokenRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
