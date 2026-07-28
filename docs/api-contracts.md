@@ -24,7 +24,11 @@ Creates an inactive user account and triggers a confirmation email.
 *Returned when validation fails (e.g., weak password, invalid email format).*
 ```json
 {
-  "message": "Invalid registration data."
+  "message": "Validation failed",
+  "errors": {
+    "email": "Invalid email format",
+    "password": "Password must be at least 8 characters long"
+  }
 }
 ```
 
@@ -153,8 +157,10 @@ Fetches a chunked list of all songs
 *Returned when the client provides invalid query parameters (e.g., negative page index or wrong sort format).*
 ```json
 {
-  "status": 400,
-  "message": "Invalid sort parameter format. Expected format: property,(asc|desc)"
+  "message": "Validation failed",
+  "errors": {
+    "duration": "Duration must be more than 0"
+  }
 }
 ```
 ---
@@ -200,7 +206,6 @@ Retrieves detailed information about a specific song by its ID.
 *Song with the provided ID does not exist.*
 ```json
 {
-  "status": 404,
   "message": "Song by id=7 was not found "
 }
 ```
@@ -345,8 +350,10 @@ Adds a new song to the system.
 *Invalid input data (e.g., negative duration).*
 ```json
 {
-  "status": 400,
-  "message": "Duration must be more than 0"
+  "message": "Validation failed",
+  "errors": {
+    "duration": "Duration must be more than 0"
+  }
 }
 ```
 ---
@@ -374,7 +381,6 @@ Uploads an audio preview file and links the resulting resource URL to the specif
 *Returned when the song ID does not exist in the database.*
 ```json
 {
-  "status": 404,
   "message": "Song by id=10 was not found."
 }
 ```
@@ -382,7 +388,6 @@ Uploads an audio preview file and links the resulting resource URL to the specif
 *Returned when the file is missing, empty, or of an unsupported format.*
 ```json
 {
-  "status": 400,
   "message": "Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported."
 }
 ```
@@ -410,7 +415,6 @@ Uploads the full-length audio track and links the resource URL to the specified 
 *Returned when the song ID does not exist in the database.*
 ```json
 {
-  "status": 404,
   "message": "Song by id=10 was not found."
 }
 ```
@@ -418,7 +422,6 @@ Uploads the full-length audio track and links the resource URL to the specified 
 *Returned when the file is missing, empty, too big or of an unsupported format.*
 ```json
 {
-  "status": 400,
   "message": "Invalid file format. Only audio/wav (WAV) is supported for full tracks."
 }
 ```
@@ -475,7 +478,6 @@ Partially updates an existing song's metadata and its relationships. All fields 
 *Song, Genre, Album, or Artist(s) not found.*
 ```json
 {
-  "status": 404,
   "message": "Artist by id=45 not found."
 }
 ```
@@ -484,7 +486,6 @@ Partially updates an existing song's metadata and its relationships. All fields 
 *Invalid input data (e.g., negative duration).*
 ```json
 {
-  "status": 400,
   "message": "Duration must be more than 0"
 }
 ```
@@ -502,7 +503,6 @@ Removes a song from the database by its ID.
 
 ```json
 {
-  "status": 404,
   "message": "Song by id=5 not found."
 }
 ```
@@ -543,8 +543,10 @@ Adds a new album to the system.
 *Invalid input data (e.g., improper release date format).*
 ```json
 {
-  "status": 400,
-  "message": "Release date must be in YYYY-MM-DD format"
+  "message": "Validation failed",
+  "errors": {
+    "releaseDate": "Release date must be in YYYY-MM-DD format"
+  }
 }
 ```
 ---
@@ -572,7 +574,6 @@ Uploads album cover (image file) and links the resulting resource URL to the spe
 *Returned when the album ID does not exist in the database.*
 ```json
 {
-  "status": 404,
   "message": "Album by id=10 was not found."
 }
 ```
@@ -580,7 +581,6 @@ Uploads album cover (image file) and links the resulting resource URL to the spe
 *Returned when the file is missing, empty, or of an unsupported format.*
 ```json
 {
-  "status": 400,
   "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
 }
 ```
@@ -632,7 +632,6 @@ Partially updates an existing album's metadata and its relationships. All fields
 *Song, Genre, Album, or Artist(s) not found.*
 ```json
 {
-  "status": 404,
   "message": "Album by id=45 not found."
 }
 ```
@@ -640,8 +639,10 @@ Partially updates an existing album's metadata and its relationships. All fields
 *Invalid input data (e.g., improper release date format).*
 ```json
 {
-  "status": 400,
-  "message": "Release date must be in YYYY-MM-DD format"
+  "message": "Validation failed",
+  "errors": {
+    "releaseDate": "Release date must be in YYYY-MM-DD format"
+  }
 }
 ```
 ---
@@ -658,7 +659,6 @@ Removes an album from the database by its ID.
 
 ```json
 {
-  "status": 404,
   "message": "Album by id=5 not found."
 }
 ```
@@ -696,7 +696,6 @@ Adds a new artist to the system.
 *Invalid input data*
 ```json
 {
-  "status": 404,
   "message": "Song by id=1 was not found"
 }
 ```
@@ -725,7 +724,6 @@ Uploads artist's image (image file) and links the resulting resource URL to the 
 *Returned when the artist ID does not exist in the database.*
 ```json
 {
-  "status": 404,
   "message": "Artist by id=10 was not found."
 }
 ```
@@ -733,7 +731,6 @@ Uploads artist's image (image file) and links the resulting resource URL to the 
 *Returned when the file is missing, empty, or of an unsupported format.*
 ```json
 {
-  "status": 400,
   "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
 }
 ```
@@ -782,7 +779,6 @@ Partially updates an existing artist's metadata and its relationships. All field
 *Song, Album, or Artist(s) not found.*
 ```json
 {
-  "status": 404,
   "message": "Album by id=45 not found."
 }
 ```
@@ -790,8 +786,10 @@ Partially updates an existing artist's metadata and its relationships. All field
 *Invalid input data.*
 ```json
 {
-  "status": 400,
-  "message": "Only integers allowed in the albumIds array"
+  "message": "Validation failed",
+  "errors": {
+    "albumIds": "Only integers allowed in the albumIds array"
+  }
 }
 ```
 ---
@@ -808,7 +806,6 @@ Assigns an existing album to the specified artist.
 *Album, or Artist not found.*
 ```json
 {
-  "status": 404,
   "message": "Album by id=45 not found."
 }
 ```
@@ -825,7 +822,6 @@ Removes an artist from the database by its ID.
 
 ```json
 {
-  "status": 404,
   "message": "Artist by id=5 not found."
 }
 ```
@@ -858,8 +854,10 @@ Adds a new genre to the system.
 *Invalid input data*
 ```json
 {
-  "status": 400,
-  "message": "Genre name must be at least 3 characters long"
+  "message": "Validation failed",
+  "errors": {
+    "name": "Genre name must be at least 3 characters long"
+  }
 }
 ```
 ---
@@ -887,7 +885,6 @@ Uploads genre's image (image file) and links the resulting resource URL to the s
 *Returned when the genre ID does not exist in the database.*
 ```json
 {
-  "status": 404,
   "message": "Genre by id=10 was not found."
 }
 ```
@@ -895,7 +892,6 @@ Uploads genre's image (image file) and links the resulting resource URL to the s
 *Returned when the file is missing, empty, or of an unsupported format.*
 ```json
 {
-  "status": 400,
   "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
 }
 ```
@@ -921,7 +917,6 @@ Updates an existing genre's name.
 *Genre not found.*
 ```json
 {
-  "status": 404,
   "message": "Genre by id=45 not found."
 }
 ```
@@ -929,8 +924,10 @@ Updates an existing genre's name.
 *Invalid input data*
 ```json
 {
-  "status": 400,
-  "message": "Genre name must be at least 3 characters long"
+  "message": "Validation failed",
+  "errors": {
+    "name": "Genre name must be at least 3 characters long"
+  }
 }
 ```
 ---
@@ -946,7 +943,6 @@ Removes a genre from the database by its ID.
 
 ```json
 {
-  "status": 404,
   "message": "Genre by id=5 not found."
 }
 ```
@@ -976,7 +972,6 @@ Creates a new payment record in the local database (status: PENDING), initialize
 *Returned if the song does not exist in the catalog.*
 ```json
 {
-  "status": 404,
   "message": "Song by id=10 not found."
 }
 ```
@@ -985,7 +980,6 @@ Creates a new payment record in the local database (status: PENDING), initialize
 *Returned if communication with the Stripe API fails.*
 ```json
 {
-  "status": 500,
   "message": "Could not initialize payment session with Stripe."
 }
 ```
@@ -1005,7 +999,6 @@ Receives asynchronous event notifications from Stripe (e.g., checkout.session.co
 *Returned when the webhook payload is invalid or the Stripe signature verification fails.*
 ```json
 {
-  "status": 400,
   "message": "Webhook signature verification failed."
 }
 ```
@@ -1014,7 +1007,6 @@ Receives asynchronous event notifications from Stripe (e.g., checkout.session.co
 *Returned if there is a server-side error while processing the event (e.g., database failure).*
 ```json
 {
-  "status": 500,
   "message": "Error processing webhook event."
 }
 ```
@@ -1065,7 +1057,6 @@ Retrieves the details of a specific license owned by the user.
 *Returned if the user attempts to access a license they do not own.*
 ```json
 {
-  "status": 403,
   "message": "Access denied. You do not own this license."
 }
 ```
@@ -1074,7 +1065,6 @@ Retrieves the details of a specific license owned by the user.
 *Returned if the license does not exist.*
 ```json
 {
-  "status": 404,
   "message": "License by id=101 not found."
 }
 ```

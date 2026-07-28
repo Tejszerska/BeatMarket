@@ -14,7 +14,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -28,6 +30,8 @@ class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
     }
+
+
     @ExceptionHandler({
             AlbumNotFoundException.class,
             ArtistNotFoundException.class,
@@ -44,9 +48,13 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ListOfStringsErrorResponseDto> handleValidationException(MethodArgumentNotValidException exception) {
-        List<String> errorsFromException = getErrorsFromException(exception);
-        ListOfStringsErrorResponseDto response = new ListOfStringsErrorResponseDto(errorsFromException, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ValidationErrorResponseDto> handleValidationException(MethodArgumentNotValidException exception) {
+        Map<String, String> errors = new HashMap<>();
+
+        exception.getBindingResult().getFieldErrors()
+                .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
+
+        ValidationErrorResponseDto response = new ValidationErrorResponseDto("Validation failed", errors);
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
