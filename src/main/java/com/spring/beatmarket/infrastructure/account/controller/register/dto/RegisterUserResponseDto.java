@@ -1,4 +1,4 @@
-package com.spring.beatmarket.infrastructure.account.controller.dto;
+package com.spring.beatmarket.infrastructure.account.controller.register.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

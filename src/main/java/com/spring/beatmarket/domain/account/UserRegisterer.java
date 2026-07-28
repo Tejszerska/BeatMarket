@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.account;
 
+import com.spring.beatmarket.domain.account.dto.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

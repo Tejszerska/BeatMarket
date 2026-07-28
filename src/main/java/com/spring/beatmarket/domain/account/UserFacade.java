@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.account;
 
+import com.spring.beatmarket.domain.account.dto.UserRequestDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

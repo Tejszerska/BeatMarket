@@ -1,9 +1,9 @@
-package com.spring.beatmarket.infrastructure.account.controller;
+package com.spring.beatmarket.infrastructure.account.controller.register;
 
 import com.spring.beatmarket.domain.account.UserExistsException;
 import com.spring.beatmarket.domain.account.UserFacade;
-import com.spring.beatmarket.infrastructure.account.controller.dto.RegisterUserRequestDto;
-import com.spring.beatmarket.infrastructure.account.controller.dto.RegisterUserResponseDto;
+import com.spring.beatmarket.infrastructure.account.controller.register.dto.RegisterUserRequestDto;
+import com.spring.beatmarket.infrastructure.account.controller.register.dto.RegisterUserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -59,12 +59,11 @@ class RegisterController {
         boolean isConfirmed = userFacade.confirmUser(token);
         if (isConfirmed) {
             return ResponseEntity.status(HttpStatus.FOUND)
-
                     .location(URI.create("https://localhost:8443/swagger-ui/index.html"))
                     .body((new RegisterUserResponseDto("Account activated. Redirecting to Swagger UI")));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body((new RegisterUserResponseDto("Confirmation failed. User can't login")));
+                    .body((new RegisterUserResponseDto("Confirmation failed. cannot login")));
         }
     }
 }

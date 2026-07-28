@@ -1,4 +1,4 @@
-package com.spring.beatmarket.domain.account;
+package com.spring.beatmarket.domain.account.dto;
 
 public record UserRequestDto(String email, String password) {
 }

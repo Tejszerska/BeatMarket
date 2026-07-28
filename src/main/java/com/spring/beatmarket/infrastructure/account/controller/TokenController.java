@@ -1,6 +1,5 @@
 package com.spring.beatmarket.infrastructure.account.controller;
 
-import com.spring.beatmarket.infrastructure.account.controller.dto.TokenRequestDto;
 import com.spring.beatmarket.infrastructure.security.jwt.CookieService;
 import com.spring.beatmarket.infrastructure.security.jwt.GetEmailDto;
 import com.spring.beatmarket.infrastructure.security.jwt.JwtResponseDto;
