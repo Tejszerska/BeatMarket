@@ -3,8 +3,11 @@ package com.spring.beatmarket.domain.account;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +19,19 @@ class UserConformer {
     private final MailSender mailSender;
     private final UserRepository userRepository;
 
-    public void sendConfirmationEmail(User user) {
+    @Async
+    @EventListener
+    public void handleUserRegistration(UserRegisteredEvent event){
+        try {
+            sendConfirmationEmail(event.user());
+        }
+        catch (MailException e) {
+            log.error("Failed to send confirmation email to {}", event.user().getEmail(), e);
+        }
+
+    }
+
+    private void sendConfirmationEmail(User user) {
         String to = user.getEmail();
         String subject = "Complete your registration";
         String text = "To confirm your account, please click here: "
@@ -32,7 +47,7 @@ class UserConformer {
     }
 
     @Transactional
-    public boolean confirmUser(String confirmationToken) {
+    boolean confirmUser(String confirmationToken) {
         User user = userRepository.findByConfirmationToken(confirmationToken)
                 .orElseThrow(() -> new RuntimeException("user not found"));
         return user.confirm();
