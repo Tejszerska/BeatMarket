@@ -12,7 +12,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
 class UserRegisterer {
     private final static List<String> DEFAULT_USER_ROLES = List.of("ROLE_ADMIN", "ROLE_CUSTOMER"); // @TODO ADMIN just for the development
     private final PasswordEncoder passwordEncoder;
@@ -20,7 +19,7 @@ class UserRegisterer {
     private final UserRetriever userRetriever;
 
     User registerNewUser(UserRequestDto userRequestDto) {
-        userRetriever.checkIfUserExists(userRequestDto.email());
+        userRetriever.throwExceptionIfUserExits(userRequestDto.email());
 
         User user = User.builder()
                 .email(userRequestDto.email())
@@ -33,5 +32,17 @@ class UserRegisterer {
         User savedUser = userRepository.save(user);
         log.info("Created and saved new user by id={}", savedUser.getId());
         return savedUser;
+    }
+
+    void registerNewUser(String email) {
+        if (!(userRetriever.checkIfUserExists(email))) {
+            User newUser = User.builder()
+                    .email(email)
+                    .password(null)
+                    .authorities(DEFAULT_USER_ROLES)
+                    .enabled(true)
+                    .build();
+            userRepository.save(newUser);
+        }
     }
 }

@@ -8,9 +8,14 @@ import org.springframework.stereotype.Service;
 class UserRetriever {
     private final UserRepository userRepository;
 
-    void checkIfUserExists(String email) {
+    void throwExceptionIfUserExits(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new UserExistsException("User with this email already exists.");
         }
     }
+
+    boolean checkIfUserExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
 }

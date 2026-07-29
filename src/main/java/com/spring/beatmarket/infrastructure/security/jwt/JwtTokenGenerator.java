@@ -3,6 +3,7 @@ package com.spring.beatmarket.infrastructure.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.spring.beatmarket.infrastructure.security.SecurityUser;
+import com.spring.beatmarket.infrastructure.security.jwt.dto.JwtGenerationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,30 +28,23 @@ public class JwtTokenGenerator {
     private final KeyPair keyPair;
     private final UserDetailsService userDetailsService;
 
-    public String authenticateAndGenerateToken(String username, String password) {
-        UsernamePasswordAuthenticationToken authenticate = new UsernamePasswordAuthenticationToken(username, password);
+    public String authenticateAndGenerateToken(JwtGenerationDto jwtGenerationDto) {
+        UsernamePasswordAuthenticationToken authenticate = new UsernamePasswordAuthenticationToken(jwtGenerationDto.email(), jwtGenerationDto.password());
         Authentication authentication = authenticationManager.authenticate(authenticate);
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-        Instant issuedAt = LocalDateTime.now(clock).toInstant(ZoneOffset.UTC);
-        Instant expiresAt = issuedAt.plus(Duration.ofMinutes(properties.expirationMinutes()));
-        Algorithm algorithm = Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate());
-        return JWT.create()
-                .withSubject(securityUser.getUsername())
-                .withIssuedAt(issuedAt)
-                .withExpiresAt(expiresAt)
-                .withIssuer(properties.issuer())
-                .withClaim("roles", securityUser.getAuthoritiesAsString())
-                .sign(algorithm);
+        return generateToken(securityUser);
     }
 
     public String generateTokenForOAuthUser(String email) {
         SecurityUser securityUser = (SecurityUser) userDetailsService.loadUserByUsername(email);
 
+        return generateToken(securityUser);
+    }
+
+    private String generateToken(final SecurityUser securityUser) {
         Instant issuedAt = LocalDateTime.now(clock).toInstant(ZoneOffset.UTC);
         Instant expiresAt = issuedAt.plus(Duration.ofMinutes(properties.expirationMinutes()));
-
         Algorithm algorithm = Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate());
-
         return JWT.create()
                 .withSubject(securityUser.getUsername())
                 .withIssuedAt(issuedAt)
@@ -59,6 +53,5 @@ public class JwtTokenGenerator {
                 .withClaim("roles", securityUser.getAuthoritiesAsString())
                 .sign(algorithm);
     }
-
 }
 

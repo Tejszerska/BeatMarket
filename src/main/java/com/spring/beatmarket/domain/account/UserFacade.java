@@ -24,4 +24,7 @@ public class UserFacade {
         User user = userRegisterer.registerNewUser(userRequestDto);
         sendConfirmationEmail(user);
     }
+    public void registerNewUser(String email) {
+        userRegisterer.registerNewUser(email);
+    }
 }
