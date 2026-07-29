@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -20,6 +21,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -52,14 +55,22 @@ class Song extends BaseEntity {
     private String title;
 
     private Instant releaseDate;
-
     private Long duration;
+
+    @Column(columnDefinition = "TEXT")
+    private String previewUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String fileUrl;
 
     @Enumerated(EnumType.STRING)
     private SongLanguage language;
 
     @ManyToOne
     private Album album;
+
+    @ManyToMany
+    private Set<Artist> artists = new HashSet<>();
 
     public Song(String title) {
         this.title = title;
@@ -76,7 +87,4 @@ class Song extends BaseEntity {
     void assignDefaultTitle(){
         this.title = "Default song:" + this.uuid.toString();
     }
-
-
-
 }

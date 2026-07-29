@@ -1,11 +1,11 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.util.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -36,12 +36,14 @@ class Album extends BaseEntity {
     private String title;
     private Instant releaseDate;
 
-    @OneToMany
-    @JoinColumn(name = "album_id")
-    private Set<Song> songs = new HashSet<>();
+    @Column(columnDefinition = "TEXT")
+    private String coverUrl;
 
     @ManyToMany(mappedBy = "albums")
     private Set<Artist> artists = new HashSet<>();
+
+    @OneToMany(mappedBy = "album")
+    private Set<Song> songs = new HashSet<>();
 
     void addSongToAlbum(final Song song) {
         songs.add(song);

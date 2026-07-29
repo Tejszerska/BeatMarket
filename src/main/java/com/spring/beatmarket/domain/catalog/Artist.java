@@ -17,6 +17,7 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+
 @Builder
 @Entity
 @NoArgsConstructor
@@ -24,6 +25,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 class Artist extends BaseEntity {
+
     @Id
     @GeneratedValue(generator = "artist_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
@@ -32,8 +34,15 @@ class Artist extends BaseEntity {
             allocationSize = 1
     )
     private Long id;
+
     @Column(nullable = false)
     private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
+    @ManyToMany(mappedBy = "artists")
+    private Set<Song> songs = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Album> albums = new HashSet<>();
