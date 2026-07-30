@@ -6,9 +6,9 @@
 
 2. Architektura i Kod Java
 
-- [ ] Poprawić RegisterController – przenieść ciężką logikę biznesową do odpowiedniego serwisu.
+- [x] Poprawić RegisterController – przenieść ciężką logikę biznesową do odpowiedniego serwisu.
 
-- [ ] Poprawić RegisterController - wywoływanie statusów 4xx .
+- [x] Poprawić RegisterController - wywoływanie statusów 4xx .
 
 ---
 - Dopasować endpointy `catalog` do API contracts
@@ -59,33 +59,33 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
   ).hasRole("ADMIN") // Zastosuje się do URL-i podanych w kontekście, lub można doprecyzować ścieżkę
 ```
 
-- [ ] Poprawić sens biznesowy relacji dotychczasowych tabel:
+- [x] Poprawić sens biznesowy relacji dotychczasowych tabel:
 ```
 - Song <-> Artist @ManyToMany (wł. Song) umożliwi "featy"
 - Song -> Album @ManyToOne (wł. Song) błąd mapowania po stronie Album użyć mappedBy = "album", usuwając @JoinColumn
 - Album <-> Artysta @ManyToMany zostaje, bo album ma głównego wykonawce
 ```
 
-- [ ] Dodać wartość NONE do enuma SongLanguage (obsługa utworów instrumentalnych).
+- [x] Dodać wartość NONE do enuma SongLanguage (obsługa utworów instrumentalnych) (jednak INSTRUMENTAL już było wpisane)
 
 - [ ] Utworzyć nowego enuma LicenseTier z wartościami STANDARD, COMMERCIAL, BROADCAST.
 
-- [ ] Skonfigurować role w Spring Security (ROLE_CUSTOMER po rejestracji, ROLE_ADMIN do zarządzania zasobami).
+- [x] Skonfigurować role w Spring Security (ROLE_CUSTOMER po rejestracji, ROLE_ADMIN do zarządzania zasobami).
 
 
 3. Baza Danych (Skrypty Flyway)
 
-- [ ] Aktualizacja song: Dodać kolumny preview_url (do próbki) oraz file_url (do pełnego utworu) pod przyszłą integrację z AWS, .
+- [x] Aktualizacja song: Dodać kolumny preview_url (do próbki) oraz file_url (do pełnego utworu) pod przyszłą integrację z AWS, .
 
-- [ ] Aktualizacja album: Dodać kolumnę cover_url 
+- [x] Aktualizacja album: Dodać kolumnę cover_url 
 
-- [ ] Aktualizacja artist: Dodać kolumnę image_url
+- [x] Aktualizacja artist: Dodać kolumnę image_url
 
-- [ ] Nowa tabela song_prices: Tabela relacyjna zawierająca kolumny z ceną, walutą, progiem licencyjnym (tier) oraz kluczem obcym do utworu.
+- [x] Nowa tabela song_prices: Tabela relacyjna zawierająca kolumny z ceną, walutą, progiem licencyjnym (tier) oraz kluczem obcym do utworu.
 
-- [ ] Nowa tabela payments: Powinna zawierać id użytkownika, status płatności, kwotę oraz obowiązkowo stripe_session_id.
+- [x] Nowa tabela payments: Powinna zawierać id użytkownika, status płatności, kwotę oraz obowiązkowo stripe_session_id.
 
-- [ ] Nowa tabela licenses: Powinna zawierać m.in. wygenerowany certyfikat/klucz, identyfikator użytkownika, identyfikator płatności i ramy czasowe ważności.
+- [x] Nowa tabela licenses: Powinna zawierać m.in. wygenerowany certyfikat/klucz, identyfikator użytkownika, identyfikator płatności i ramy czasowe ważności.
 
 
 

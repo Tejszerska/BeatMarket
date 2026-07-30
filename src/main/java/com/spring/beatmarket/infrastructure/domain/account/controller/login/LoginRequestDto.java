@@ -9,7 +9,7 @@ public record LoginRequestDto(
         @NotBlank(message = "Email is required")
         String email,
 
-        @Schema(description = "User's password", example = "123")
+        @Schema(description = "User's password", example = "12345678")
         @NotBlank(message = "Password is required")
         String password
 ) {}
