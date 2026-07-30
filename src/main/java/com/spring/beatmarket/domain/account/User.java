@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.account;
 
-import com.spring.beatmarket.domain.catalog.util.BaseEntity;
+import com.spring.beatmarket.domain.shared.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
