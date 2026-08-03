@@ -19,8 +19,8 @@ interface SongRepository extends Repository<Song, Long> {
     @Query("SELECT s FROM Song s WHERE s.id = :id")
     Optional<Song> findById(Long id);
 
-    @Query("SELECT s FROM Song s JOIN FETCH s.genre")
-    Slice<Song> findAllSongsWithGenre(Pageable pageable);
+    @Query("SELECT s FROM Song s JOIN FETCH s.genre, s.artists, s.album")
+    Slice<Song> findAllSongs(Pageable pageable);
 
     @Query("SELECT s FROM Song s JOIN FETCH s.genre WHERE s.id = :id")
     Optional<Song> findSongByIdWithGenre(Long id);

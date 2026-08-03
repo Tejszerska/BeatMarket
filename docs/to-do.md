@@ -68,7 +68,7 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 
 - [x] Dodać wartość NONE do enuma SongLanguage (obsługa utworów instrumentalnych) (jednak INSTRUMENTAL już było wpisane)
 
-- [ ] Utworzyć nowego enuma LicenseTier z wartościami STANDARD, COMMERCIAL, BROADCAST.
+- [x] Utworzyć nowego enuma LicenseTier z wartościami STANDARD, COMMERCIAL, BROADCAST.
 
 - [x] Skonfigurować role w Spring Security (ROLE_CUSTOMER po rejestracji, ROLE_ADMIN do zarządzania zasobami).
 

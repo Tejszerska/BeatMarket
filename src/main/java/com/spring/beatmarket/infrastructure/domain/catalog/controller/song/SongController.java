@@ -3,6 +3,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 import com.spring.beatmarket.domain.catalog.BeatMarketCrudFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
+import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.PartiallyUpdateSongRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
@@ -38,13 +39,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "6. Songs", description = "Endpoints for managing songs, their details, and genre assignments.")
+@Tag(name = "2. Songs", description = "Endpoints for managing songs, their details, and genre assignments.")
 @RestController
 @Log4j2
-@RequestMapping("/songs")
+@RequestMapping("/catalog/songs")
 @AllArgsConstructor
 public
-class SongRestController {
+class SongController {
 
     private final BeatMarketCrudFacade songFacade;
     private final SongControllerMapper songControllerMapper;
@@ -56,7 +57,7 @@ class SongRestController {
     @GetMapping
     ResponseEntity<GetAllSongsResponseDto> getAllSongs(
             @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Slice<SongDto> allSongs = songFacade.findAllSongs(pageable);
+        Slice<SongSummaryDto> allSongs = songFacade.findAllSongs(pageable);
         return ResponseEntity.ok(songControllerMapper.mapFromSongToGetAllSongsResponseDto(allSongs));
     }
 

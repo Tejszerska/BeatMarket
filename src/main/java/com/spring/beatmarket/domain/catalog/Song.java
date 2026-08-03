@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -70,7 +73,8 @@ class Song extends BaseEntity {
     private Album album;
 
     @ManyToMany
-    private Set<Artist> artists = new HashSet<>();
+    @OrderColumn(name = "artist_order")
+    private List<Artist> artists = new ArrayList<>();
 
     public Song(String title) {
         this.title = title;

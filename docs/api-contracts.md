@@ -123,7 +123,7 @@ Fetches a chunked list of all songs
 *   `sort` (array[string], query parameter) *Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported; default value: ["id,ASC"]*
 *   `genre` (string, query parameter, optional) *Filter by exact genre name.*
 *   `artist` (string, query parameter, optional) *Filter by exact artist name.*
-*   `language` (string, query parameter, optional) *Filter by track language (e.g., "English", "NONE" for instrumentals).*
+*   `language` (string, query parameter, optional) *Filter by track language (e.g., "EN", "NONE" for instrumentals).*
 *   `album` (string, query parameter, optional) *Filter by exact album name.*
 *   `releaseDate` (string, query parameter, optional) *Filter by exact release date in ISO-8601 format (YYYY-MM-DD).*
 *   `price` (number, query parameter, optional) *Filter by maximum track price.*
@@ -140,13 +140,18 @@ Fetches a chunked list of all songs
       "genre": "Rock",
       "previewUrl": "https://some.link.com/audio.mp3",
       "album": "Titled Album",
-      "language": "English",
+      "language": "EN",
       "releaseDate": "2000-10-24",
       "duration": 216,
       "pricing": {
-        "Standard": 20.00,
-        "Commercial": 50.00,
-        "Broadcast": 100.00
+        "Standard": {
+          "amount": 20.00,
+          "currency": "USD"
+        },
+        "Commercial": {
+          "amount": 50.00,
+          "currency": "USD"
+        }
       }
     }
   ],
@@ -176,7 +181,7 @@ Retrieves detailed information about a specific song by its ID.
 {
   "id": 10,
   "title": "In the End",
-  "language": "English",
+  "language": "EN",
   "releaseDate": "2000-10-24",
   "duration": 216,
   "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-watermark.mp3",
@@ -195,9 +200,14 @@ Retrieves detailed information about a specific song by its ID.
     "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg"
   },
   "pricing": {
-    "Standard": 20.00,
-    "Commercial": 50.00,
-    "Broadcast": 100.00
+    "Standard": {
+      "amount": 20.00,
+      "currency": "USD"
+    },
+    "Commercial": {
+      "amount": 50.00,
+      "currency": "USD"
+    }
   }
 }
 ```
