@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.catalog.dto;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -9,7 +9,7 @@ public interface AlbumInfo {
 
     String getTitle();
 
-    Instant getReleaseDate();
+    LocalDate getReleaseDate();
 
     Set<SongInfo> getSongs();
 
@@ -21,7 +21,7 @@ public interface AlbumInfo {
 
         String getTitle();
 
-        Instant getReleaseDate();
+        LocalDate getReleaseDate();
 
         Long getDuration();
 

@@ -9,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,10 +26,25 @@ class SongRetriever {
 
     Slice<SongSummaryDto> findAll(Pageable pageable) {
         log.info("retrieving all songs: ");
-        Slice<SongSummaryDto> map = songRepository.findAllSongs(pageable)
-                .map(songMapper::mapFromEntityToSongSummaryDto);
 
-     }
+        Slice<Long> idsSlice = songRepository.findSongIds(pageable);
+        if (idsSlice.isEmpty()) {
+            return new SliceImpl<>(List.of(), pageable, idsSlice.hasNext());
+        }
+        List<Long> ids = idsSlice.getContent();
+
+        List<Song> allSongs = songRepository.findSongsWithDetailsByIds(ids);
+        Map<Long, List<SongPriceDto>> pricing = licensingFacade.getMultiplePricingDto(ids);
+
+        List<SongSummaryDto> dtos = allSongs.stream()
+                .map(song -> {
+                    List<SongPriceDto> pricesForSong = pricing.getOrDefault(song.getId(), Collections.emptyList());
+                    return songMapper.mapFromEntityToSongSummaryDto(song, pricesForSong);
+                })
+                .toList();
+
+        return new SliceImpl<>(dtos, pageable, idsSlice.hasNext());
+    }
 
     SongDto findSongDtoById(Long id) {
         Song s = findSongById(id);

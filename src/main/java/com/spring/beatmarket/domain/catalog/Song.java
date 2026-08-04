@@ -21,11 +21,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Builder
 @Getter
@@ -57,7 +55,7 @@ class Song extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    private Instant releaseDate;
+    private LocalDate releaseDate;
     private Long duration;
 
     @Column(columnDefinition = "TEXT")
@@ -80,7 +78,7 @@ class Song extends BaseEntity {
         this.title = title;
     }
 
-    Song(final String title, final Instant releaseDate, final Long duration, final SongLanguage songLanguage, final Genre genre) {
+    Song(final String title, final LocalDate releaseDate, final Long duration, final SongLanguage songLanguage, final Genre genre) {
         this.title = title;
         this.releaseDate = releaseDate;
         this.duration = duration;

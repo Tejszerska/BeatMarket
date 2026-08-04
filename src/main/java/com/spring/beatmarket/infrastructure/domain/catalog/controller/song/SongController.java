@@ -5,12 +5,10 @@ import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequestDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.PartiallyUpdateSongRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.CreateSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetSongResponseDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.PartiallyUpdateSongResponseDto;
 import com.spring.beatmarket.infrastructure.error.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -100,21 +97,21 @@ class SongController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Song updated successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "Song not found.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    })
-    @PatchMapping("/{id}")
-    ResponseEntity<PartiallyUpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long id,
-                                                                       @RequestBody PartiallyUpdateSongRequestDto request) {
-        SongDto updatedSong = songControllerMapper.mapFromPartiallyUpdateSongRequestDtoToSong(request);
-        SongDto savedSong = songFacade.updateSongPartiallyById(id, updatedSong);
-        return ResponseEntity.ok(songControllerMapper.mapFromSongDtoToPartiallyUpdateSongResponseDto(savedSong));
-    }
+//    @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Song updated successfully."),
+//            @ApiResponse(responseCode = "400", description = "Invalid input data.",
+//                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+//            @ApiResponse(responseCode = "404", description = "Song not found.",
+//                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+//    })
+//    @PatchMapping("/{id}")
+//    ResponseEntity<PartiallyUpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long id,
+//                                                                       @RequestBody PartiallyUpdateSongRequestDto request) {
+//        SongDto updatedSong = songControllerMapper.mapFromPartiallyUpdateSongRequestDtoToSong(request);
+//        SongDto savedSong = songFacade.updateSongPartiallyById(id, updatedSong);
+//        return ResponseEntity.ok(songControllerMapper.mapFromSongDtoToPartiallyUpdateSongResponseDto(savedSong));
+//    }
 
     @Operation(summary = "Assign genre to song", description = "Links an existing musical genre to a specific song.")
     @ApiResponses(value = {

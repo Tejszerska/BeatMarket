@@ -42,10 +42,11 @@ INSERT INTO song (id, uuid, created_on, version, genre_id, title, release_date, 
 SELECT setval('song_id_seq', (SELECT MAX(id) FROM song));
 
 -- Link songs with artists
-INSERT INTO song_artists (artists_id, songs_id) VALUES
-                                                    (1, 1),
-                                                    (1, 2),
-                                                    (2, 3);
+INSERT INTO song_artists (artists_id, songs_id, artist_order) VALUES
+                                                                  (1, 1, 0),
+                                                                  (2, 1, 1),
+                                                                  (1, 2, 0),
+                                                                  (2, 3, 0);
 
 -- Seed song prices
 INSERT INTO song_price (song_id, uuid, created_on, version, tier, price, currency) VALUES

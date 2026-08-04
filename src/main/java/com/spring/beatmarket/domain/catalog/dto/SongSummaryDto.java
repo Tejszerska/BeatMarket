@@ -1,13 +1,11 @@
 package com.spring.beatmarket.domain.catalog.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-
+@Builder
 public record SongSummaryDto(Long id,
                              String title,
                              List<String> artists,

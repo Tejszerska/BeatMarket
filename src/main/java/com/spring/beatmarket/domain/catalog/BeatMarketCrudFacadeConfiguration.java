@@ -1,4 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
+
+import com.spring.beatmarket.domain.licensing.LicensingFacade;
+
 class BeatMarketCrudFacadeConfiguration {
 
     public static BeatMarketCrudFacade createBeatMarketCrud(final SongRepository songRepository,
@@ -11,8 +14,9 @@ class BeatMarketCrudFacadeConfiguration {
                                                       final AlbumMapper albumMapper,
                                                       final ArtistWithAlbumMapper artistWithAlbumMapper
                                                       ){
+        LicensingFacade licensingFacade = null; //@TODO fix test configuration
         GenreRetriever genreRetriever = new GenreRetriever(genreRepository, genreMapper);
-        SongRetriever songRetriever = new SongRetriever(songRepository, songMapper);
+        SongRetriever songRetriever = new SongRetriever(songRepository, songMapper, licensingFacade);
         SongUpdater songUpdater = new SongUpdater(songRetriever, songMapper);
         AlbumAdder albumAdder = new AlbumAdder(songRetriever, albumRepository, albumMapper);
         ArtistRetriever artistRetriever = new ArtistRetriever(artistRepository, artistMapper);
@@ -28,6 +32,7 @@ class BeatMarketCrudFacadeConfiguration {
         GenreAssigner genreAssigner = new GenreAssigner(songRetriever, genreRetriever, songMapper);
         SongAssigner songAssigner = new SongAssigner(albumRetriever, songRetriever, songMapper, albumMapper);
         GenreDeleter genreDeleter = new GenreDeleter(genreRepository);
+
         return new BeatMarketCrudFacade(
                 songAdder,
                 songRetriever,

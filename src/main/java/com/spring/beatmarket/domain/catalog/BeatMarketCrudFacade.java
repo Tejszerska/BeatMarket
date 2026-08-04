@@ -111,9 +111,9 @@ public class BeatMarketCrudFacade {
         return genreRetriever.findGenreDtoById(genreId);
     }
 
-    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
-        return songUpdater.updatePartiallyByIdAndDto(id, songFromRequest);
-    }
+//    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
+//        return songUpdater.updatePartiallyByIdAndDto(id, songFromRequest);
+//    }
 
     public int deleteGenreById(final Long genreId) {
       return  genreDeleter.deleteById(genreId);

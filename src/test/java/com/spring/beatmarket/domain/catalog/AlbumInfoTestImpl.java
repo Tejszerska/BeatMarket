@@ -2,7 +2,7 @@ package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,7 @@ class AlbumInfoTestImpl implements AlbumInfo {
     }
 
     @Override
-    public Instant getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return album.getReleaseDate();
     }
 

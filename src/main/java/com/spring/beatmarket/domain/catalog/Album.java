@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 @Builder
@@ -34,7 +34,7 @@ class Album extends BaseEntity {
     )
     private Long id;
     private String title;
-    private Instant releaseDate;
+    private LocalDate releaseDate;
 
     @Column(columnDefinition = "TEXT")
     private String coverUrl;

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 @Schema(description = "Payload for creating a new song")
 public record CreateSongRequestDto(
@@ -16,7 +16,7 @@ public record CreateSongRequestDto(
 
         @Schema(description = "Release date of the song in ISO format", example = "2000-10-24T00:00:00Z")
         @NotNull(message = "releaseDate must be declared")
-        Instant releaseDate,
+        LocalDate releaseDate,
 
         @Schema(description = "Duration of the song in seconds", example = "216")
         @NotNull(message = "duration must be declared")

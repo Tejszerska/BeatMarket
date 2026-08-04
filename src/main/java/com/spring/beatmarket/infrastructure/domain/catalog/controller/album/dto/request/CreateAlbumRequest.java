@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 @Schema(description = "Response containing the ID and title of the newly created album")
 public record CreateAlbumRequest(
@@ -18,5 +18,5 @@ public record CreateAlbumRequest(
 
         @Schema(description = "Release date in ISO format", example = "2000-10-24T00:00:00Z")
         @NotNull(message = "Release date must be declared")
-        Instant releaseDate) {
+        LocalDate releaseDate) {
 }

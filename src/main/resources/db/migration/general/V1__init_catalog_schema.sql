@@ -15,7 +15,7 @@ CREATE TABLE album
     created_on   TIMESTAMP WITHOUT TIME ZONE,
     version      BIGINT,
     title        VARCHAR(255),
-    release_date TIMESTAMP WITHOUT TIME ZONE,
+    release_date date,
     cover_url    TEXT,
     CONSTRAINT pk_album PRIMARY KEY (id)
 );
@@ -56,7 +56,7 @@ CREATE TABLE song
     version      BIGINT,
     genre_id     BIGINT,
     title        VARCHAR(255) NOT NULL,
-    release_date TIMESTAMP WITHOUT TIME ZONE,
+    release_date date,
     duration     BIGINT,
     preview_url  TEXT,
     file_url     TEXT,
@@ -69,6 +69,7 @@ CREATE TABLE song_artists
 (
     artists_id BIGINT NOT NULL,
     songs_id   BIGINT NOT NULL,
+    artist_order INTEGER NOT NULL,
     CONSTRAINT pk_song_artists PRIMARY KEY (artists_id, songs_id)
 );
 

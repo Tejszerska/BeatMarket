@@ -1,9 +1,9 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +21,6 @@ public record SongResponseDto(
         @Schema(description = "Release date in YYYY-MM-DD format", example = "2000-10-24") LocalDate releaseDate,
         @Schema(description = "Song duration", example = "250") Long duration,
         @Schema(description = "Song pricing tiers",
-                example = "{\"Standard\": 20.00, \"Commercial\": 50.00}" ) Map<String, BigDecimal> pricing
+                example = "{\"Standard\": 20.00, \"Commercial\": 50.00}" ) Map<String, PriceWithCurrencyDto> pricing
 ) {
 }

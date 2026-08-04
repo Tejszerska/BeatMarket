@@ -2,9 +2,7 @@ package com.spring.beatmarket.domain.catalog;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -22,19 +20,15 @@ class InMemorySongRepository implements SongRepository {
     }
 
     @Override
-    public Slice<Song> findAllSongsWithGenre(final Pageable pageable) {
-        List<Song> list = new ArrayList<>(db.values());
-        if (pageable.isUnpaged()) {
-            return new SliceImpl<>(list);
-        }
-        int start = (int) pageable.getOffset();
-        int pageSize = pageable.getPageSize();
-        if (start >= list.size()) return new SliceImpl<>(new ArrayList<>(), pageable, false);
-        int end = Math.min(start + pageSize, list.size());
-        List<Song> currentSlice = list.subList(start, end);
-        boolean hasNext = (start + pageSize) < list.size();
-        return new SliceImpl<>(currentSlice, pageable, hasNext);
+    public Slice<Long> findSongIds(final Pageable pageable) {
+        return null;
     }
+
+    @Override
+    public List<Song> findSongsWithDetailsByIds(final List<Long> ids) {
+        return List.of();
+    }
+
 
     @Override
     public Optional<Song> findSongByIdWithGenre(final Long id) {

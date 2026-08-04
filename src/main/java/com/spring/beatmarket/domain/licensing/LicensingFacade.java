@@ -14,7 +14,7 @@ import java.util.Map;
 public class LicensingFacade {
     private  final SongPricesRetriever songPricesRetriever;
 
-    Map<Long, List<SongPriceDto>> getMultiplePricingDto(List<Long> songIds){
+    public Map<Long, List<SongPriceDto>> getMultiplePricingDto(List<Long> songIds){
         return songPricesRetriever.getMultiplePricingDto(songIds);
     }
 }
