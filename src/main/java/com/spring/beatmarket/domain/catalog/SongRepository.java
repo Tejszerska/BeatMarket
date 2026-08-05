@@ -1,35 +1,27 @@
 package com.spring.beatmarket.domain.catalog;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Repository
-interface SongRepository extends Repository<Song, Long> {
+interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecutor<Song> {
 
-//    @Query("SELECT s FROM Song s")
-//    Slice<Song> findAll(Pageable pageable);
 
     @Query("SELECT s FROM Song s WHERE s.id = :id")
     Optional<Song> findById(Long id);
-
-    @Query("SELECT s.id FROM Song s")
-    Slice<Long> findSongIds(Pageable pageable);
-
-    @Query("SELECT DISTINCT s FROM Song s " +
-            "LEFT JOIN FETCH s.genre " +
-            "LEFT JOIN FETCH s.artists " +
-            "LEFT JOIN FETCH s.album " +
-            "WHERE s.id IN :ids")
-    List<Song> findSongsWithDetailsByIds(@Param("ids") List<Long> ids);
+//
+//    @Query("SELECT DISTINCT s FROM Song s " +
+//            "LEFT JOIN FETCH s.genre " +
+//            "LEFT JOIN FETCH s.artists " +
+//            "LEFT JOIN FETCH s.album " +
+//            "WHERE s.id IN :ids")
+//    List<Song> findSongsWithDetailsByIds(@Param("ids") List<Long> ids);
 
     @Query("SELECT s FROM Song s JOIN FETCH s.genre WHERE s.id = :id")
     Optional<Song> findSongByIdWithGenre(Long id);

@@ -67,11 +67,11 @@ class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/genres/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/genres/**").hasRole("ADMIN")
                 // SONGS endpoint rules
-                .requestMatchers(HttpMethod.GET, "/api/songs/**").permitAll()
-                .requestMatchers(HttpMethod.PATCH, "/api/songs/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/songs/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/songs/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/songs/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/catalog/songs/**").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/api/catalog/songs/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/catalog/songs/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/catalog/songs/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/catalog/songs/**").hasRole("ADMIN")
                 // ALBUMS endpoint rules
                 .requestMatchers(HttpMethod.GET, "/api/albums/**").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/albums/**").hasRole("ADMIN")

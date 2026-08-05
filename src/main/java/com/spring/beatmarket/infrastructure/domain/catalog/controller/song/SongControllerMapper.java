@@ -2,8 +2,10 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
+import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequestDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.CreateSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponseDto;
@@ -35,8 +37,9 @@ public interface SongControllerMapper {
     GetSongResponseDto mapFromSongToGetSongResponseDto(SongDto songDto);
     // SongResponseDto mapFromDomainSongDtoToSongResponseDto(SongDto songDto);
     CreateSongResponseDto mapFromSongDtoToCreateSongResponseDto(SongDto savedSong);
-
     List<SongResponseDto> mapToListOfSongResponseDto(List<SongSummaryDto> list);
+
+    SongSearchCriteria mapFromSearchRequestToDomain(SongSearchRequestDto songSearchRequestDto);
 
     default GetAllSongsResponseDto mapFromSongToGetAllSongsResponseDto(Slice<SongSummaryDto> slice) {
         return new GetAllSongsResponseDto(
@@ -44,4 +47,5 @@ public interface SongControllerMapper {
                 slice.hasNext()
         );
     }
+
 }

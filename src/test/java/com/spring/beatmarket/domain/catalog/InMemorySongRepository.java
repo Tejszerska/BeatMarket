@@ -1,7 +1,10 @@
 package com.spring.beatmarket.domain.catalog;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 class InMemorySongRepository implements SongRepository {
     Map<Long, Song> db = new HashMap<>();
@@ -18,17 +22,6 @@ class InMemorySongRepository implements SongRepository {
     public Optional<Song> findById(final Long id) {
         return Optional.ofNullable(db.get(id));
     }
-
-    @Override
-    public Slice<Long> findSongIds(final Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<Song> findSongsWithDetailsByIds(final List<Long> ids) {
-        return List.of();
-    }
-
 
     @Override
     public Optional<Song> findSongByIdWithGenre(final Long id) {
@@ -74,5 +67,45 @@ class InMemorySongRepository implements SongRepository {
         db.entrySet().removeIf(entry -> ids.contains(entry.getKey()));
 
         return sizeBefore - db.size();
+    }
+
+    @Override
+    public Optional<Song> findOne(final Specification<Song> spec) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Song> findAll(final Specification<Song> spec) {
+        return List.of();
+    }
+
+    @Override
+    public Page<Song> findAll(final Specification<Song> spec, final Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<Song> findAll(final Specification<Song> spec, final Sort sort) {
+        return List.of();
+    }
+
+    @Override
+    public long count(final Specification<Song> spec) {
+        return 0;
+    }
+
+    @Override
+    public boolean exists(final Specification<Song> spec) {
+        return false;
+    }
+
+    @Override
+    public long delete(final Specification<Song> spec) {
+        return 0;
+    }
+
+    @Override
+    public <S extends Song, R> R findBy(final Specification<Song> spec, final Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import com.spring.beatmarket.domain.catalog.exception.GenreNotfoundException;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import com.spring.beatmarket.domain.catalog.exception.SongNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -72,5 +73,17 @@ class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);
+    }
+
+    @ExceptionHandler({
+            InvalidSearchCriteriaException.class
+    })
+    public ResponseEntity<ValidationErrorResponseDto> handleInvalidFiltering(InvalidSearchCriteriaException exception){
+        Map<String, String> errors = new HashMap<>();
+        errors.put(exception.getField(), exception.getMessage());
+        ValidationErrorResponseDto errorResponseDto = new ValidationErrorResponseDto("Validation failed", errors);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponseDto);
     }
 }

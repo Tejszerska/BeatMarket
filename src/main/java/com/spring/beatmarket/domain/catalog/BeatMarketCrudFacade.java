@@ -11,6 +11,7 @@ import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
+import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -53,8 +54,8 @@ public class BeatMarketCrudFacade {
         return artistRetriever.findAllArtist(pageable);
     }
 
-    public Slice<SongSummaryDto> findAllSongs(Pageable pageable) {
-        return songRetriever.findAll(pageable);
+    public Slice<SongSummaryDto> findAllSongs(SongSearchCriteria searchCriteria, Pageable pageable) {
+        return songRetriever.findAll(searchCriteria, pageable);
     }
 
     public SongDto findSongDtoById(Long id) {

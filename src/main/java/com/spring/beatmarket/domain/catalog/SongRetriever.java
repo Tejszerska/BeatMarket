@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.domain.catalog.exception.SongNotFoundException;
 import com.spring.beatmarket.domain.licensing.LicensingFacade;
@@ -9,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -24,29 +25,34 @@ class SongRetriever {
     private final SongMapper songMapper;
     private final LicensingFacade licensingFacade;
 
-    Slice<SongSummaryDto> findAll(Pageable pageable) {
-        log.info("retrieving all songs: ");
+    Slice<SongSummaryDto> findAll(SongSearchCriteria searchCriteria, Pageable pageable) {
 
-        Slice<Long> idsSlice = songRepository.findSongIds(pageable);
-        if (idsSlice.isEmpty()) {
-            return new SliceImpl<>(List.of(), pageable, idsSlice.hasNext());
+        Specification<Song> spec = Specification
+                .where(SongSpecifications.hasGenre(searchCriteria.genre()))
+                .and(SongSpecifications.hasArtist(searchCriteria.artist()))
+                .and(SongSpecifications.hasLanguage(searchCriteria.language()))
+                .and(SongSpecifications.hasAlbum(searchCriteria.album()))
+                .and(SongSpecifications.hasMinDuration(searchCriteria.minDuration()))
+                .and(SongSpecifications.hasMaxDuration(searchCriteria.maxDuration()))
+                .and(SongSpecifications.hasReleaseDate(searchCriteria.releaseDate()));
+
+        Slice<Song> songsSlice = songRepository.findAll(spec, pageable);
+
+        if (songsSlice.isEmpty()) {
+            return songsSlice.map(song -> null);
         }
-        List<Long> ids = idsSlice.getContent();
 
-        List<Song> allSongs = songRepository.findSongsWithDetailsByIds(ids);
-        Map<Long, List<SongPriceDto>> pricing = licensingFacade.getMultiplePricingDto(ids);
+        List<Long> idsList = songsSlice.getContent().stream().map(Song::getId).toList();
 
-        List<SongSummaryDto> dtos = allSongs.stream()
-                .map(song -> {
+        Map<Long, List<SongPriceDto>> pricing = licensingFacade.getMultiplePricingDto(idsList);
+
+        return songsSlice.map(song -> {
                     List<SongPriceDto> pricesForSong = pricing.getOrDefault(song.getId(), Collections.emptyList());
                     return songMapper.mapFromEntityToSongSummaryDto(song, pricesForSong);
-                })
-                .toList();
-
-        return new SliceImpl<>(dtos, pageable, idsSlice.hasNext());
+                });
     }
 
-    SongDto findSongDtoById(Long id) {
+        SongDto findSongDtoById(Long id) {
         Song s = findSongById(id);
         return songMapper.mapFromEntityToSongDto(s);
     }

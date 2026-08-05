@@ -117,7 +117,7 @@ Initiates the OAuth2 authentication flow via Google. This is not a standard REST
 #### GET /api/catalog/songs
 Fetches a chunked list of all songs
 
-**Request Body Fields:**
+**Query Parameters:**
 *   `page` (integer, query parameter) *Page index; default value: 0*
 *   `size` (integer, query parameter) *The size of the page to be returned; default value: 5*
 *   `sort` (array[string], query parameter) *Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported; default value: ["id,ASC"]*
@@ -126,8 +126,11 @@ Fetches a chunked list of all songs
 *   `language` (string, query parameter, optional) *Filter by track language (e.g., "EN", "NONE" for instrumentals).*
 *   `album` (string, query parameter, optional) *Filter by exact album name.*
 *   `releaseDate` (string, query parameter, optional) *Filter by exact release date in ISO-8601 format (YYYY-MM-DD).*
-*   `price` (number, query parameter, optional) *Filter by maximum track price.*
-*   `duration` (integer, query parameter, optional) *Filter by maximum track duration in seconds.*
+*   `minDuration` (integer, query parameter, optional) *Filter by minimum track duration in seconds.*
+*   `maxDuration` (integer, query parameter, optional) *Filter by maximum track duration in seconds.*
+*   `maxPrice` (number, query parameter, optional) *Filter by maximum track price. **Note**: If provided, `currency` and `license` must also be specified.*
+*   `currency` (string, query parameter, optional) *Filter by currency. Required if `maxPrice` is used.*
+*   `license` (string, query parameter, optional) *Filter by license type. Required if `maxPrice` is used.*
 
 **Response (200 OK):**
 ```json

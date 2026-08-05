@@ -3,8 +3,10 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 import com.spring.beatmarket.domain.catalog.BeatMarketCrudFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
+import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequestDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.CreateSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponseDto;
@@ -49,12 +51,24 @@ class SongController {
 
     @Operation(summary = "Get all songs", description = "Returns a paginated list of all songs in the database, with an option to limit results.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of songs retrieved successfully.")
+            @ApiResponse(responseCode = "200", description = "List of songs retrieved successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters.")
+
     })
     @GetMapping
     ResponseEntity<GetAllSongsResponseDto> getAllSongs(
+            SongSearchRequestDto searchRequestDto,
             @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Slice<SongSummaryDto> allSongs = songFacade.findAllSongs(pageable);
+        if(searchRequestDto.maxPrice() != null){
+            if(searchRequestDto.currency() == null || searchRequestDto.license() == null){
+                throw new InvalidSearchCriteriaException("maxPrice",
+                        "Filtering by maxPrice requires declaring currency and license.");
+            }
+        }
+
+        SongSearchCriteria songSearchCriteria = songControllerMapper.mapFromSearchRequestToDomain(searchRequestDto);
+        Slice<SongSummaryDto> allSongs = songFacade.findAllSongs(songSearchCriteria, pageable);
+
         return ResponseEntity.ok(songControllerMapper.mapFromSongToGetAllSongsResponseDto(allSongs));
     }
 
