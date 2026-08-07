@@ -4,9 +4,11 @@ import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,4 +28,11 @@ class SongPricesRetriever {
                 .map(mapper::mapFromEntityToSongPriceDto)
                 .collect(Collectors.groupingBy(SongPriceDto::songId));
     }
+
+
+    Set<Long> findSongIdByMaxPrice (String currency, String tier, BigDecimal maxPrice){
+        LicenseTier enumTier= LicenseTier.valueOf(tier);
+        return songPriceRepository.findSongIdByCurrencyAndTierAndPriceLessThanEqual(currency, enumTier, maxPrice);
+    }
+
 }

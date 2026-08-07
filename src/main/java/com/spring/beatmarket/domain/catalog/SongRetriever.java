@@ -14,8 +14,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,6 +29,16 @@ class SongRetriever {
 
     Slice<SongSummaryDto> findAll(SongSearchCriteria searchCriteria, Pageable pageable) {
 
+        Set<Long> matchingIdsFromLicensing = new HashSet<>();
+
+        if (searchCriteria.maxPrice() != null) {
+            matchingIdsFromLicensing = licensingFacade.findSongIdByMaxPrice(
+                    searchCriteria.currency(),
+                    searchCriteria.license(),
+                    searchCriteria.maxPrice()
+            );
+        }
+
         Specification<Song> spec = Specification
                 .where(SongSpecifications.hasGenre(searchCriteria.genre()))
                 .and(SongSpecifications.hasArtist(searchCriteria.artist()))
@@ -34,7 +46,9 @@ class SongRetriever {
                 .and(SongSpecifications.hasAlbum(searchCriteria.album()))
                 .and(SongSpecifications.hasMinDuration(searchCriteria.minDuration()))
                 .and(SongSpecifications.hasMaxDuration(searchCriteria.maxDuration()))
-                .and(SongSpecifications.hasReleaseDate(searchCriteria.releaseDate()));
+                .and(SongSpecifications.hasReleaseDate(searchCriteria.releaseDate()))
+                .and(SongSpecifications.hasIdsIn(matchingIdsFromLicensing));
+
 
         Slice<Song> songsSlice = songRepository.findAll(spec, pageable);
 
@@ -47,12 +61,12 @@ class SongRetriever {
         Map<Long, List<SongPriceDto>> pricing = licensingFacade.getMultiplePricingDto(idsList);
 
         return songsSlice.map(song -> {
-                    List<SongPriceDto> pricesForSong = pricing.getOrDefault(song.getId(), Collections.emptyList());
-                    return songMapper.mapFromEntityToSongSummaryDto(song, pricesForSong);
-                });
+            List<SongPriceDto> pricesForSong = pricing.getOrDefault(song.getId(), Collections.emptyList());
+            return songMapper.mapFromEntityToSongSummaryDto(song, pricesForSong);
+        });
     }
 
-        SongDto findSongDtoById(Long id) {
+    SongDto findSongDtoById(Long id) {
         Song s = findSongById(id);
         return songMapper.mapFromEntityToSongDto(s);
     }

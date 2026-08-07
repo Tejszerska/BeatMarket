@@ -4,8 +4,10 @@ import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 class SongSpecifications {
+
     static Specification<Song> hasGenre(String genre) {
         return (root, query, criteriaBuilder) -> {
             if (genre == null || genre.isBlank()) {
@@ -74,5 +76,19 @@ class SongSpecifications {
             return criteriaBuilder.equal(root.get("releaseDate"), releaseDate);
         };
     }
-}
 
+    static Specification<Song> hasIdsIn(Set<Long> ids) {
+        return (root, query, criteriaBuilder) -> {
+            if (ids == null) {
+                return criteriaBuilder.conjunction();
+            }
+
+            if (ids.isEmpty()) {
+                return criteriaBuilder.disjunction();
+            }
+
+            return root.get("id").in(ids);
+
+        };
+    }
+}
