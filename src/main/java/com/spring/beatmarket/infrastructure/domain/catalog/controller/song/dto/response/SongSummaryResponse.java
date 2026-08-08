@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Schema(description = "Summary representation of a single song response")
-public record SongResponseDto(
+public record SongSummaryResponse(
         @Schema(description = "Song ID", example = "10") Long id,
         @Schema(description = "Song title", example = "Shadow Realm") String title,
         @Schema(description = "Artist name", example = "[\"Chillstone\", \"Neon Drift\"]") List<String> artists,

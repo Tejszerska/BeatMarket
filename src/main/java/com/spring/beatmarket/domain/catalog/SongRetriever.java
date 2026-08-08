@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
@@ -64,6 +65,11 @@ class SongRetriever {
             List<SongPriceDto> pricesForSong = pricing.getOrDefault(song.getId(), Collections.emptyList());
             return songMapper.mapFromEntityToSongSummaryDto(song, pricesForSong);
         });
+    }
+
+    SongDetailsDto getSongDetailsById(Long id) {
+        Song s = findSongById(id);
+        return songMapper.mapFromEntityToDetailsDto(s);
     }
 
     SongDto findSongDtoById(Long id) {

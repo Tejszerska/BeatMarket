@@ -27,8 +27,8 @@
 * [ ] DELETE /api/catalog/albums/{id}
 
 **Songs (Utwory)**
-* [ ] GET /api/catalog/songs
-* [ ] GET /api/catalog/songs/{id}
+* [x] GET /api/catalog/songs
+* [x] GET /api/catalog/songs/{id}
 * [ ] POST /api/catalog/songs
 * [ ] PUT /api/catalog/songs/{id}
 * [ ] DELETE /api/catalog/songs/{id}

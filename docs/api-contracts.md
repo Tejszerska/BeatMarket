@@ -188,11 +188,20 @@ Retrieves detailed information about a specific song by its ID.
   "releaseDate": "2000-10-24",
   "duration": 216,
   "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-watermark.mp3",
-  "artist": {
-    "id": 2,
-    "name": "U2",
-    "imageUrl": "https://s3.aws.com/your-bucket/images/u2-profile.jpg"
-  },
+  "artists": [
+    {
+      "id": 2,
+      "name": "U2",
+      "imageUrl": "https://s3.aws.com/your-bucket/images/u2-profile.jpg",
+      "displayOrder": 1
+    },
+    {
+      "id": 8,
+      "name": "Coldplay",
+      "imageUrl": "https://s3.aws.com/your-bucket/images/coldplay-profile.jpg",
+      "displayOrder": 2
+    }
+  ],
   "genre": {
     "id": 1,
     "name": "Rock"

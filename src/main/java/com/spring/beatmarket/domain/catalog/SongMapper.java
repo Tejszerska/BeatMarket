@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(componentModel = "spring",
-        uses = {GenreMapper.class},
+        uses = {GenreMapper.class, AlbumMapper.class, ArtistMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface SongMapper {
@@ -41,6 +42,8 @@ interface SongMapper {
         }
         return mappedPricing;
     }
+
+    SongDetailsDto mapFromEntityToDetailsDto(Song song);
 
     SongDto mapFromEntityToSongDto (Song song);
     void updateSongFromDto(SongDto dto, @MappingTarget Song song);

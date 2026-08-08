@@ -1,6 +1,7 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.BeatMarketCrudFacade;
+import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
@@ -9,8 +10,8 @@ import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.r
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.CreateSongResponseDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponseDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetSongResponseDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponse;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongDetailsResponse;
 import com.spring.beatmarket.infrastructure.error.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,7 +35,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,7 +56,7 @@ class SongController {
 
     })
     @GetMapping
-    ResponseEntity<GetAllSongsResponseDto> getAllSongs(
+    ResponseEntity<GetAllSongsResponse> getAllSongs(
             SongSearchRequestDto searchRequestDto,
             @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         if(searchRequestDto.maxPrice() != null){
@@ -79,10 +79,9 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     })
     @GetMapping("/{id}")
-    ResponseEntity<GetSongResponseDto> getSongById(@PathVariable Long id, @RequestHeader(required = false) String requestId) {
-        log.info(requestId);
-        SongDto song = songFacade.findSongDtoById(id);
-        return ResponseEntity.ok(songControllerMapper.mapFromSongToGetSongResponseDto(song));
+    ResponseEntity<SongDetailsResponse> getSongById(@PathVariable Long id) {
+        SongDetailsDto songDetails = songFacade.getSongDetailsById(id);
+        return ResponseEntity.ok(songControllerMapper.mapFromDomainToSongDetailsResponse(songDetails));
     }
 
     @Operation(summary = "Create a new song", description = "Adds a new song to the system.")

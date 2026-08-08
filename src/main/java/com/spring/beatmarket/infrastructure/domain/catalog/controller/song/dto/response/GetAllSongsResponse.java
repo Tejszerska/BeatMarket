@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(description = "Chunked list of all songs")
-public record GetAllSongsResponseDto(
-        @Schema(description = "List of songs for the current page") List<SongResponseDto> songs,
+public record GetAllSongsResponse(
+        @Schema(description = "List of songs for the current page") List<SongSummaryResponse> songs,
         @Schema(description = "Indicates if there is a next page of songs available", example = "true") boolean hasNext
 ) {
 }

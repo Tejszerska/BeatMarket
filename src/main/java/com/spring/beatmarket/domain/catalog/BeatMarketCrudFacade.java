@@ -9,6 +9,7 @@ import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
@@ -58,6 +59,9 @@ public class BeatMarketCrudFacade {
         return songRetriever.findAll(searchCriteria, pageable);
     }
 
+    public SongDetailsDto getSongDetailsById(Long id) {
+        return songRetriever.getSongDetailsById(id);
+    }
     public SongDto findSongDtoById(Long id) {
         return songRetriever.findSongDtoById(id);
     }
