@@ -29,7 +29,7 @@
 **Songs (Utwory)**
 * [x] GET /api/catalog/songs
 * [x] GET /api/catalog/songs/{id}
-* [ ] POST /api/catalog/songs
+* [x] POST /api/catalog/songs
 * [ ] PUT /api/catalog/songs/{id}
 * [ ] DELETE /api/catalog/songs/{id}
 
@@ -90,6 +90,8 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 
 
 4. Integracje (Kolejny krok prac)
+
+- [ ] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych
 
 - [ ] Stworzenie logiki komunikacji ze Stripe (generowanie URL do Checkoutu).
 

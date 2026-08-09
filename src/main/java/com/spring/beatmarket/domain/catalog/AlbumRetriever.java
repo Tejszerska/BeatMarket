@@ -49,4 +49,8 @@ class AlbumRetriever {
         return albumRepository.findAllAlbums(pageable)
                 .map(albumMapper::mapFromEntityToAlbumDto);
     }
+
+    Album getAlbumReferenceById(final Long id) {
+       return albumRepository.getReferenceById(id);
+    }
 }

@@ -9,6 +9,7 @@ import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
+import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
@@ -25,7 +26,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Service
 @Transactional
-public class BeatMarketCrudFacade {
+public class CatalogFacade {
     private final SongAdder songAdder;
     private final SongRetriever songRetriever;
     private final SongDeleter songDeleter;
@@ -89,7 +90,7 @@ public class BeatMarketCrudFacade {
         return artistAssigner.addArtistToAlbum(artistId, albumId);
     }
 
-    public SongDto addSong(final SongRequestDto dto) {
+    public SongCreatedDto addSong(final SongRequestDto dto) {
         return songAdder.addSong(dto);
     }
 

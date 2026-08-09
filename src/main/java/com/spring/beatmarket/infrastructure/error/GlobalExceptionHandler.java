@@ -42,7 +42,7 @@ class GlobalExceptionHandler {
     public ResponseEntity<SingleStringErrorResponseDto> handleNotFoundExceptions(RuntimeException exception) {
         log.warn("Resource not found: {}", exception.getMessage());
 
-        SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND);
+        SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(errorResponse);
@@ -69,7 +69,7 @@ class GlobalExceptionHandler {
     public ResponseEntity<SingleStringErrorResponseDto> handleBlankException(IllegalArgumentException exception){
         log.warn("Resource can't be blank: {}", exception.getMessage());
 
-        SingleStringErrorResponseDto response = new SingleStringErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        SingleStringErrorResponseDto response = new SingleStringErrorResponseDto(exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);

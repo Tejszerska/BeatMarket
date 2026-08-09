@@ -48,4 +48,6 @@ interface AlbumRepository extends Repository<Album, Long> {
 
     @Query("SELECT a FROM Album a")
     Slice<Album> findAllAlbums(Pageable pageable);
+
+    Album getReferenceById(Long id);
 }

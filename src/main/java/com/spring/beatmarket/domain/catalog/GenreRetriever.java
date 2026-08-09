@@ -32,4 +32,8 @@ class GenreRetriever {
     Genre retrieveDefaultGenre(){
        return findGenreById(DEFAULT_GENRE_ID);
     }
+
+    Genre getGenreReference(Long id){
+        return  genreRepository.getReferenceById(id);
+    }
 }

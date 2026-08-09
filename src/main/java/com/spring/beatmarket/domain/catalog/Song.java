@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.shared.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +26,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
 @Entity
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes =
         {
                 @Index(
@@ -49,23 +48,17 @@ class Song extends BaseEntity {
     )
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Genre genre;
-
     @Column(nullable = false)
     private String title;
 
     private LocalDate releaseDate;
     private Long duration;
 
-    @Column(columnDefinition = "TEXT")
-    private String previewUrl;
-
-    @Column(columnDefinition = "TEXT")
-    private String fileUrl;
-
     @Enumerated(EnumType.STRING)
     private SongLanguage language;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Genre genre;
 
     @ManyToOne
     private Album album;
@@ -74,19 +67,44 @@ class Song extends BaseEntity {
     @OrderColumn(name = "artist_order")
     private List<Artist> artists = new ArrayList<>();
 
-    public Song(String title) {
-        this.title = title;
+    @Column(columnDefinition = "TEXT")
+    private String previewUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String fileUrl;
+
+    Song(final String title, final LocalDate releaseDate, final Long duration, final SongLanguage language,
+         final Genre genre, final Album album, final List<Artist> artists){
+        this(title, releaseDate, duration, language,
+                genre, album, artists, null, null);
     }
 
-    Song(final String title, final LocalDate releaseDate, final Long duration, final SongLanguage songLanguage, final Genre genre) {
+    @Builder
+    Song(final String title, final LocalDate releaseDate, final Long duration, final SongLanguage language,
+         final Genre genre, final Album album, final List<Artist> artists,
+         final String previewUrl, final String fileUrl) {
+        if (title == null || title.isBlank()) throw new MissingRequiredFieldException("title");
+        if (releaseDate == null) throw new MissingRequiredFieldException("releaseDate");
+        if (language == null) throw new MissingRequiredFieldException("language");
+        if (duration == null) throw new MissingRequiredFieldException("duration");
+
+        if (duration <= 0) throw new IllegalArgumentException("Duration must be a positive number");
+        if (releaseDate.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Release date can't be in the future");
+
         this.title = title;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.language = songLanguage;
+        this.language = language;
         this.genre = genre;
+        this.album = album;
+        this.artists = artists;
+        this.previewUrl = previewUrl;
+        this.fileUrl = fileUrl;
     }
 
-    void assignDefaultTitle(){
+
+    void assignDefaultTitle() {
         this.title = "Default song:" + this.uuid.toString();
     }
 }

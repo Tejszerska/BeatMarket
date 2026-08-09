@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 
-import com.spring.beatmarket.domain.catalog.BeatMarketCrudFacade;
+import com.spring.beatmarket.domain.catalog.CatalogFacade;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping("/artists")
 class ArtistController {
-    private final BeatMarketCrudFacade beatmarketCrudFacade;
+    private final CatalogFacade beatmarketCrudFacade;
     private final ArtistControllerMapper artistControllerMapper;
 
     @Operation(summary = "Create a new artist", description = "Adds a new artist to the database.")

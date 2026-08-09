@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
+import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
@@ -46,5 +47,8 @@ interface SongMapper {
     SongDetailsDto mapFromEntityToDetailsDto(Song song);
 
     SongDto mapFromEntityToSongDto (Song song);
+
+    SongCreatedDto mapFromEntityToSongCreatedDto(Song song);
+
     void updateSongFromDto(SongDto dto, @MappingTarget Song song);
 }

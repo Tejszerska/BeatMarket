@@ -17,4 +17,6 @@ interface ArtistRepository extends Repository<Artist, Long> {
     int deleteArtistById(Long id);
 
     boolean existsById(Long id);
+
+    Artist getReferenceById(Long id);
 }

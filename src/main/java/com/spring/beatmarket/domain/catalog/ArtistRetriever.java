@@ -32,4 +32,8 @@ class ArtistRetriever {
     boolean existsById(final Long artistId) {
        return artistRepository.existsById(artistId);
     }
+
+    Artist getArtistReference (Long id){
+        return artistRepository.getReferenceById(id);
+    }
 }

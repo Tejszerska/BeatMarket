@@ -1,11 +1,14 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
-import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -13,17 +16,35 @@ import org.springframework.stereotype.Service;
 class SongAdder {
     private final SongRepository songRepository;
     private final GenreRetriever genreRetriever;
+    private final AlbumRetriever albumRetriever;
+    private final ArtistRetriever artistRetriever;
     private final SongMapper songMapper;
 
 
-    SongDto addSong(final SongRequestDto dto) {
-        if (dto.name() == null || dto.name().isBlank()) {
-            throw new TitleIsBlankException("Song needs a specified title!");
+    SongCreatedDto addSong(final SongRequestDto dto) {
+
+        Genre genreProxy = null;
+        if (dto.genreId() != null) {
+            genreProxy = genreRetriever.getGenreReference(dto.genreId());
         }
-        Genre defaultGenre = genreRetriever.retrieveDefaultGenre();
+
+        Album albumProxy = null;
+        if (dto.albumId() != null) {
+            albumProxy = albumRetriever.getAlbumReferenceById(dto.albumId());
+        }
+
+        List<Artist> artistsProxyList = new ArrayList<>();
+        List<Long> artistIdsFromDto = dto.artistIds();
+        if (dto.artistIds() != null) {
+            for (Long artistsId : artistIdsFromDto) {
+                artistsProxyList.add(artistRetriever.getArtistReference(artistsId));
+            }
+        }
+
         Song save = songRepository.save(
-                new Song(dto.name(), dto.releaseDate(), dto.duration(), dto.language(), defaultGenre));
-        return songMapper.mapFromEntityToSongDto(save);
+                new Song(dto.title(), dto.releaseDate(), dto.duration(), dto.language(), genreProxy, albumProxy, artistsProxyList));
+
+        return songMapper.mapFromEntityToSongCreatedDto(save);
     }
 
     SongDto addDefaultSong() {

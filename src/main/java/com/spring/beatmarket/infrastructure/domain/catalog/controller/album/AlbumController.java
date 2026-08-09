@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
-import com.spring.beatmarket.domain.catalog.BeatMarketCrudFacade;
+import com.spring.beatmarket.domain.catalog.CatalogFacade;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping("/albums")
 class AlbumController {
-    private final BeatMarketCrudFacade beatmarketCrudFacade;
+    private final CatalogFacade beatmarketCrudFacade;
     private final AlbumControllerMapper albumControllerMapper;
 
     @Operation(summary = "Create a new album", description = "Creates an album and assigns an initial song to it.")

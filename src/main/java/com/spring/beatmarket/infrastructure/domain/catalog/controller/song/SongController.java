@@ -1,15 +1,16 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
-import com.spring.beatmarket.domain.catalog.BeatMarketCrudFacade;
+import com.spring.beatmarket.domain.catalog.CatalogFacade;
+import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequestDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.CreateSongResponseDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.CreateSongResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongDetailsResponse;
 import com.spring.beatmarket.infrastructure.error.ErrorResponseDto;
@@ -46,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 public
 class SongController {
 
-    private final BeatMarketCrudFacade songFacade;
+    private final CatalogFacade songFacade;
     private final SongControllerMapper songControllerMapper;
 
     @Operation(summary = "Get all songs", description = "Returns a paginated list of all songs in the database, with an option to limit results.")
@@ -91,10 +92,10 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     })
     @PostMapping
-    ResponseEntity<CreateSongResponseDto> postSong(@RequestBody @Valid CreateSongRequestDto createSongRequestDto) {
-        SongRequestDto domainRequest = songControllerMapper.mapFromSongCreateSongRequestDtoToDomainRequest(createSongRequestDto);
-        SongDto savedSong = songFacade.addSong(domainRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(songControllerMapper.mapFromSongDtoToCreateSongResponseDto(savedSong));
+    ResponseEntity<CreateSongResponse> postSong(@RequestBody @Valid CreateSongRequest createSongRequest) {
+        SongRequestDto domainRequest = songControllerMapper.mapFromCreateSongRequestToDomainRequest(createSongRequest);
+        SongCreatedDto savedSong = songFacade.addSong(domainRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(songControllerMapper.mapFromSongCreatedDtoToResponse(savedSong));
     }
 
     @Operation(summary = "Delete song", description = "Removes a song from the database by its ID.")

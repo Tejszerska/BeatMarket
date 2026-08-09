@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 
-import com.spring.beatmarket.domain.catalog.BeatMarketCrudFacade;
+import com.spring.beatmarket.domain.catalog.CatalogFacade;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.request.CreateGenreRequest;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping("/genres")
 class GenreController {
-    private final BeatMarketCrudFacade beatmarketCrudFacade;
+    private final CatalogFacade beatmarketCrudFacade;
     private final GenreControllerMapper genreControllerMapper;
 
     @Operation(summary = "Create a new genre", description = "Adds a new musical genre to the database.")

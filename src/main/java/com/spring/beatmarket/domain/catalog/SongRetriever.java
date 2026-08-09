@@ -79,12 +79,12 @@ class SongRetriever {
 
     Song findSongById(Long id) {
         return songRepository.findSongByIdWithGenre(id)
-                .orElseThrow(() -> new SongNotFoundException("Song with id " + id + " not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song by id=" + id + " was not found"));
     }
 
     void existsById(Long id) {
         if (!songRepository.existsById(id)) {
-            throw new SongNotFoundException("Song with id " + id + " not found");
+            throw new SongNotFoundException("Song by id=" + id + " was not found");
         }
     }
 }

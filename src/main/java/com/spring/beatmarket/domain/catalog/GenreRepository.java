@@ -17,4 +17,6 @@ interface GenreRepository extends Repository<Genre, Long> {
 
     @Query("SELECT g FROM Genre g where g.id=:id")
     Optional<Genre> findGenreById(Long id);
+
+    Genre getReferenceById(Long id);
 }
