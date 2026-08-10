@@ -364,7 +364,34 @@ Adds a new song to the system.
 ```json
 {
   "id": 10,
-  "title": "In the End"
+  "title": "In the End",
+  "language": "EN",
+  "releaseDate": "2000-10-24",
+  "duration": 216,
+  "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-watermark.mp3",
+  "artists": [
+    {
+      "id": 2,
+      "name": "U2",
+      "imageUrl": "https://s3.aws.com/your-bucket/images/u2-profile.jpg",
+      "displayOrder": 1
+    },
+    {
+      "id": 8,
+      "name": "Coldplay",
+      "imageUrl": "https://s3.aws.com/your-bucket/images/coldplay-profile.jpg",
+      "displayOrder": 2
+    }
+  ],
+  "genre": {
+    "id": 1,
+    "name": "Rock"
+  },
+  "album": {
+    "id": 7,
+    "title": "Something",
+    "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg"
+  }
 }
 ```
 
@@ -474,25 +501,34 @@ Partially updates an existing song's metadata and its relationships. All fields 
 ```json
 {
   "id": 10,
-  "title": "Corrected Title",
-  "duration": 215,
-  "releaseDate": "2026-07-18",
+  "title": "In the End",
   "language": "EN",
-  "genre": {
-    "id": 2,
-    "name": "Nu Metal"
-  },
-  "album": null,
+  "releaseDate": "2000-10-24",
+  "duration": 216,
+  "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-watermark.mp3",
   "artists": [
     {
-      "id": 1,
-      "name": "Kety"
+      "id": 2,
+      "name": "U2",
+      "imageUrl": "https://s3.aws.com/your-bucket/images/u2-profile.jpg",
+      "displayOrder": 1
     },
     {
-      "id": 45,
-      "name": "New Artist"
+      "id": 8,
+      "name": "Coldplay",
+      "imageUrl": "https://s3.aws.com/your-bucket/images/coldplay-profile.jpg",
+      "displayOrder": 2
     }
-  ]
+  ],
+  "genre": {
+    "id": 1,
+    "name": "Rock"
+  },
+  "album": {
+    "id": 7,
+    "title": "Something",
+    "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg"
+  }
 }
 ```
 

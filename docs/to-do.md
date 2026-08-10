@@ -30,8 +30,8 @@
 * [x] GET /api/catalog/songs
 * [x] GET /api/catalog/songs/{id}
 * [x] POST /api/catalog/songs
-* [ ] PUT /api/catalog/songs/{id}
-* [ ] DELETE /api/catalog/songs/{id}
+* [ ] PATCH /api/catalog/songs/{id}
+* [x] DELETE /api/catalog/songs/{id}
 
 **Genres (Gatunki)**
 * [ ] GET /api/catalog/genres
@@ -91,7 +91,13 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 
 4. Integracje (Kolejny krok prac)
 
-- [ ] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych
+
+- [ ] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych (moduł catalog) ---- rozważyć w jaki sposób zabezpieczyć te pola w samej encji Song, 
+aby uniemożliwić ich przypadkową zmianę z zewnątrz (np. poprzez usunięcie standardowych setterów i wprowadzenie dedykowanych metod assignFile(...)?)
+
+- [ ] Dodawanie wyceny licencji piosenki - komunikacja między modułami catalog, licensing
+
+- [ ] Spring HATEOAS do response edycji piosenki (ceny licencji - tabela pricing)
 
 - [ ] Stworzenie logiki komunikacji ze Stripe (generowanie URL do Checkoutu).
 
