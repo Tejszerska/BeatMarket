@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.domain.catalog.exception.SongNotFoundException;
@@ -15,7 +15,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +29,7 @@ class SongRetriever {
 
     Slice<SongSummaryDto> findAll(SongSearchCriteria searchCriteria, Pageable pageable) {
 
-        Set<Long> matchingIdsFromLicensing = new HashSet<>();
+        Set<Long> matchingIdsFromLicensing = null;
 
         if (searchCriteria.maxPrice() != null) {
             matchingIdsFromLicensing = licensingFacade.findSongIdByMaxPrice(
@@ -68,11 +67,12 @@ class SongRetriever {
     }
 
     SongDetailsDto getSongDetailsById(Long id) {
-        Song s = findSongById(id);
-        return songMapper.mapFromEntityToDetailsDto(s);
+        Song song = findSongById(id);
+        List<SongPriceDto> pricing = licensingFacade.getPricingForSingleSong(id);
+        return songMapper.mapFromEntityToDetailsDto(song, pricing);
     }
 
-    SongDto findSongDtoById(Long id) {
+    SongDtoOld findSongDtoById(Long id) {
         Song s = findSongById(id);
         return songMapper.mapFromEntityToSongDto(s);
     }
