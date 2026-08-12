@@ -14,7 +14,7 @@ class SongDeleter {
 
     void deleteById(Long id) {
         log.info("deleting song by id: " + id);
-        songRepository.deleteById(id);
+        songRepository.deleteSongDirectly(id);
     }
 
     void deleteAllSongsById(final Set<Long> songIds) {

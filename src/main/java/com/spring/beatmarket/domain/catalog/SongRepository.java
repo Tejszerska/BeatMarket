@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -12,8 +12,6 @@ import java.util.Optional;
 @org.springframework.stereotype.Repository
 interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecutor<Song> {
 
-
-    @Query("SELECT s FROM Song s WHERE s.id = :id")
     Optional<Song> findById(Long id);
 
     @Query("SELECT s FROM Song s " +
@@ -25,18 +23,13 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
 
     @Modifying
     @Query("DELETE FROM Song s WHERE s.id = :id")
-    int deleteById(Long id);
-
-    @Modifying
-    @Query("UPDATE Song s SET s.title = :#{#newSong.title} where s.id = :id")
-    void updateById(Long id, Song newSong);
+    void deleteSongDirectly(@Param("id") Long id);
 
     boolean existsById(Long id);
 
     Song save(Song song);
 
-    @Transactional
     @Modifying
     @Query("delete from Song s where s.id in :ids")
-    int deleteByIdIn(Collection<Long> ids);
+    void deleteByIdIn(@Param("ids") Collection<Long> ids);
 }

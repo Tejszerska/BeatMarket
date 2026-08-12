@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
@@ -70,11 +69,6 @@ class SongRetriever {
         Song song = findSongById(id);
         List<SongPriceDto> pricing = licensingFacade.getPricingForSingleSong(id);
         return songMapper.mapFromEntityToDetailsDto(song, pricing);
-    }
-
-    SongDtoOld findSongDtoById(Long id) {
-        Song s = findSongById(id);
-        return songMapper.mapFromEntityToSongDto(s);
     }
 
     Song findSongById(Long id) {

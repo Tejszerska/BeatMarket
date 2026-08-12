@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OrderColumn;
@@ -49,19 +50,25 @@ class Song extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private LocalDate releaseDate;
+
+    @Column(nullable = false)
     private Long duration;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private SongLanguage language;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id")
     private Album album;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @OrderColumn(name = "artist_order")
     private List<Artist> artists = new ArrayList<>();
 
@@ -137,10 +144,6 @@ class Song extends BaseEntity {
 
     void detachFromGenre() {
         this.genre = null;
-    }
-
-    void addArtist(Artist artist){
-        this.artists.add(artist);
     }
 
     void changeArtistList(List<Artist> newArtists) {
