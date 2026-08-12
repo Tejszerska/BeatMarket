@@ -4,6 +4,7 @@ import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
 import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import org.mapstruct.InjectionStrategy;
@@ -44,11 +45,10 @@ interface SongMapper {
         return mappedPricing;
     }
 
-    SongDetailsDto mapFromEntityToDetailsDto(Song song);
+    @Mapping(source = "songPricesDto", target = "pricing")
+    SongDetailsDto mapFromEntityToDetailsDto(Song song, List<SongPriceDto> songPricesDto);
 
-    SongDto mapFromEntityToSongDto (Song song);
+    SongDtoOld mapFromEntityToSongDto (Song song);
 
-    SongCreatedDto mapFromEntityToSongCreatedDto(Song song);
-
-    void updateSongFromDto(SongDto dto, @MappingTarget Song song);
+    SongDto mapFromEntityToDto(Song song);
 }
