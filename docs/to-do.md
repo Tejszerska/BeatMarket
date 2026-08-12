@@ -30,7 +30,7 @@
 * [x] GET /api/catalog/songs
 * [x] GET /api/catalog/songs/{id}
 * [x] POST /api/catalog/songs
-* [ ] PATCH /api/catalog/songs/{id}
+* [x] PATCH /api/catalog/songs/{id}
 * [x] DELETE /api/catalog/songs/{id}
 
 **Genres (Gatunki)**
@@ -72,6 +72,16 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 
 - [x] Skonfigurować role w Spring Security (ROLE_CUSTOMER po rejestracji, ROLE_ADMIN do zarządzania zasobami).
 
+- [ ] ujednolicić błędy - MissingRequiredFieldException dla wszystkich pól required ( Rich Domain Model refactor w encjach na wzór Song)
+
+- [ ] obsłużyć kluczowe błedy 
+
+```
+- Exception.class (Catch-all) na samym dole handlera żeby unikać 500 np Nullpointer,
+- MethodArgumentTypeMismatchException jesli błędny  Path Varialable
+- MissingServletRequestParameterException brak wymaganego request param
+- HttpRequestMethodNotSupportedException gdy dla zdefiniowanego url jest tylko get a ktoś róbuje np post
+```
 
 3. Baza Danych (Skrypty Flyway)
 
@@ -86,7 +96,6 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 - [x] Nowa tabela payments: Powinna zawierać id użytkownika, status płatności, kwotę oraz obowiązkowo stripe_session_id.
 
 - [x] Nowa tabela licenses: Powinna zawierać m.in. wygenerowany certyfikat/klucz, identyfikator użytkownika, identyfikator płatności i ramy czasowe ważności.
-
 
 
 4. Integracje (Kolejny krok prac)

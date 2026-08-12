@@ -9,19 +9,18 @@ import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
-import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.UpdateSongDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -44,9 +43,6 @@ public class CatalogFacade {
     private final SongAssigner songAssigner;
     private final GenreDeleter genreDeleter;
 
-    public Set<AlbumDto> findAlbumsDtoByArtistId(Long artistId) {
-        return albumRetriever.findAlbumsDtoByArtistId(artistId);
-    }
 
     public AlbumInfo findAlbumByIdReturnAlbumInfo(Long id) {
         return albumRetriever.findAlbumByReturnAlbumInfo(id);
@@ -59,12 +55,8 @@ public class CatalogFacade {
     public Slice<SongSummaryDto> findAllSongs(SongSearchCriteria searchCriteria, Pageable pageable) {
         return songRetriever.findAll(searchCriteria, pageable);
     }
-
     public SongDetailsDto getSongDetailsById(Long id) {
         return songRetriever.getSongDetailsById(id);
-    }
-    public SongDto findSongDtoById(Long id) {
-        return songRetriever.findSongDtoById(id);
     }
 
     public Slice<AlbumDto> findAllAlbums(Pageable pageable) {
@@ -78,6 +70,7 @@ public class CatalogFacade {
     public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
         return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
     }
+
     public GenreDto addGenre(GenreRequestDto dto) {
         return genreAdder.addGenre(dto.name());
     }
@@ -90,7 +83,7 @@ public class CatalogFacade {
         return artistAssigner.addArtistToAlbum(artistId, albumId);
     }
 
-    public SongCreatedDto addSong(final SongRequestDto dto) {
+    public SongDto addSong(final SongRequestDto dto) {
         return songAdder.addSong(dto);
     }
 
@@ -101,7 +94,6 @@ public class CatalogFacade {
     public ArtistDto updateArtistNameById(Long artistId, String name) {
         return artistUpdater.updateArtistNameById(artistId, name);
     }
-
 
 
     public void deleteSongById(Long id) {
@@ -117,15 +109,15 @@ public class CatalogFacade {
         return genreRetriever.findGenreDtoById(genreId);
     }
 
-//    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
-//        return songUpdater.updatePartiallyByIdAndDto(id, songFromRequest);
-//    }
-
-    public int deleteGenreById(final Long genreId) {
-      return  genreDeleter.deleteById(genreId);
+    public SongDto updateSongById(Long id, UpdateSongDto songFromRequest) {
+        return songUpdater.updateSongById(id, songFromRequest);
     }
 
-    public SongDto assignGenreByIdToSongById(final Long songId, final Long genreId) {
+    public int deleteGenreById(final Long genreId) {
+        return genreDeleter.deleteById(genreId);
+    }
+
+    public SongDtoOld assignGenreByIdToSongById(final Long songId, final Long genreId) {
         return genreAssigner.assignGenreByIdToSongById(songId, genreId);
     }
 

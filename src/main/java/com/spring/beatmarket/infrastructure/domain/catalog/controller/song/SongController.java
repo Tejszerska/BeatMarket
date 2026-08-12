@@ -1,18 +1,20 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
-import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.UpdateSongDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.UpdateSongRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.CreateSongResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongDetailsResponse;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongResponse;
 import com.spring.beatmarket.infrastructure.error.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -66,7 +69,6 @@ class SongController {
                         "Filtering by maxPrice requires declaring currency and license.");
             }
         }
-
         SongSearchCriteria songSearchCriteria = songControllerMapper.mapFromSearchRequestToDomain(searchRequestDto);
         Slice<SongSummaryDto> allSongs = songFacade.findAllSongs(songSearchCriteria, pageable);
 
@@ -92,10 +94,10 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     })
     @PostMapping
-    ResponseEntity<CreateSongResponse> postSong(@RequestBody @Valid CreateSongRequest createSongRequest) {
+    ResponseEntity<SongResponse> postSong(@RequestBody @Valid CreateSongRequest createSongRequest) {
         SongRequestDto domainRequest = songControllerMapper.mapFromCreateSongRequestToDomainRequest(createSongRequest);
-        SongCreatedDto savedSong = songFacade.addSong(domainRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(songControllerMapper.mapFromSongCreatedDtoToResponse(savedSong));
+        SongDto savedSong = songFacade.addSong(domainRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(songControllerMapper.mapFromDomainToResponse(savedSong));
     }
 
     @Operation(summary = "Delete song", description = "Removes a song from the database by its ID.")
@@ -111,21 +113,21 @@ class SongController {
         return ResponseEntity.noContent().build();
     }
 
-//    @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Song updated successfully."),
-//            @ApiResponse(responseCode = "400", description = "Invalid input data.",
-//                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-//            @ApiResponse(responseCode = "404", description = "Song not found.",
-//                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-//    })
-//    @PatchMapping("/{id}")
-//    ResponseEntity<PartiallyUpdateSongResponseDto> partiallyUpdateSong(@PathVariable Long id,
-//                                                                       @RequestBody PartiallyUpdateSongRequestDto request) {
-//        SongDto updatedSong = songControllerMapper.mapFromPartiallyUpdateSongRequestDtoToSong(request);
-//        SongDto savedSong = songFacade.updateSongPartiallyById(id, updatedSong);
-//        return ResponseEntity.ok(songControllerMapper.mapFromSongDtoToPartiallyUpdateSongResponseDto(savedSong));
-//    }
+    @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Song updated successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid input data.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Song not found.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @PatchMapping("/{id}")
+     ResponseEntity<SongResponse> updateSong(@PathVariable Long id,
+                                                    @RequestBody UpdateSongRequest request) {
+        UpdateSongDto updateSongDto = songControllerMapper.mapUpdateRequestToDto(request);
+        SongDto songDto = songFacade.updateSongById(id, updateSongDto);
+        return ResponseEntity.ok(songControllerMapper.mapFromDomainToResponse(songDto));
+    }
 
     @Operation(summary = "Assign genre to song", description = "Links an existing musical genre to a specific song.")
     @ApiResponses(value = {
@@ -135,7 +137,7 @@ class SongController {
     })
     @PutMapping("/{songId}/genre/{genreId}")
     ResponseEntity<AssignGenreToSongResponseDto> assignGenreByIdToSongById(@PathVariable Long songId, @PathVariable Long genreId) {
-        SongDto songDto = songFacade.assignGenreByIdToSongById(songId, genreId);
-        return ResponseEntity.ok(songControllerMapper.mapFromSongDtoToAssignGenreToSongResponseDto(songDto));
+        SongDtoOld songDtoOld = songFacade.assignGenreByIdToSongById(songId, genreId);
+        return ResponseEntity.ok(songControllerMapper.mapFromSongDtoToAssignGenreToSongResponseDto(songDtoOld));
     }
 }

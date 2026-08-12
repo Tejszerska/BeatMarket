@@ -30,6 +30,16 @@ class SongPricesRetriever {
     }
 
 
+    List<SongPriceDto> getPricingForSingleSong(Long songId){
+        if (songId == null) return Collections.emptyList();
+
+        List<SongPrice> allBySongId = songPriceRepository.findAllBySongId(songId);
+
+        return allBySongId.stream()
+                .map(mapper::mapFromEntityToSongPriceDto)
+                .collect(Collectors.toList());
+    }
+
     Set<Long> findSongIdByMaxPrice (String currency, String tier, BigDecimal maxPrice){
         LicenseTier enumTier= LicenseTier.valueOf(tier);
         return songPriceRepository.findSongIdByCurrencyAndTierAndPriceLessThanEqual(currency, enumTier, maxPrice);

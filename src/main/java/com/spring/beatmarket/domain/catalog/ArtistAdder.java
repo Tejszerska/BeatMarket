@@ -3,7 +3,7 @@ package com.spring.beatmarket.domain.catalog;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +41,8 @@ class ArtistAdder {
         Artist artist = new Artist(name);
         Artist savedArtist = artistRepository.save(artist);
 
-        SongDto songDto = songAdder.addDefaultSong();
-        AlbumDto albumDto = albumAdder.addDefaultAlbum(songDto.id());
+        SongDtoOld songDtoOld = songAdder.addDefaultSong();
+        AlbumDto albumDto = albumAdder.addDefaultAlbum(songDtoOld.id());
         Album album = albumRetriever.findById(albumDto.id());
 
         artist.setAlbums(Set.of(album));

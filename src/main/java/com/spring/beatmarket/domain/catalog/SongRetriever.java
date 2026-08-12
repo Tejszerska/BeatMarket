@@ -4,7 +4,7 @@ import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
-import com.spring.beatmarket.domain.catalog.exception.SongNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.licensing.LicensingFacade;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import lombok.RequiredArgsConstructor;
@@ -78,13 +78,13 @@ class SongRetriever {
     }
 
     Song findSongById(Long id) {
-        return songRepository.findSongByIdWithGenre(id)
-                .orElseThrow(() -> new SongNotFoundException("Song by id=" + id + " was not found"));
+        return songRepository.findSongByIdEagerly(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Song", id));
     }
 
     void existsById(Long id) {
         if (!songRepository.existsById(id)) {
-            throw new SongNotFoundException("Song by id=" + id + " was not found");
+            throw new ResourceNotFoundException("Song", id);
         }
     }
 }

@@ -20,4 +20,7 @@ interface SongPriceRepository extends Repository<SongPrice, SongPriceId> {
             (@Param("currency") String currency,
              @Param("tier") LicenseTier tier,
              @Param("maxPrice") BigDecimal maxPrice);
+
+
+    List<SongPrice> findAllBySongId(Long songId);
 }

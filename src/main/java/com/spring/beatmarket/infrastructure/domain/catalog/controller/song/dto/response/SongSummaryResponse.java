@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-@Schema(description = "Summary representation of a single song response")
+@Schema(description = "Summary representation of a single song response with pricing info")
 public record SongSummaryResponse(
         @Schema(description = "Song ID", example = "10") Long id,
         @Schema(description = "Song title", example = "Shadow Realm") String title,

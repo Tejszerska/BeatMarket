@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
-import com.spring.beatmarket.domain.catalog.exception.ArtistNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +22,7 @@ class ArtistRetriever {
 
     Artist findById(final Long artistId) {
         return artistRepository.findById(artistId)
-                .orElseThrow(() -> new ArtistNotFoundException("Artist by id=" + artistId + " not found"));
-    }
-
-    ArtistDto findByIdReturnDto(final Long artistId){
-      return artistMapper.mapFromEntityToArtistDto(findById(artistId));
+                .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
     }
 
     boolean existsById(final Long artistId) {

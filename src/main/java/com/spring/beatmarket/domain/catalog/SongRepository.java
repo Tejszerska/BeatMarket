@@ -15,16 +15,13 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
 
     @Query("SELECT s FROM Song s WHERE s.id = :id")
     Optional<Song> findById(Long id);
-//
-//    @Query("SELECT DISTINCT s FROM Song s " +
-//            "LEFT JOIN FETCH s.genre " +
-//            "LEFT JOIN FETCH s.artists " +
-//            "LEFT JOIN FETCH s.album " +
-//            "WHERE s.id IN :ids")
-//    List<Song> findSongsWithDetailsByIds(@Param("ids") List<Long> ids);
 
-    @Query("SELECT s FROM Song s JOIN FETCH s.genre WHERE s.id = :id")
-    Optional<Song> findSongByIdWithGenre(Long id);
+    @Query("SELECT s FROM Song s " +
+            "LEFT JOIN FETCH s.genre " +
+            "LEFT JOIN FETCH s.artists " +
+            "LEFT JOIN FETCH s.album " +
+            "WHERE s.id = :id")
+    Optional<Song> findSongByIdEagerly(Long id);
 
     @Modifying
     @Query("DELETE FROM Song s WHERE s.id = :id")

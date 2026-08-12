@@ -2,8 +2,7 @@ package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
-import com.spring.beatmarket.domain.catalog.exception.AlbumNotFoundException;
-import com.spring.beatmarket.domain.catalog.exception.ArtistNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,12 +23,12 @@ class AlbumRetriever {
 
     AlbumInfo findAlbumByReturnAlbumInfo(final Long id) {
         return albumRepository.findAlbumByIdReturnAlbumInfo(id)
-                .orElseThrow(() -> new AlbumNotFoundException("Album with id=" + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Album", id));
     }
 
     Set<Album> findAlbumsByArtistId(final Long artistId) {
         if (!artistRetriever.existsById(artistId)) {
-            throw new ArtistNotFoundException("Artist by id=" + artistId + " wasn't found in the database");
+            throw new ResourceNotFoundException("Artist", artistId);
         }
         return new HashSet<>(albumRepository.findAllAlbumsByArtistId(artistId));
     }
@@ -42,7 +41,7 @@ class AlbumRetriever {
 
     Album findById(final Long albumId) {
         return albumRepository.findById(albumId)
-                .orElseThrow(() -> new AlbumNotFoundException("Album by id=" + albumId + "was not found"));
+                .orElseThrow(() -> new  ResourceNotFoundException("Album", albumId));
     }
 
     Slice<AlbumDto> findAllAlbums(Pageable pageable) {

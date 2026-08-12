@@ -3,7 +3,7 @@
 ### Phase I: Minimum Viable Product (MVP) - B2B Licensing Platform
 
 #### Account Module
-- [ ] The authentication flow incorporates OAuth2 Google login as well as traditional manual registration requiring a password and a mandatory email verification loop.
+- [x] The authentication flow incorporates OAuth2 Google login as well as traditional manual registration requiring a password and a mandatory email verification loop.
 - [ ] All newly registered users are automatically assigned a customer role.
 - [ ] An admin role is provisioned manually within the database to grant secure access for catalog management.
 

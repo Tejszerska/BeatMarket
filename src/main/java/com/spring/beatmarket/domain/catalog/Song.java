@@ -20,7 +20,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.List;
 
 @Getter
 @Entity
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes =
         {
@@ -103,6 +101,66 @@ class Song extends BaseEntity {
         this.fileUrl = fileUrl;
     }
 
+    void changeTitle(String newTitle) {
+        if (newTitle == null || newTitle.isBlank()) throw new MissingRequiredFieldException("title");
+        this.title = newTitle;
+    }
+
+    void changeDuration(Long newDuration) {
+        if (newDuration == null) throw new MissingRequiredFieldException("duration");
+        if (newDuration <= 0) throw new IllegalArgumentException("Duration must be a positive number");
+        this.duration = newDuration;
+    }
+
+    void changeLanguage(SongLanguage language) {
+        if (language == null) throw new MissingRequiredFieldException("language");
+        this.language = language;
+    }
+
+    void changeReleaseDate(LocalDate releaseDate) {
+        if (releaseDate == null) throw new MissingRequiredFieldException("releaseDate");
+        if (releaseDate.isAfter(LocalDate.now())) throw new IllegalArgumentException("Release date can't be in the future");
+        this.releaseDate = releaseDate;
+    }
+
+    void assignToAlbum(Album album) {
+        this.album = album;
+    }
+
+    void assignToGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    void detachFromAlbum() {
+        this.album = null;
+    }
+
+    void detachFromGenre() {
+        this.genre = null;
+    }
+
+    void addArtist(Artist artist){
+        this.artists.add(artist);
+    }
+
+    void changeArtistList(List<Artist> newArtists) {
+        this.artists.clear();
+        if (newArtists != null) {
+            this.artists.addAll(newArtists);
+        }
+    }
+
+    void clearArtists() {
+        this.artists.clear();
+    }
+
+    void changePreviewUrl(String previewUrl) {
+        this.previewUrl = previewUrl;
+    }
+
+    void changeFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
 
     void assignDefaultTitle() {
         this.title = "Default song:" + this.uuid.toString();

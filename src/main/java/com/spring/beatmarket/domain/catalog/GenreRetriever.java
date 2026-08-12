@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.domain.catalog.exception.GenreNotfoundException;
+import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +26,7 @@ class GenreRetriever {
     }
     Genre findGenreById(final Long genreId) {
         return genreRepository.findGenreById(genreId)
-                .orElseThrow(() -> new GenreNotfoundException("Genre by id=" + genreId + "wasn't found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Genre", genreId));
     }
 
     Genre retrieveDefaultGenre(){

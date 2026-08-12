@@ -2,7 +2,7 @@ package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +20,8 @@ class SongAssigner {
         Song song = songRetriever.findSongById(songId);
         album.addSongToAlbum(song);
         AlbumDto albumDto = albumMapper.mapFromEntityToAlbumDto(album);
-        SongDto songDto = songMapper.mapFromEntityToSongDto(song);
+        SongDtoOld songDtoOld = songMapper.mapFromEntityToSongDto(song);
 
-        return new AlbumSongsDto(albumDto, songDto);
+        return new AlbumSongsDto(albumDto, songDtoOld);
     }
 }

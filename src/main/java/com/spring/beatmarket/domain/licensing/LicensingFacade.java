@@ -23,4 +23,8 @@ public class LicensingFacade {
     public Set<Long> findSongIdByMaxPrice(String currency, String tier, BigDecimal maxPrice) {
         return songPricesRetriever.findSongIdByMaxPrice(currency, tier, maxPrice);
     }
+
+    public List<SongPriceDto> getPricingForSingleSong(Long songId) {
+        return songPricesRetriever.getPricingForSingleSong(songId);
+    }
 }

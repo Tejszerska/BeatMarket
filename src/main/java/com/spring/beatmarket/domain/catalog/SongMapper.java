@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
-import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
@@ -10,7 +9,6 @@ import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.Collections;
@@ -23,6 +21,7 @@ import java.util.Map;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface SongMapper {
+
     @Mapping(source = "song.genre.name", target = "genre")
     @Mapping(source = "song.album.title", target = "album")
     @Mapping(source = "song.artists", target = "artists")

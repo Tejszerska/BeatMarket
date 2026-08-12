@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
-@Schema(description = "Detailed information about a specific song with pricing info")
-public record SongDetailsResponse(
+@Schema(description = "Detailed information about a specific song")
+
+public record SongResponse(
         @Schema(description = "Unique ID of the song", example = "10") Long id,
         @Schema(description = "Title of the song", example = "In the End") String title,
         @Schema(description = "Language of the song in two letter format, except instrumental being NONE", example = "EN")
@@ -51,9 +50,6 @@ public record SongDetailsResponse(
                             "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg"
                           }
                         """)
-        AlbumSummaryDto album,
-        @Schema(description = "Song pricing tiers",
-                example = "{\"Standard\": 20.00, \"Commercial\": 50.00}" )
-        Map<String, PriceWithCurrencyDto> pricing
+        AlbumSummaryDto album
 ) {
 }

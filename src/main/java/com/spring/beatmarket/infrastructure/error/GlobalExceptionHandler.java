@@ -1,48 +1,32 @@
 package com.spring.beatmarket.infrastructure.error;
 
-import com.spring.beatmarket.domain.catalog.exception.AlbumNotFoundException;
-import com.spring.beatmarket.domain.catalog.exception.ArtistNotFoundException;
-import com.spring.beatmarket.domain.catalog.exception.GenreNotfoundException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
-import com.spring.beatmarket.domain.catalog.exception.SongNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
 class GlobalExceptionHandler {
 
-    private List<String> getErrorsFromException(MethodArgumentNotValidException exception){
-        return exception.getBindingResult()
-                .getAllErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList());
-    }
-
-
     @ExceptionHandler({
-            AlbumNotFoundException.class,
-            ArtistNotFoundException.class,
-            GenreNotfoundException.class,
-            SongNotFoundException.class
+            ResourceNotFoundException.class
     })
     public ResponseEntity<SingleStringErrorResponseDto> handleNotFoundExceptions(RuntimeException exception) {
-        log.warn("Resource not found: {}", exception.getMessage());
-
         SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(exception.getMessage());
+
+        log.warn("Resource not found: {}", exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(errorResponse);
@@ -57,6 +41,7 @@ class GlobalExceptionHandler {
 
         ValidationErrorResponseDto response = new ValidationErrorResponseDto("Validation failed", errors);
 
+        log.warn("Validation failed: {}", errors);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);
@@ -67,9 +52,9 @@ class GlobalExceptionHandler {
             NameIsBlankException.class
     })
     public ResponseEntity<SingleStringErrorResponseDto> handleBlankException(IllegalArgumentException exception){
-        log.warn("Resource can't be blank: {}", exception.getMessage());
-
         SingleStringErrorResponseDto response = new SingleStringErrorResponseDto(exception.getMessage());
+
+        log.warn("Resource can't be blank: {}", exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);
@@ -82,6 +67,41 @@ class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         errors.put(exception.getField(), exception.getMessage());
         ValidationErrorResponseDto errorResponseDto = new ValidationErrorResponseDto("Validation failed", errors);
+
+        log.warn("Validation failed: {}", errors);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponseDto);
+    }
+
+
+    @ExceptionHandler({
+            HttpMessageNotReadableException.class
+    })
+    public ResponseEntity<Object> handleInvalidJSON(HttpMessageNotReadableException exception){
+        Map<String, String> errors = new HashMap<>();
+
+        Throwable cause = exception.getCause();
+        if(cause instanceof InvalidFormatException invalidFormatException){
+            invalidFormatException.getPath().forEach( path -> {
+                String fieldName = path.getFieldName();
+                String errorMessage = String.format("Invalid value '%s'. Expected format '%s'",
+                        invalidFormatException.getValue(), invalidFormatException.getTargetType().getSimpleName());
+                errors.put(fieldName, errorMessage);
+            });
+        }
+        if(errors.isEmpty()){
+            SingleStringErrorResponseDto singleStringError = new SingleStringErrorResponseDto("Malformed JSON request");
+            log.warn("Malformed JSON request: {}", exception.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(singleStringError);
+        }
+
+        ValidationErrorResponseDto errorResponseDto =
+                new ValidationErrorResponseDto("Validation failed due to invalid data format", errors);
+
+        log.warn("Validation failed: {}", errors);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponseDto);
