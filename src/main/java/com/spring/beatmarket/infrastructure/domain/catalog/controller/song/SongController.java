@@ -3,7 +3,6 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
@@ -11,7 +10,6 @@ import com.spring.beatmarket.domain.catalog.dto.UpdateSongDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.UpdateSongRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongDetailsResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongResponse;
@@ -37,7 +35,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -129,15 +126,4 @@ class SongController {
         return ResponseEntity.ok(songControllerMapper.mapFromDomainToResponse(songDto));
     }
 
-    @Operation(summary = "Assign genre to song", description = "Links an existing musical genre to a specific song.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Genre successfully assigned to the song."),
-            @ApiResponse(responseCode = "404", description = "Song or Genre not found.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    })
-    @PutMapping("/{songId}/genre/{genreId}")
-    ResponseEntity<AssignGenreToSongResponseDto> assignGenreByIdToSongById(@PathVariable Long songId, @PathVariable Long genreId) {
-        SongDtoOld songDtoOld = songFacade.assignGenreByIdToSongById(songId, genreId);
-        return ResponseEntity.ok(songControllerMapper.mapFromSongDtoToAssignGenreToSongResponseDto(songDtoOld));
-    }
 }

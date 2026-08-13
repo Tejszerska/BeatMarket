@@ -11,7 +11,6 @@ import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
@@ -39,7 +38,6 @@ public class CatalogFacade {
     private final ArtistAssigner artistAssigner;
     private final ArtistUpdater artistUpdater;
     private final GenreRetriever genreRetriever;
-    private final GenreAssigner genreAssigner;
     private final SongAssigner songAssigner;
     private final GenreDeleter genreDeleter;
 
@@ -117,9 +115,6 @@ public class CatalogFacade {
         return genreDeleter.deleteById(genreId);
     }
 
-    public SongDtoOld assignGenreByIdToSongById(final Long songId, final Long genreId) {
-        return genreAssigner.assignGenreByIdToSongById(songId, genreId);
-    }
 
     public AlbumSongsDto assignSongByIdToAlbumById(final Long albumId, final Long songId) {
         return songAssigner.assignSongByIdToAlbumById(albumId, songId);
