@@ -1,10 +1,9 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
-import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.song.PriceWithCurrencyDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -26,7 +25,13 @@ interface SongMapper {
     @Mapping(source = "song.album.title", target = "album")
     @Mapping(source = "song.artists", target = "artists")
     @Mapping(source = "songPricesDto", target = "pricing")
-    SongSummaryDto mapFromEntityToSongSummaryDto (Song song, List<SongPriceDto> songPricesDto);
+    SongSummaryDto toSummaryDto(Song song, List<SongPriceDto> songPricesDto);
+
+    @Mapping(source = "songPricesDto", target = "pricing")
+    SongDetailsDto toDetailsDto(Song song, List<SongPriceDto> songPricesDto);
+
+    SongDto toDto(Song song);
+
 
     default List<String> mapArtists (List<Artist> artists){
         if(artists == null || artists.isEmpty()) return Collections.emptyList();
@@ -43,11 +48,4 @@ interface SongMapper {
         }
         return mappedPricing;
     }
-
-    @Mapping(source = "songPricesDto", target = "pricing")
-    SongDetailsDto mapFromEntityToDetailsDto(Song song, List<SongPriceDto> songPricesDto);
-
-    SongDtoOld mapFromEntityToSongDto (Song song);
-
-    SongDto mapFromEntityToDto(Song song);
 }

@@ -1,13 +1,13 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
-import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
-import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
-import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
-import com.spring.beatmarket.domain.catalog.dto.UpdateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongSearchCriteria;
+import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.UpdateSongRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongDetailsResponse;
@@ -23,22 +23,21 @@ import java.util.List;
         uses = JsonNullableMapper.class)
 public interface SongControllerMapper {
 
-    SongRequestDto mapFromCreateSongRequestToDomainRequest(CreateSongRequest createSongRequest);
+    CreateSongDto toDomain(CreateSongRequest createSongRequest);
 
-    SongDetailsResponse mapFromDomainToSongDetailsResponse(SongDetailsDto songDetailsDto);
+    SongDetailsResponse toDomain(SongDetailsDto songDetailsDto);
 
-    SongResponse mapFromDomainToResponse(SongDto dto);
+    SongSearchCriteria toDomain(SongSearchRequest songSearchRequest);
 
-    List<SongSummaryResponse> mapToListOfSongResponseDto(List<SongSummaryDto> list);
+    UpdateSongDto toDomain(UpdateSongRequest request);
 
-    SongSearchCriteria mapFromSearchRequestToDomain(SongSearchRequestDto songSearchRequestDto);
+    SongResponse toResponse(SongDto dto);
 
+    List<SongSummaryResponse> toResponse(List<SongSummaryDto> list);
 
-    UpdateSongDto mapUpdateRequestToDto(UpdateSongRequest request);
-
-    default GetAllSongsResponse mapFromSongToGetAllSongsResponseDto(Slice<SongSummaryDto> slice) {
+    default GetAllSongsResponse toResponse(Slice<SongSummaryDto> slice) {
         return new GetAllSongsResponse(
-                mapToListOfSongResponseDto(slice.getContent()),
+                toResponse(slice.getContent()),
                 slice.hasNext()
         );
     }

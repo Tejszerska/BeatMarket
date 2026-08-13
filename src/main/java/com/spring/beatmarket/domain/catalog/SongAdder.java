@@ -1,8 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
-import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
+import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ class SongAdder {
     private final SongMapper songMapper;
 
 
-    SongDto addSong(final SongRequestDto dto) {
+    SongDto addSong(final CreateSongDto dto) {
 
         Genre genreProxy = null;
         if (dto.genreId() != null) {
@@ -44,15 +43,7 @@ class SongAdder {
         Song save = songRepository.save(
                 new Song(dto.title(), dto.releaseDate(), dto.duration(), dto.language(), genreProxy, albumProxy, artistsProxyList));
 
-        return songMapper.mapFromEntityToDto(save);
+        return songMapper.toDto(save);
     }
 
-    SongDtoOld addDefaultSong() {
-        Song song = new Song();
-        song.assignDefaultTitle();
-        Genre defaultGenre = genreRetriever.retrieveDefaultGenre();
-         song.assignToGenre(defaultGenre);
-        Song savedSong = songRepository.save(song);
-        return songMapper.mapFromEntityToSongDto(savedSong);
-    }
 }

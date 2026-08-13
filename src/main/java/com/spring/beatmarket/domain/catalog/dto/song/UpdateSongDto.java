@@ -1,4 +1,4 @@
-package com.spring.beatmarket.domain.catalog.dto;
+package com.spring.beatmarket.domain.catalog.dto.song;
 
 import com.spring.beatmarket.domain.catalog.SongLanguage;
 

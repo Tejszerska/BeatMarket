@@ -2,7 +2,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Summary representation of a genre")
-public record GenreResponseDto(
+public record GenreResponse(
         @Schema(description = "Genre ID", example = "1")
         Long id,
 

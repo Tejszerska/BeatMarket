@@ -1,7 +1,7 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
+import com.spring.beatmarket.domain.catalog.dto.song.PriceWithCurrencyDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;

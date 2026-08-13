@@ -7,14 +7,14 @@ import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.CreateGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
-import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
-import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
-import com.spring.beatmarket.domain.catalog.dto.UpdateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongSearchCriteria;
+import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -69,8 +69,8 @@ public class CatalogFacade {
         return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
     }
 
-    public GenreDto addGenre(GenreRequestDto dto) {
-        return genreAdder.addGenre(dto.name());
+    public GenreDto addGenre(CreateGenreDto dto) {
+        return genreAdder.addGenre(dto);
     }
 
     public AlbumDto addAlbumWithSong(AlbumRequestDto dto) {
@@ -81,7 +81,7 @@ public class CatalogFacade {
         return artistAssigner.addArtistToAlbum(artistId, albumId);
     }
 
-    public SongDto addSong(final SongRequestDto dto) {
+    public SongDto addSong(final CreateSongDto dto) {
         return songAdder.addSong(dto);
     }
 
@@ -111,8 +111,9 @@ public class CatalogFacade {
         return songUpdater.updateSongById(id, songFromRequest);
     }
 
-    public int deleteGenreById(final Long genreId) {
-        return genreDeleter.deleteById(genreId);
+    public void deleteGenreById(final Long genreId) {
+        genreRetriever.existsById(genreId);
+        genreDeleter.deleteById(genreId);
     }
 
 

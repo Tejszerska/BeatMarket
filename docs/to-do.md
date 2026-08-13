@@ -36,7 +36,7 @@
 **Genres (Gatunki)**
 * [ ] GET /api/catalog/genres
 * [ ] GET /api/catalog/genres/{id}
-* [ ] POST /api/catalog/genres
+* [x] POST /api/catalog/genres
 * [ ] PUT /api/catalog/genres/{id}
 * [ ] DELETE /api/catalog/genres/{id}
 

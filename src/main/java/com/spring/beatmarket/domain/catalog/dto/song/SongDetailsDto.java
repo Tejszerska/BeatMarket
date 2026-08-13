@@ -1,5 +1,8 @@
-package com.spring.beatmarket.domain.catalog.dto;
+package com.spring.beatmarket.domain.catalog.dto.song;
 
+import com.spring.beatmarket.domain.catalog.dto.AlbumSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.ArtistSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import lombok.Builder;
 
 import java.time.LocalDate;

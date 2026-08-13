@@ -2,8 +2,10 @@ package com.spring.beatmarket.domain.catalog;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -11,7 +13,6 @@ import java.util.Optional;
 interface GenreRepository extends Repository<Genre, Long> {
     Genre save(Genre genre);
 
-    Integer deleteGenreById(Long genreId);
 
     Slice<Genre> findAll(Pageable pageable);
 
@@ -19,4 +20,10 @@ interface GenreRepository extends Repository<Genre, Long> {
     Optional<Genre> findGenreById(Long id);
 
     Genre getReferenceById(Long id);
+
+    boolean existsById(Long id);
+
+    @Modifying
+    @Query("DELETE FROM Genre g WHERE g.id = :id")
+    void deleteGenreDirectly(@Param("id") Long id);
 }

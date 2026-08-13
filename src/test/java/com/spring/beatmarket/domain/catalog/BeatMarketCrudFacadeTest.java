@@ -6,10 +6,10 @@
 //import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 //import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 //import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-//import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
+//import com.spring.beatmarket.domain.catalog.dto.CreateGenreDto;
 //import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
-//import com.spring.beatmarket.domain.catalog.dto.SongDto;
-//import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
+//import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+//import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
 //import com.spring.beatmarket.domain.catalog.exception.AlbumNotFoundException;
 //import com.spring.beatmarket.domain.catalog.exception.ArtistNotFoundException;
 //import com.spring.beatmarket.domain.catalog.exception.GenreNotfoundException;
@@ -297,7 +297,7 @@
 ////    void should_find_song_by_id() {
 ////        // given
 ////        LocalDate instant = LocalDate.now();
-////        SongRequestDto songRequestDto = SongRequestDto.builder()
+////        CreateSongDto songRequestDto = CreateSongDto.builder()
 ////                .name("Test")
 ////                .duration(100L)
 ////                .releaseDate(instant)
@@ -487,7 +487,7 @@
 //        assertThat(albumsDtoByArtistId).extracting(AlbumDto::title).anyMatch(s -> s.startsWith("Default"));
 //    }
 //
-//    //    public GenreDto addGenre(GenreRequestDto dto) {
+//    //    public GenreDto addGenre(CreateGenreDto dto) {
 //
 //    @ParameterizedTest
 //    @DisplayName("Should throw NameIsBlankException when invalid name for Genre was sent")
@@ -497,7 +497,7 @@
 //        // given
 //        assertThat(beatmarketCrudFacade.findAllGenres(Pageable.unpaged()).getContent())
 //                .hasSize(1);// there always is the default genre in db
-//        GenreRequestDto genreRequestDto = new GenreRequestDto(invalidName);
+//        CreateGenreDto genreRequestDto = new CreateGenreDto(invalidName);
 //
 //        // when & then
 //        assertThatThrownBy(() -> beatmarketCrudFacade.addGenre(genreRequestDto))
@@ -511,7 +511,7 @@
 //        // given
 //        assertThat(beatmarketCrudFacade.findAllGenres(Pageable.unpaged()).getContent())
 //                .hasSize(1);// there always is the default genre in db
-//        GenreRequestDto genreRequestDto = new GenreRequestDto("test");
+//        CreateGenreDto genreRequestDto = new CreateGenreDto("test");
 //
 //        // when
 //        GenreDto genreDto = beatmarketCrudFacade.addGenre(genreRequestDto);
@@ -592,13 +592,13 @@
 //                .containsExactly(albumDto.id());
 //    }
 ////        @TODO Fix after implementing filtering for all songs
-////    //    public SongDto addSong(final SongRequestDto dto)
+////    //    public SongDto addSong(final CreateSongDto dto)
 ////
 ////    @Test
 ////    @DisplayName("Should add Song")
 ////    void should_add_song() {
 ////        // given
-////        SongRequestDto requestDto = SongRequestDto.builder()
+////        CreateSongDto requestDto = CreateSongDto.builder()
 ////                .name("test-song")
 ////                .releaseDate(LocalDate.now())
 ////                .language(SongLanguage.EN)
@@ -920,12 +920,12 @@
 //    }
 //
 //    private GenreDto createGenre(String name) {
-//        GenreRequestDto request = new GenreRequestDto(name);
+//        CreateGenreDto request = new CreateGenreDto(name);
 //        return beatmarketCrudFacade.addGenre(request);
 //    }
 //
 //    private SongCreatedDto createSong(String name) {
-//        SongRequestDto request = SongRequestDto.builder()
+//        CreateSongDto request = CreateSongDto.builder()
 //                .title(name)
 //                .language(SongLanguage.EN)
 //                .duration(100L)

@@ -1,4 +1,4 @@
-package com.spring.beatmarket.domain.catalog.dto;
+package com.spring.beatmarket.domain.catalog.dto.song;
 
 import com.spring.beatmarket.domain.catalog.SongLanguage;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Builder
-public record SongRequestDto(
+public record CreateSongDto(
         String title,
         LocalDate releaseDate,
         Long duration,

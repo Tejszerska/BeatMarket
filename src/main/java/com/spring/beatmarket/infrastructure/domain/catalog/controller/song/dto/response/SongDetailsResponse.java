@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.domain.catalog.dto.PriceWithCurrencyDto;
+import com.spring.beatmarket.domain.catalog.dto.song.PriceWithCurrencyDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;

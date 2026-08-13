@@ -1,13 +1,13 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
+import com.spring.beatmarket.domain.catalog.dto.CreateGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.domain.catalog.dto.GenreRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.request.CreateGenreRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.CreateGenreResponse;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GetAllGenresResponseDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GetGenreResponseDto;
-import com.spring.beatmarket.infrastructure.error.ErrorResponseDto;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GenreResponse;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GetAllGenresResponse;
+import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
+import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,14 +40,14 @@ class GenreController {
     @Operation(summary = "Create a new genre", description = "Adds a new musical genre to the database.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Genre created successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., missing name).",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+            @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., too short).",
+                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class)))
     })
     @PostMapping
-    ResponseEntity<CreateGenreResponse> postGenre(@RequestBody CreateGenreRequest createGenreRequest) {
-        GenreRequestDto genreRequestDto = genreControllerMapper.mapFromCreateGenreRequestDtoToDomainRequest(createGenreRequest);
-        GenreDto genreDto = beatmarketCrudFacade.addGenre(genreRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(genreControllerMapper.mapFromGenreDtoToCreateGenreResponse(genreDto));
+    ResponseEntity<GenreResponse> postGenre(@RequestBody CreateGenreRequest createGenreRequest) {
+        CreateGenreDto createGenreDto = genreControllerMapper.toDomain(createGenreRequest);
+        GenreDto genreDto = beatmarketCrudFacade.addGenre(createGenreDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(genreControllerMapper.toResponse(genreDto));
     }
 
     @Operation(summary = "Get all genres", description = "Returns a paginated list of all genres available in the system.")
@@ -55,29 +55,29 @@ class GenreController {
             @ApiResponse(responseCode = "200", description = "List of genres retrieved successfully.")
     })
     @GetMapping
-    ResponseEntity<GetAllGenresResponseDto> getGenres(
+    ResponseEntity<GetAllGenresResponse> getGenres(
           @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Slice<GenreDto> allGenresSlice = beatmarketCrudFacade.findAllGenres(pageable);
-        return ResponseEntity.ok(genreControllerMapper.mapSliceToGetAllGenresResponseDto(allGenresSlice));
+        return ResponseEntity.ok(genreControllerMapper.toGetAllGenresResponse(allGenresSlice));
     }
 
     @Operation(summary = "Get genre by ID", description = "Retrieves details of a specific genre by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Genre found and returned successfully."),
             @ApiResponse(responseCode = "404", description = "Genre with the provided ID does not exist.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
     @GetMapping("/{genreId}")
-    ResponseEntity<GetGenreResponseDto> getGenreById(@PathVariable Long genreId) {
+    ResponseEntity<GenreResponse> getGenreById(@PathVariable Long genreId) {
         GenreDto dto = beatmarketCrudFacade.findGenreById(genreId);
-        return ResponseEntity.ok(genreControllerMapper.mapGenreDtoToGetGenreResponseDto(dto));
+        return ResponseEntity.ok(genreControllerMapper.toResponse(dto));
     }
 
     @Operation(summary = "Delete genre", description = "Removes a genre from the database by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Genre deleted successfully (No Content)."),
             @ApiResponse(responseCode = "404", description = "Genre not found.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
     @DeleteMapping("/{genreId}")
     ResponseEntity<Void> deleteGenreById(@PathVariable Long genreId) {

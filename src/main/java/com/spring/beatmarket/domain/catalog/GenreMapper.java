@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface GenreMapper {
-    GenreDto mapFromEntityToGenreDto(Genre genre);
+    GenreDto toDto(Genre genre);
 }

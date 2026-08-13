@@ -1,4 +1,6 @@
 package com.spring.beatmarket.domain.catalog.dto;
 
-public record AlbumSongsDto(AlbumDto album, SongDtoOld song) {
+import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+
+public record AlbumSongsDto(AlbumDto album, SongDto song) {
 }

@@ -919,41 +919,6 @@ Adds a new genre to the system.
 }
 ```
 ---
-#### POST /api/catalog/genres/{id}/image
-Uploads genre's image (image file) and links the resulting resource URL to the specified genre. If an image is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
-
-**Parameters:**
-*   `id` (integer, path parameter, required) *Genre ID*
-
-**Request Headers:**
-*   `Content-Type: multipart/form-data`
-
-**Request Body (Form-Data):**
-*   `file` (file/binary, required) *The image file (e.g. JPG, PNG) to be uploaded.*
-
-**Response (200 OK):**
-*Returns the URL of the uploaded resource.*
-```json
-{
-  "message": "Genre image uploaded successfully",
-  "imageUrl": "https://s3.aws.com/your-bucket/genres/k-pop.png"
-}
-```
-**Error Response (404 Not Found)**
-*Returned when the genre ID does not exist in the database.*
-```json
-{
-  "message": "Genre by id=10 was not found."
-}
-```
-**Error Response (400 Bad Request):**
-*Returned when the file is missing, empty, or of an unsupported format.*
-```json
-{
-  "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
-}
-```
----
 
 #### PATCH /api/catalog/genres/{id}
 Updates an existing genre's name.
@@ -967,8 +932,6 @@ Updates an existing genre's name.
   "name": "K-Pop"
 }
 ```
-
-
 **Response (204 No Content):** *Genre's name successfully updated.*
 
 **Response (404 Not Found):**

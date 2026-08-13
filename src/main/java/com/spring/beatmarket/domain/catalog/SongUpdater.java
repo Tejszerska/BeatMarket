@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.UpdateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -103,7 +103,7 @@ class SongUpdater {
         }
 
 
-        return songMapper.mapFromEntityToDto(songFromDB);
+        return songMapper.toDto(songFromDB);
     }
 }
 
