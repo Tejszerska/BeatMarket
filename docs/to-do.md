@@ -83,6 +83,8 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 - HttpRequestMethodNotSupportedException gdy dla zdefiniowanego url jest tylko get a ktoś róbuje np post
 ```
 
+- [ ] walidacja biznesowa w song (RDM) "Czy piosenka może zmienić język, jeśli została już zablokowana przez proces licencyjny?", "Czy można nałożyć zniżkę na utwór, który ma status archiwalny?", "Czy data premiery nie jest przypadkiem z przyszłości?".
+
 3. Baza Danych (Skrypty Flyway)
 
 - [x] Aktualizacja song: Dodać kolumny preview_url (do próbki) oraz file_url (do pełnego utworu) pod przyszłą integrację z AWS, .

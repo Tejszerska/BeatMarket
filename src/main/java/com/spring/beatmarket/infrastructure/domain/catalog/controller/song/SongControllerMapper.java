@@ -2,7 +2,6 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.SongDtoOld;
 import com.spring.beatmarket.domain.catalog.dto.SongRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.SongSummaryDto;
@@ -10,14 +9,12 @@ import com.spring.beatmarket.domain.catalog.dto.UpdateSongDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.UpdateSongRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.AssignGenreToSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongDetailsResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongSummaryResponse;
 import com.spring.beatmarket.infrastructure.domain.shared.JsonNullableMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
@@ -25,12 +22,6 @@ import java.util.List;
 @Mapper(componentModel = "spring",
         uses = JsonNullableMapper.class)
 public interface SongControllerMapper {
-
-    @Mapping(source = "id", target = "songId")
-    @Mapping(source = "title", target = "songTitle")
-    @Mapping(source = "genre.id", target = "genreId")
-    @Mapping(source = "genre.name", target = "genreName")
-    AssignGenreToSongResponseDto mapFromSongDtoToAssignGenreToSongResponseDto(SongDtoOld dto);
 
     SongRequestDto mapFromCreateSongRequestToDomainRequest(CreateSongRequest createSongRequest);
 

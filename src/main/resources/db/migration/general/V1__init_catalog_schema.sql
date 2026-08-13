@@ -56,21 +56,22 @@ CREATE TABLE song
     version      BIGINT,
     genre_id     BIGINT,
     title        VARCHAR(255) NOT NULL,
-    release_date date,
-    duration     BIGINT,
+    release_date date NOT NULL,
+    duration     BIGINT NOT NULL,
     preview_url  TEXT,
     file_url     TEXT,
-    language     VARCHAR(255),
+    language     VARCHAR(255) NOT NULL,
     album_id     BIGINT,
     CONSTRAINT pk_song PRIMARY KEY (id)
 );
+
 
 CREATE TABLE song_artists
 (
     artists_id BIGINT NOT NULL,
     songs_id   BIGINT NOT NULL,
     artist_order INTEGER NOT NULL,
-    CONSTRAINT pk_song_artists PRIMARY KEY (artists_id, songs_id)
+    CONSTRAINT pk_song_artists PRIMARY KEY (artist_order, songs_id)
 );
 
 CREATE TABLE users
