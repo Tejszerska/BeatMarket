@@ -61,7 +61,7 @@ class SongController {
     @GetMapping
     ResponseEntity<GetAllSongsResponse> getAllSongs(
             SongSearchRequest searchRequestDto,
-            @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 20, sort = "createdOn", direction = Sort.Direction.ASC) Pageable pageable) {
         if(searchRequestDto.maxPrice() != null){
             if(searchRequestDto.currency() == null || searchRequestDto.license() == null){
                 throw new InvalidSearchCriteriaException("maxPrice",

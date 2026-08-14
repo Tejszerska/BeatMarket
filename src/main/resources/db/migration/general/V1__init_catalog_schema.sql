@@ -44,7 +44,7 @@ CREATE TABLE genre
     uuid       UUID,
     created_on TIMESTAMP WITHOUT TIME ZONE,
     version    BIGINT,
-    name       VARCHAR(255),
+    name       VARCHAR(255) NOT NULL UNIQUE,
     CONSTRAINT pk_genre PRIMARY KEY (id)
 );
 

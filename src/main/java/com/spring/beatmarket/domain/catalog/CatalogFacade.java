@@ -7,8 +7,8 @@ import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
-import com.spring.beatmarket.domain.catalog.dto.CreateGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
+import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
@@ -40,6 +40,7 @@ public class CatalogFacade {
     private final GenreRetriever genreRetriever;
     private final SongAssigner songAssigner;
     private final GenreDeleter genreDeleter;
+    private final GenreUpdater genreUpdater;
 
 
     public AlbumInfo findAlbumByIdReturnAlbumInfo(Long id) {
@@ -53,6 +54,7 @@ public class CatalogFacade {
     public Slice<SongSummaryDto> findAllSongs(SongSearchCriteria searchCriteria, Pageable pageable) {
         return songRetriever.findAll(searchCriteria, pageable);
     }
+
     public SongDetailsDto getSongDetailsById(Long id) {
         return songRetriever.getSongDetailsById(id);
     }
@@ -62,14 +64,14 @@ public class CatalogFacade {
     }
 
     public Slice<GenreDto> findAllGenres(Pageable pageable) {
-        return genreRetriever.findAllGenres(pageable);
+        return genreRetriever.findAll(pageable);
     }
 
     public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
         return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
     }
 
-    public GenreDto addGenre(CreateGenreDto dto) {
+    public GenreDto addGenre(SaveGenreDto dto) {
         return genreAdder.addGenre(dto);
     }
 
@@ -104,7 +106,7 @@ public class CatalogFacade {
     }
 
     public GenreDto findGenreById(final Long genreId) {
-        return genreRetriever.findGenreDtoById(genreId);
+        return genreRetriever.getGenreDtoById(genreId);
     }
 
     public SongDto updateSongById(Long id, UpdateSongDto songFromRequest) {
@@ -121,4 +123,7 @@ public class CatalogFacade {
         return songAssigner.assignSongByIdToAlbumById(albumId, songId);
     }
 
+    public GenreDto update(final Long id, final SaveGenreDto dto) {
+        return genreUpdater.update(id, dto);
+    }
 }

@@ -1,4 +1,4 @@
 package com.spring.beatmarket.domain.catalog.dto;
 
-public record CreateGenreDto(String name) {
+public record SaveGenreDto(String name) {
 }

@@ -932,7 +932,13 @@ Updates an existing genre's name.
   "name": "K-Pop"
 }
 ```
-**Response (204 No Content):** *Genre's name successfully updated.*
+**Response (200 OK):** *Genre's name successfully updated.*
+```json
+{
+  "id": 10,
+  "name": "K-POP"
+}
+```
 
 **Response (404 Not Found):**
 *Genre not found.*

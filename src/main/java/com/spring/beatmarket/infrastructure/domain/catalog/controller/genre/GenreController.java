@@ -1,9 +1,9 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
-import com.spring.beatmarket.domain.catalog.dto.CreateGenreDto;
+import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.request.CreateGenreRequest;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.request.GenreRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GenreResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GetAllGenresResponse;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping("/genres")
 class GenreController {
-    private final CatalogFacade beatmarketCrudFacade;
+    private final CatalogFacade facade;
     private final GenreControllerMapper genreControllerMapper;
 
     @Operation(summary = "Create a new genre", description = "Adds a new musical genre to the database.")
@@ -44,9 +46,9 @@ class GenreController {
                     content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class)))
     })
     @PostMapping
-    ResponseEntity<GenreResponse> postGenre(@RequestBody CreateGenreRequest createGenreRequest) {
-        CreateGenreDto createGenreDto = genreControllerMapper.toDomain(createGenreRequest);
-        GenreDto genreDto = beatmarketCrudFacade.addGenre(createGenreDto);
+    ResponseEntity<GenreResponse> postGenre(@RequestBody @Valid GenreRequest genreRequest) {
+        SaveGenreDto saveGenreDto = genreControllerMapper.toDomain(genreRequest);
+        GenreDto genreDto = facade.addGenre(saveGenreDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(genreControllerMapper.toResponse(genreDto));
     }
 
@@ -56,8 +58,8 @@ class GenreController {
     })
     @GetMapping
     ResponseEntity<GetAllGenresResponse> getGenres(
-          @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Slice<GenreDto> allGenresSlice = beatmarketCrudFacade.findAllGenres(pageable);
+          @ParameterObject @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        Slice<GenreDto> allGenresSlice = facade.findAllGenres(pageable);
         return ResponseEntity.ok(genreControllerMapper.toGetAllGenresResponse(allGenresSlice));
     }
 
@@ -69,7 +71,7 @@ class GenreController {
     })
     @GetMapping("/{genreId}")
     ResponseEntity<GenreResponse> getGenreById(@PathVariable Long genreId) {
-        GenreDto dto = beatmarketCrudFacade.findGenreById(genreId);
+        GenreDto dto = facade.findGenreById(genreId);
         return ResponseEntity.ok(genreControllerMapper.toResponse(dto));
     }
 
@@ -81,7 +83,25 @@ class GenreController {
     })
     @DeleteMapping("/{genreId}")
     ResponseEntity<Void> deleteGenreById(@PathVariable Long genreId) {
-        beatmarketCrudFacade.deleteGenreById(genreId);
+        facade.deleteGenreById(genreId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Update genre name", description = "Updates name of the genre")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Genre updated successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid input data.",
+                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Genre not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
+            @ApiResponse(responseCode = "409", description = "Genre name must be unique.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+    })
+    @PatchMapping("/{id}")
+    ResponseEntity<GenreResponse> updateGenre(@PathVariable Long id,
+                                            @RequestBody @Valid GenreRequest request) {
+        SaveGenreDto dto = genreControllerMapper.toDomain(request);
+        GenreDto update = facade.update(id, dto);
+        return ResponseEntity.ok(genreControllerMapper.toResponse(update));
     }
 }

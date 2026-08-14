@@ -6,6 +6,7 @@ import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -74,6 +75,16 @@ class GlobalExceptionHandler {
                 .body(errorResponseDto);
     }
 
+    @ExceptionHandler({
+            DataIntegrityViolationException.class
+    })
+    public ResponseEntity<SingleStringErrorResponseDto> handleDataViolation(DataIntegrityViolationException exception) {
+        SingleStringErrorResponseDto errorResponse =
+                new SingleStringErrorResponseDto("A resource with this unique value already exists.");
+
+        log.warn("Data integrity violation: {} ", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
 
     @ExceptionHandler({
             HttpMessageNotReadableException.class

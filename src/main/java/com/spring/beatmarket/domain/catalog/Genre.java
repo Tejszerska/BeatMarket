@@ -25,7 +25,7 @@ class Genre extends BaseEntity {
             allocationSize = 1
     )
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Size(min = 3)
     private String name;
 

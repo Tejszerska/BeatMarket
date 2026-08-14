@@ -15,22 +15,23 @@ class GenreRetriever {
     private final GenreRepository genreRepository;
     private final GenreMapper genreMapper;
 
-    Slice<GenreDto> findAllGenres(Pageable pageable) {
+    Slice<GenreDto> findAll(Pageable pageable) {
         return genreRepository.findAll(pageable)
                 .map(genreMapper::toDto);
     }
 
-    GenreDto findGenreDtoById(final Long genreId) {
+    GenreDto getGenreDtoById(final Long genreId) {
         return genreMapper.toDto(findGenreById(genreId));
     }
+
     Genre findGenreById(final Long genreId) {
-        return genreRepository.findGenreById(genreId)
+        return genreRepository.findById(genreId)
                 .orElseThrow(() -> new ResourceNotFoundException("Genre", genreId));
     }
 
     void existsById(Long id) {
         if (!genreRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Song", id);
+            throw new ResourceNotFoundException("Genre", id);
         }
     }
 

@@ -6,7 +6,7 @@
 //import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 //import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 //import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-//import com.spring.beatmarket.domain.catalog.dto.CreateGenreDto;
+//import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 //import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
 //import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
 //import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
@@ -487,7 +487,7 @@
 //        assertThat(albumsDtoByArtistId).extracting(AlbumDto::title).anyMatch(s -> s.startsWith("Default"));
 //    }
 //
-//    //    public GenreDto addGenre(CreateGenreDto dto) {
+//    //    public GenreDto addGenre(SaveGenreDto dto) {
 //
 //    @ParameterizedTest
 //    @DisplayName("Should throw NameIsBlankException when invalid name for Genre was sent")
@@ -497,7 +497,7 @@
 //        // given
 //        assertThat(beatmarketCrudFacade.findAllGenres(Pageable.unpaged()).getContent())
 //                .hasSize(1);// there always is the default genre in db
-//        CreateGenreDto genreRequestDto = new CreateGenreDto(invalidName);
+//        SaveGenreDto genreRequestDto = new SaveGenreDto(invalidName);
 //
 //        // when & then
 //        assertThatThrownBy(() -> beatmarketCrudFacade.addGenre(genreRequestDto))
@@ -511,7 +511,7 @@
 //        // given
 //        assertThat(beatmarketCrudFacade.findAllGenres(Pageable.unpaged()).getContent())
 //                .hasSize(1);// there always is the default genre in db
-//        CreateGenreDto genreRequestDto = new CreateGenreDto("test");
+//        SaveGenreDto genreRequestDto = new SaveGenreDto("test");
 //
 //        // when
 //        GenreDto genreDto = beatmarketCrudFacade.addGenre(genreRequestDto);
@@ -920,7 +920,7 @@
 //    }
 //
 //    private GenreDto createGenre(String name) {
-//        CreateGenreDto request = new CreateGenreDto(name);
+//        SaveGenreDto request = new SaveGenreDto(name);
 //        return beatmarketCrudFacade.addGenre(request);
 //    }
 //

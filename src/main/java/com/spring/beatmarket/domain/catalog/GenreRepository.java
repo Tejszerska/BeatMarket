@@ -16,8 +16,7 @@ interface GenreRepository extends Repository<Genre, Long> {
 
     Slice<Genre> findAll(Pageable pageable);
 
-    @Query("SELECT g FROM Genre g where g.id=:id")
-    Optional<Genre> findGenreById(Long id);
+    Optional<Genre> findById(Long id);
 
     Genre getReferenceById(Long id);
 
