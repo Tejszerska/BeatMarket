@@ -5,23 +5,29 @@
 ---
 
 #### POST /api/users/register
+
 Creates an inactive user account and triggers a confirmation email.
 
 **Request Body:**
+
 ```json
 {
   "email": "test@gmail.com",
   "password": "SuperSecret123!"
 }
 ```
+
 **Response (201 Created):**
+
 ```json
 {
   "message": "User created successfully. Confirmation email sent."
 }
 ```
+
 **Error Response (400 Bad Request):**
-*Returned when validation fails (e.g., weak password, invalid email format).*
+_Returned when validation fails (e.g., weak password, invalid email format)._
+
 ```json
 {
   "message": "Validation failed",
@@ -33,7 +39,8 @@ Creates an inactive user account and triggers a confirmation email.
 ```
 
 **Error Response (409 Conflict):**
-*Returned when the email address is already registered in the system.*
+_Returned when the email address is already registered in the system._
+
 ```json
 {
   "message": "User with this email already exists."
@@ -43,70 +50,87 @@ Creates an inactive user account and triggers a confirmation email.
 ---
 
 #### GET /api/users/confirm
+
 Validates the token from the email link and activates the user account.
 
 **Parameters:**
-*   `token` (string, required, query parameter)
+
+- `token` (string, required, query parameter)
 
 **Response (302 Found):**
-*Redirects the user to the Swagger UI or frontend application upon successful activation.*
+_Redirects the user to the Swagger UI or frontend application upon successful activation._
+
 ```json
 {
   "message": "Account activated. Redirecting to Swagger UI."
 }
 ```
+
 **Error Response (404 Not Found):**
-*Returned when the token is invalid, expired, or already used.*
+_Returned when the token is invalid, expired, or already used._
+
 ```json
 {
   "message": "Confirmation failed. User cannot login."
 }
 ```
+
 ---
 
 #### POST /api/users/login
+
 Authenticates a user and issues an HttpOnly JWT cookie for subsequent requests.
 
 **Request Body:**
+
 ```json
 {
   "email": "test@gmail.com",
   "password": "SuperSecret123!"
 }
 ```
+
 **Response (200 OK):**
-*Sets an `HttpOnly` authorization cookie in the response headers.*
+_Sets an `HttpOnly` authorization cookie in the response headers._
+
 ```json
 {
   "message": "Login successful."
 }
 ```
+
 **Error Response (401 Unauthorized):**
-*Returned for incorrect credentials or unactivated accounts.*
+_Returned for incorrect credentials or unactivated accounts._
+
 ```json
 {
   "message": "Invalid email or password."
 }
 ```
+
 ---
 
 #### POST /api/users/logout
+
 Clears the JWT authorization cookie, effectively logging the user out.
 
 **Response (200 OK):**
-*Clears the `HttpOnly` cookie in the response headers.*
+_Clears the `HttpOnly` cookie in the response headers._
+
 ```json
 {
   "message": "Logged out successfully."
 }
 ```
+
 ---
 
 #### Browser Flow: Google OAuth2 Login
+
 Initiates the OAuth2 authentication flow via Google. This is not a standard REST endpoint and must be accessed directly via a web browser.
 
-*   **URL:** `GET /oauth2/authorization/google`
-*   **Action:** Redirects the user to the Google consent screen. Upon successful authentication, Google redirects back to the backend, which automatically creates the user (if new), issues a JWT cookie, and redirects the user to the Swagger UI/frontend.
+- **URL:** `GET /oauth2/authorization/google`
+- **Action:** Redirects the user to the Google consent screen. Upon successful authentication, Google redirects back to the backend, which automatically creates the user (if new), issues a JWT cookie, and redirects the user to the Swagger UI/frontend.
 
 ### Catalog Module (`catalog`)
 
@@ -115,44 +139,62 @@ Initiates the OAuth2 authentication flow via Google. This is not a standard REST
 ### User related
 
 #### GET /api/catalog/songs
+
 Fetches a chunked list of all songs
 
 **Query Parameters:**
-*   `page` (integer, query parameter) *Page index; default value: 0*
-*   `size` (integer, query parameter) *The size of the page to be returned; default value: 5*
-*   `sort` (array[string], query parameter) *Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported; default value: ["id,ASC"]*
-*   `genre` (string, query parameter, optional) *Filter by exact genre name.*
-*   `artist` (string, query parameter, optional) *Filter by exact artist name.*
-*   `language` (string, query parameter, optional) *Filter by track language (e.g., "EN", "NONE" for instrumentals).*
-*   `album` (string, query parameter, optional) *Filter by exact album name.*
-*   `releaseDate` (string, query parameter, optional) *Filter by exact release date in ISO-8601 format (YYYY-MM-DD).*
-*   `minDuration` (integer, query parameter, optional) *Filter by minimum track duration in seconds.*
-*   `maxDuration` (integer, query parameter, optional) *Filter by maximum track duration in seconds.*
-*   `maxPrice` (number, query parameter, optional) *Filter by maximum track price. **Note**: If provided, `currency` and `license` must also be specified.*
-*   `currency` (string, query parameter, optional) *Filter by currency. Required if `maxPrice` is used.*
-*   `license` (string, query parameter, optional) *Filter by license type. Required if `maxPrice` is used.*
+
+- `page` (integer, query parameter) _Page index; default value: 0_
+- `size` (integer, query parameter) _The size of the page to be returned; default value: 5_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported; default value: ["id,ASC"]_
+- `genre` (string, query parameter, optional) _Filter by exact genre name._
+- `artist` (string, query parameter, optional) _Filter by exact artist name._
+- `language` (string, query parameter, optional) _Filter by track language (e.g., "EN", "NONE" for instrumentals)._
+- `album` (string, query parameter, optional) _Filter by exact album name._
+- `releaseDate` (string, query parameter, optional) _Filter by exact release date in ISO-8601 format (YYYY-MM-DD)._
+- `minDuration` (integer, query parameter, optional) _Filter by minimum track duration in seconds._
+- `maxDuration` (integer, query parameter, optional) _Filter by maximum track duration in seconds._
+- `maxPrice` (number, query parameter, optional) _Filter by maximum track price. **Note**: If provided, `currency` and `license` must also be specified._
+- `currency` (string, query parameter, optional) _Filter by currency. Required if `maxPrice` is used._
+- `license` (string, query parameter, optional) _Filter by license type. Required if `maxPrice` is used._
 
 **Response (200 OK):**
+
 ```json
 {
   "songs": [
     {
       "id": 10,
       "title": "In the End",
-      "artist": "U2",
-      "genre": "Rock",
+      "artists": [
+        {
+          "id": 2,
+          "name": "U2"
+        },
+        {
+          "id": 8,
+          "name": "Coldplay"
+        }
+      ],
+      "genre": {
+        "id": 1,
+        "name": "Rock"
+      },
       "previewUrl": "https://some.link.com/audio.mp3",
-      "album": "Titled Album",
+      "album": {
+        "id": 7,
+        "title": "Something"
+      },
       "language": "EN",
       "releaseDate": "2000-10-24",
       "duration": 216,
       "pricing": {
         "Standard": {
-          "amount": 20.00,
+          "amount": 20.0,
           "currency": "USD"
         },
         "Commercial": {
-          "amount": 50.00,
+          "amount": 50.0,
           "currency": "USD"
         }
       }
@@ -161,8 +203,10 @@ Fetches a chunked list of all songs
   "hasNext": true
 }
 ```
+
 **Error Response (400 Bad Request):**
-*Returned when the client provides invalid query parameters (e.g., negative page index or wrong sort format).*
+_Returned when the client provides invalid query parameters (e.g., negative page index or wrong sort format)._
+
 ```json
 {
   "message": "Validation failed",
@@ -171,15 +215,19 @@ Fetches a chunked list of all songs
   }
 }
 ```
+
 ---
 
 #### GET /api/catalog/songs/{id}
+
 Retrieves detailed information about a specific song by its ID.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song id*
+
+- `id` (integer, path parameter, required) _Song id_
 
 **Response (200 OK):**
+
 ```json
 {
   "id": 10,
@@ -213,11 +261,11 @@ Retrieves detailed information about a specific song by its ID.
   },
   "pricing": {
     "Standard": {
-      "amount": 20.00,
+      "amount": 20.0,
       "currency": "USD"
     },
     "Commercial": {
-      "amount": 50.00,
+      "amount": 50.0,
       "currency": "USD"
     }
   }
@@ -225,23 +273,28 @@ Retrieves detailed information about a specific song by its ID.
 ```
 
 **Error Response (404 Not Found):**
-*Song with the provided ID does not exist.*
+_Song with the provided ID does not exist._
+
 ```json
 {
   "message": "Song by id=7 was not found "
 }
 ```
+
 ---
 
 #### GET /api/catalog/genres
+
 Retrieves a chunked list of available music genres.
 
 **Parameters:**
-*   `page` (integer, query parameter) *Page index; default value: 0*
-*   `size` (integer, query parameter) *The size of the page to be returned; default value: 20*
-*   `sort` (array[string], query parameter) *Sorting criteria in the format: property,(asc|desc); default value: ["name,ASC"]*
+
+- `page` (integer, query parameter) _Page index; default value: 0_
+- `size` (integer, query parameter) _The size of the page to be returned; default value: 20_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["name,ASC"]_
 
 **Response (200 OK):**
+
 ```json
 {
   "genres": [
@@ -258,18 +311,46 @@ Retrieves a chunked list of available music genres.
 }
 ```
 
+#### GET /api/catalog/genres/{id}
+
+Retrieves the details of a specific genre by its ID.
+
+**Parameters:**
+
+- `id` (integer, path parameter, required) _Genre ID_
+
+**Response (200 OK):**
+
+```json
+{
+  "id": 1,
+  "name": "Rock"
+}
+```
+
+**Error Response (404 Not Found):** Returned when the genre with the provided ID does not exist.
+
+```json
+{
+  "message": "Genre by id=1 was not found."
+}
+```
+
 ---
 
 #### GET /api/catalog/artists
+
 Retrieves a chunked list of available artists.
 
 **Parameters:**
-*   `page` (integer, query parameter) *Page index; default value: 0*
-*   `size` (integer, query parameter) *The size of the page to be returned; default value: 10*
-*   `sort` (array[string], query parameter) *Sorting criteria in the format: property,(asc|desc); default value: ["name,ASC"]*
-*   `name` (string, query parameter, optional) *Filter by partial or exact artist name.*
+
+- `page` (integer, query parameter) _Page index; default value: 0_
+- `size` (integer, query parameter) _The size of the page to be returned; default value: 10_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["name,ASC"]_
+- `name` (string, query parameter, optional) _Filter by partial or exact artist name._
 
 **Response (200 OK):**
+
 ```json
 {
   "artists": [
@@ -288,19 +369,67 @@ Retrieves a chunked list of available artists.
 }
 ```
 
+#### GET /api/catalog/artists/{id}
+
+Retrieves detailed information about a specific artist by their ID, including their albums and songs.
+
+**Parameters:**
+
+- `id` (integer, path parameter, required) _Artist ID_
+
+**Response (200 OK):**
+
+```json
+{
+  "id": 2,
+  "name": "U2",
+  "imageUrl": "https://s3.aws.com/your-bucket/images/u2-profile.jpg",
+  "albums": [
+    {
+      "id": 7,
+      "title": "Something",
+      "releaseDate": "2000-10-24"
+    }
+  ],
+  "songs": [
+    {
+      "id": 10,
+      "title": "In the End",
+      "duration": 216
+    },
+    {
+      "id": 11,
+      "title": "Crawling",
+      "duration": 208
+    }
+  ]
+}
+```
+
+**Error Response (404 Not Found):** Returned when the artist with the provided ID does not exist.
+
+```json
+{
+  "message": "Artist by id=2 was not found."
+}
+```
+
 ---
 
 #### GET /api/catalog/albums
+
 Retrieves a chunked list of available albums.
 
 **Parameters:**
-*   `page` (integer, query parameter) *Page index; default value: 0*
-*   `size` (integer, query parameter) *The size of the page to be returned; default value: 10*
-*   `sort` (array[string], query parameter) *Sorting criteria in the format: property,(asc|desc); default value: ["releaseDate,DESC"]*
-*   `title` (string, query parameter, optional) *Filter by partial or exact album title.*
-*   `artistId` (integer, query parameter, optional) *Filter albums by a specific artist.*
+
+- `page` (integer, query parameter) _Page index; default value: 0_
+- `size` (integer, query parameter) _The size of the page to be returned; default value: 10_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["releaseDate,DESC"]_
+- `title` (string, query parameter, optional) _Filter by partial or exact album title._
+- `artistId` (integer, query parameter, optional) _Filter albums by a specific artist._
 
 **Response (200 OK):**
+
 ```json
 {
   "albums": [
@@ -328,25 +457,73 @@ Retrieves a chunked list of available albums.
   "hasNext": true
 }
 ```
+
+#### GET /api/catalog/albums/{id}
+
+Retrieves detailed information about a specific album by its ID, including the list of associated songs.
+**Parameters:**
+
+- `id` (integer, path parameter, required) _Album ID_
+
+**Response (200 OK):**
+
+```json
+{
+  "id": 7,
+  "title": "Something",
+  "releaseDate": "2000-10-24",
+  "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg",
+  "artist": {
+    "id": 2,
+    "name": "U2"
+  },
+  "songs": [
+    {
+      "id": 10,
+      "title": "In the End",
+      "duration": 216
+    },
+    {
+      "id": 11,
+      "title": "Crawling",
+      "duration": 208
+    }
+  ]
+}
+```
+
+**Error Response (404 Not Found):** Returned when the album with the provided ID does not exist.
+
+```json
+{
+  "message": "Album by id=7 was not found."
+}
+```
+
 ---
+
 ---
+
 ### Admin related:
 
 ### Song
 
 #### POST /api/catalog/songs
+
 Adds a new song to the system.
 
 **Request Body Fields:**
-*   `title` (string, required) *Title of the song.*
-*   `releaseDate` (string, required) *Release date in YYYY-MM-DD format.*
-*   `duration` (integer, required) *Duration of the song in seconds. Must be > 0.*
-*   `language` (string, required) *Language of the song (e.g., "EN").*
-*   `genreId` (integer, optional) *ID of the genre. Can be omitted if the genre is not yet in the system.*
-*   `artistIds` (array[integer], optional) *List of artist IDs. Use an empty array `[]` if no artists are assigned yet.*
-*   `albumId` (integer, optional) *ID of the album. Can be omitted if the song is not part of an album or it's not yet in the system.*
+
+- `title` (string, required) _Title of the song._
+- `releaseDate` (string, required) _Release date in YYYY-MM-DD format._
+- `duration` (integer, required) _Duration of the song in seconds. Must be > 0._
+- `language` (string, required) _Language of the song (e.g., "EN")._
+- `genreId` (integer, optional) _ID of the genre. Can be omitted if the genre is not yet in the system._
+- `artistIds` (array[integer], optional) _List of artist IDs. Use an empty array `[]` if no artists are assigned yet._
+- `albumId` (integer, optional) _ID of the album. Can be omitted if the song is not part of an album or it's not yet in the system._
 
 **Request Body Example:**
+
 ```json
 {
   "title": "In the End",
@@ -359,8 +536,8 @@ Adds a new song to the system.
 }
 ```
 
-
 **Response (201 Created):**
+
 ```json
 {
   "id": 10,
@@ -368,19 +545,14 @@ Adds a new song to the system.
   "language": "EN",
   "releaseDate": "2000-10-24",
   "duration": 216,
-  "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-watermark.mp3",
   "artists": [
     {
       "id": 2,
-      "name": "U2",
-      "imageUrl": "https://s3.aws.com/your-bucket/images/u2-profile.jpg",
-      "displayOrder": 1
+      "name": "U2"
     },
     {
       "id": 8,
-      "name": "Coldplay",
-      "imageUrl": "https://s3.aws.com/your-bucket/images/coldplay-profile.jpg",
-      "displayOrder": 2
+      "name": "Coldplay"
     }
   ],
   "genre": {
@@ -389,14 +561,14 @@ Adds a new song to the system.
   },
   "album": {
     "id": 7,
-    "title": "Something",
-    "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg"
+    "title": "Something"
   }
 }
 ```
 
 **Response (400 Bad Request):**
-*Invalid input data (e.g., negative duration).*
+_Invalid input data (e.g., negative duration)._
+
 ```json
 {
   "message": "Validation failed",
@@ -405,85 +577,121 @@ Adds a new song to the system.
   }
 }
 ```
+
 ---
+
 #### POST /api/catalog/songs/{id}/preview
+
 Uploads an audio preview file and links the resulting resource URL to the specified song. If a preview is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
+
+- `id` (integer, path parameter, required) _Song ID_
 
 **Request Headers:**
-*   `Content-Type: multipart/form-data`
+
+- `Content-Type: multipart/form-data`
 
 **Request Body (Form-Data):**
-*   `file` (file/binary, required) *The audio file (e.g., MP3, AAC (.m4a)) to be uploaded.*
+
+- `file` (file/binary, required) _The audio file (e.g., MP3, AAC (.m4a)) to be uploaded._
 
 **Response (200 OK):**
-*Returns the URL of the uploaded resource.*
+_Returns the URL of the uploaded resource._
+
 ```json
 {
   "message": "Preview uploaded successfully",
   "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-prv.mp3"
 }
 ```
+
 **Error Response (404 Not Found)**
-*Returned when the song ID does not exist in the database.*
+_Returned when the song ID does not exist in the database._
+
 ```json
 {
   "message": "Song by id=10 was not found."
 }
 ```
+
 **Error Response (400 Bad Request):**
-*Returned when the file is missing, empty, or of an unsupported format.*
+_Returned when the file is missing, empty, or of an unsupported format._
+
 ```json
 {
   "message": "Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported."
 }
 ```
+
 ---
+
 #### POST /api/catalog/songs/{id}/track
+
 Uploads the full-length audio track and links the resource URL to the specified song. If a full file is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
+
+- `id` (integer, path parameter, required) _Song ID_
 
 **Request Headers:**
-*   `Content-Type: multipart/form-data`
+
+- `Content-Type: multipart/form-data`
 
 **Request Body (Form-Data):**
-*   `file` (file/binary, required) *High-quality audio file .WAV.*
+
+- `file` (file/binary, required) _High-quality audio file .WAV._
 
 **Response (200 OK):**
-*Returns the URL of the uploaded resource.*
+_Returns the URL of the uploaded resource._
+
 ```json
 {
   "message": "Full length track uploaded successfully",
   "trackUrl": "https://s3.aws.com/your-bucket/tracks/in-the-end.wav"
 }
 ```
+
 **Error Response (404 Not Found)**
-*Returned when the song ID does not exist in the database.*
+_Returned when the song ID does not exist in the database._
+
 ```json
 {
   "message": "Song by id=10 was not found."
 }
 ```
+
 **Error Response (400 Bad Request):**
-*Returned when the file is missing, empty, too big or of an unsupported format.*
+_Returned when the file is missing, empty, too big or of an unsupported format._
+
 ```json
 {
   "message": "Invalid file format. Only audio/wav (WAV) is supported for full tracks."
 }
 ```
+
 ---
 
 #### PATCH /api/catalog/songs/{id}
+
 Partially updates an existing song's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
 **Note:** To explicitly remove an assignment (e.g., detach from an album), send `null` for that specific field.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
+
+- `id` (integer, path parameter, required) _Song ID_
+
+**Request Body Fields:**
+
+- `title` (string, optional) _Title of the song._
+- `releaseDate` (string, optional) _Release date in YYYY-MM-DD format._
+- `duration` (integer, optional) _Duration of the song in seconds. Must be > 0._
+- `language` (string, optional) _Language of the song (e.g., "EN")._
+- `genreId` (integer, optional) _ID of the genre. Can be omitted if the genre is not yet in the system._
+- `artistIds` (array[integer], optional) _List of artist IDs._
+- `albumId` (integer, optional) _ID of the album._
 
 **Request Body Example:**
+
 ```json
 {
   "title": "Corrected Title",
@@ -496,8 +704,8 @@ Partially updates an existing song's metadata and its relationships. All fields 
 }
 ```
 
+**Response (200 OK):** _Song successfully updated. Returns the updated resource._
 
-**Response (200 OK):** *Song successfully updated. Returns the updated resource.*
 ```json
 {
   "id": 10,
@@ -505,19 +713,14 @@ Partially updates an existing song's metadata and its relationships. All fields 
   "language": "EN",
   "releaseDate": "2000-10-24",
   "duration": 216,
-  "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-watermark.mp3",
   "artists": [
     {
       "id": 2,
-      "name": "U2",
-      "imageUrl": "https://s3.aws.com/your-bucket/images/u2-profile.jpg",
-      "displayOrder": 1
+      "name": "U2"
     },
     {
       "id": 8,
-      "name": "Coldplay",
-      "imageUrl": "https://s3.aws.com/your-bucket/images/coldplay-profile.jpg",
-      "displayOrder": 2
+      "name": "Coldplay"
     }
   ],
   "genre": {
@@ -526,14 +729,14 @@ Partially updates an existing song's metadata and its relationships. All fields 
   },
   "album": {
     "id": 7,
-    "title": "Something",
-    "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg"
+    "title": "Something"
   }
 }
 ```
 
 **Response (404 Not Found):**
-*Song, Genre, Album, or Artist(s) not found.*
+_Song, Genre, Album, or Artist(s) not found._
+
 ```json
 {
   "message": "Artist by id=45 not found."
@@ -541,23 +744,27 @@ Partially updates an existing song's metadata and its relationships. All fields 
 ```
 
 **Response (400 Bad Request):**
-*Invalid input data (e.g., negative duration).*
+_Invalid input data (e.g., negative duration)._
+
 ```json
 {
   "message": "Duration must be more than 0"
 }
 ```
+
 ---
 
 #### DELETE /api/catalog/songs/{id}
+
 Removes a song from the database by its ID.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Song ID*
 
-**Response (204 No Content):** *Song deleted successfully. No response body is returned.*
+- `id` (integer, path parameter, required) _Song ID_
 
-**Response (404 Not Found):** *Song not found*
+**Response (204 No Content):** _Song deleted successfully. No response body is returned._
+
+**Response (404 Not Found):** _Song not found_
 
 ```json
 {
@@ -570,15 +777,18 @@ Removes a song from the database by its ID.
 ### Album
 
 #### POST /api/catalog/albums
+
 Adds a new album to the system.
 
 **Request Body Fields:**
-*   `title` (string, required) *Title of the album.*
-*   `releaseDate` (string, required) *Release date in YYYY-MM-DD format.*
-*   `songIds` (array[integer], optional) *List of song IDs. Use an empty array `[]` if no songs are assigned yet.*
-*   `artistIds` (array[integer], optional) *List of artist IDs. Use an empty array `[]` if no artists are assigned yet.*
+
+- `title` (string, required) _Title of the album._
+- `releaseDate` (string, required) _Release date in YYYY-MM-DD format._
+- `songIds` (array[integer], optional) _List of song IDs. Use an empty array `[]` if no songs are assigned yet._
+- `artistIds` (array[integer], optional) _List of artist IDs. Use an empty array `[]` if no artists are assigned yet._
 
 **Request Body Example:**
+
 ```json
 {
   "title": "Cee Dee",
@@ -588,17 +798,35 @@ Adds a new album to the system.
 }
 ```
 
-
 **Response (201 Created):**
+
 ```json
 {
   "id": 10,
-  "title": "Cee Dee"
+  "title": "Dee Dee",
+  "releaseDate": "2010-10-10",
+  "songs": [
+    {
+      "id": 2,
+      "title": "Bee Gee"
+    },
+    {
+      "id": 4,
+      "title": "Pee Gee"
+    }
+  ],
+  "artists": [
+    {
+      "id": 1,
+      "name": "Kety"
+    }
+  ]
 }
 ```
 
 **Response (400 Bad Request):**
-*Invalid input data (e.g., improper release date format).*
+_Invalid input data (e.g., improper release date format)._
+
 ```json
 {
   "message": "Validation failed",
@@ -607,36 +835,47 @@ Adds a new album to the system.
   }
 }
 ```
+
 ---
+
 #### POST /api/catalog/albums/{id}/cover
+
 Uploads album cover (image file) and links the resulting resource URL to the specified album. If a cover is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Album ID*
+
+- `id` (integer, path parameter, required) _Album ID_
 
 **Request Headers:**
-*   `Content-Type: multipart/form-data`
+
+- `Content-Type: multipart/form-data`
 
 **Request Body (Form-Data):**
-*   `file` (file/binary, required) *The image file (e.g. JPG, PNG) to be uploaded.*
+
+- `file` (file/binary, required) _The image file (e.g. JPG, PNG) to be uploaded._
 
 **Response (200 OK):**
-*Returns the URL of the uploaded resource.*
+_Returns the URL of the uploaded resource._
+
 ```json
 {
   "message": "Cover uploaded successfully",
   "coverUrl": "https://s3.aws.com/your-bucket/covers/cee-dee.png"
 }
 ```
+
 **Error Response (404 Not Found)**
-*Returned when the album ID does not exist in the database.*
+_Returned when the album ID does not exist in the database._
+
 ```json
 {
   "message": "Album by id=10 was not found."
 }
 ```
+
 **Error Response (400 Bad Request):**
-*Returned when the file is missing, empty, or of an unsupported format.*
+_Returned when the file is missing, empty, or of an unsupported format._
+
 ```json
 {
   "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
@@ -646,13 +885,23 @@ Uploads album cover (image file) and links the resulting resource URL to the spe
 ---
 
 #### PATCH /api/catalog/albums/{id}
+
 Partially updates an existing album's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
 **Note:** To explicitly remove an assignment (e.g., detach from a song list), send `null` for that specific field.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Album ID*
+
+- `id` (integer, path parameter, required) _Album ID_
+
+**Request Body Fields:**
+
+- `title` (string, optional) _Title of the album._
+- `releaseDate` (string, optional) _Release date in YYYY-MM-DD format._
+- `songIds` (array[integer], optional) _List of song IDs._
+- `artistIds` (array[integer], optional) _List of artist IDs._
 
 **Request Body Example:**
+
 ```json
 {
   "releaseDate": "2026-07-18",
@@ -660,8 +909,8 @@ Partially updates an existing album's metadata and its relationships. All fields
 }
 ```
 
+**Response (200 OK):** _Album successfully updated. Returns the updated resource._
 
-**Response (200 OK):** *Album successfully updated. Returns the updated resource.*
 ```json
 {
   "id": 10,
@@ -670,11 +919,11 @@ Partially updates an existing album's metadata and its relationships. All fields
   "songs": [
     {
       "id": 2,
-      "name": "Bee Gee"
+      "title": "Bee Gee"
     },
     {
       "id": 4,
-      "name": "Pee Gee"
+      "title": "Pee Gee"
     }
   ],
   "artists": [
@@ -682,19 +931,22 @@ Partially updates an existing album's metadata and its relationships. All fields
       "id": 1,
       "name": "Kety"
     }
-    ]
+  ]
 }
 ```
 
 **Response (404 Not Found):**
-*Song, Genre, Album, or Artist(s) not found.*
+_Song, Genre, Album, or Artist(s) not found._
+
 ```json
 {
   "message": "Album by id=45 not found."
 }
 ```
+
 **Response (400 Bad Request):**
-*Invalid input data (e.g., improper release date format).*
+_Invalid input data (e.g., improper release date format)._
+
 ```json
 {
   "message": "Validation failed",
@@ -703,37 +955,43 @@ Partially updates an existing album's metadata and its relationships. All fields
   }
 }
 ```
+
 ---
 
 #### DELETE /api/catalog/albums/{id}
+
 Removes an album from the database by its ID.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Album ID*
 
-**Response (204 No Content):** *Album deleted successfully. No response body is returned.*
+- `id` (integer, path parameter, required) _Album ID_
 
-**Response (404 Not Found):** *Album not found*
+**Response (204 No Content):** _Album deleted successfully. No response body is returned._
+
+**Response (404 Not Found):** _Album not found_
 
 ```json
 {
   "message": "Album by id=5 not found."
 }
 ```
+
 ---
 
 ### Artist
 
 #### POST /api/catalog/artists
+
 Adds a new artist to the system.
 
 **Request Body Fields:**
-*   `name` (string, required) *Name of the artist.*
-*   `songIds` (array[integer], optional) *List of song IDs. Use an empty array `[]` if no songs are assigned yet.*
-*   `albumIds` (array[integer], optional) *List of album IDs. Use an empty array `[]` if no album are assigned yet.*
 
+- `name` (string, required) _Name of the artist._
+- `songIds` (array[integer], optional) _List of song IDs. Use an empty array `[]` if no songs are assigned yet._
+- `albumIds` (array[integer], optional) _List of album IDs. Use an empty array `[]` if no album are assigned yet._
 
 **Request Body Example:**
+
 ```json
 {
   "name": "Mr. Nimbus",
@@ -743,50 +1001,79 @@ Adds a new artist to the system.
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "id": 10,
-  "name": "Mr. Nimbus"
+  "name": "Mr. Nimbus",
+  "songs": [
+    {
+      "id": 2,
+      "title": "Bee Gee"
+    },
+    {
+      "id": 4,
+      "title": "Pee Gee"
+    }
+  ],
+  "albums": [
+    {
+      "id": 1,
+      "title": "Kety"
+    }
+  ]
 }
 ```
 
 **Response (404 Not Found):**
-*Invalid input data*
+_Invalid input data_
+
 ```json
 {
   "message": "Song by id=1 was not found"
 }
 ```
+
 ---
+
 #### POST /api/catalog/artists/{id}/image
+
 Uploads artist's image (image file) and links the resulting resource URL to the specified artist. If an image is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Artist ID*
+
+- `id` (integer, path parameter, required) _Artist ID_
 
 **Request Headers:**
-*   `Content-Type: multipart/form-data`
+
+- `Content-Type: multipart/form-data`
 
 **Request Body (Form-Data):**
-*   `file` (file/binary, required) *The image file (e.g. JPG, PNG) to be uploaded.*
+
+- `file` (file/binary, required) _The image file (e.g. JPG, PNG) to be uploaded._
 
 **Response (200 OK):**
-*Returns the URL of the uploaded resource.*
+_Returns the URL of the uploaded resource._
+
 ```json
 {
   "message": "Artist image uploaded successfully",
   "imageUrl": "https://s3.aws.com/your-bucket/artists/mr-nimbus.png"
 }
 ```
+
 **Error Response (404 Not Found)**
-*Returned when the artist ID does not exist in the database.*
+_Returned when the artist ID does not exist in the database._
+
 ```json
 {
   "message": "Artist by id=10 was not found."
 }
 ```
+
 **Error Response (400 Bad Request):**
-*Returned when the file is missing, empty, or of an unsupported format.*
+_Returned when the file is missing, empty, or of an unsupported format._
+
 ```json
 {
   "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
@@ -796,20 +1083,29 @@ Uploads artist's image (image file) and links the resulting resource URL to the 
 ---
 
 #### PATCH /api/catalog/artists/{id}
+
 Partially updates an existing artist's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Artists ID*
+
+- `id` (integer, path parameter, required) _Artists ID_
+
+**Request Body Fields:**
+
+- `name` (string, optional) _Name of the artist._
+- `songIds` (array[integer], optional) \*List of song IDs. Use an empty array `[]` to clear song list completly
+- `albumIds` (array[integer], optional) _List of album IDs. Use an empty array `[]` to clear album list completly._
 
 **Request Body Example:**
+
 ```json
 {
   "name": "Nr. Mimbus"
 }
 ```
 
+**Response (200 OK):** _Artist successfully updated. Returns the updated resource._
 
-**Response (200 OK):** *Artist successfully updated. Returns the updated resource.*
 ```json
 {
   "id": 10,
@@ -817,31 +1113,34 @@ Partially updates an existing artist's metadata and its relationships. All field
   "songs": [
     {
       "id": 2,
-      "name": "Bee Gee"
+      "title": "Bee Gee"
     },
     {
-    "id": 4,
-    "name": "Pee Gee"
+      "id": 4,
+      "title": "Pee Gee"
     }
   ],
-"albums": [
+  "albums": [
     {
-    "id": 17,
-    "name": "Shminty"
+      "id": 17,
+      "title": "Shminty"
     }
   ]
 }
 ```
 
 **Response (404 Not Found):**
-*Song, Album, or Artist(s) not found.*
+_Song, Album, or Artist(s) not found._
+
 ```json
 {
   "message": "Album by id=45 not found."
 }
 ```
+
 **Response (400 Bad Request):**
-*Invalid input data.*
+_Invalid input data._
+
 ```json
 {
   "message": "Validation failed",
@@ -850,50 +1149,63 @@ Partially updates an existing artist's metadata and its relationships. All field
   }
 }
 ```
+
 ---
+
 #### PUT /api/catalog/artists/{artistId}/albums/{albumId}
+
 Assigns an existing album to the specified artist.
 
 **Parameters:**
-*   `artistId` (integer, path parameter, required) *Artists ID*
-*   `albumId` (integer, path parameter, required) *Album ID*
 
-**Response (204 No Content):** *Artist successfully updated.*
+- `artistId` (integer, path parameter, required) _Artists ID_
+- `albumId` (integer, path parameter, required) _Album ID_
+
+**Response (204 No Content):** _Artist successfully updated._
 
 **Response (404 Not Found):**
-*Album, or Artist not found.*
+_Album, or Artist not found._
+
 ```json
 {
   "message": "Album by id=45 not found."
 }
 ```
+
 ---
+
 #### DELETE /api/catalog/artists/{id}
+
 Removes an artist from the database by its ID.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Artist ID*
 
-**Response (204 No Content):** *Artist deleted successfully. No response body is returned.*
+- `id` (integer, path parameter, required) _Artist ID_
 
-**Response (404 Not Found):** *Artist not found*
+**Response (204 No Content):** _Artist deleted successfully. No response body is returned._
+
+**Response (404 Not Found):** _Artist not found_
 
 ```json
 {
   "message": "Artist by id=5 not found."
 }
 ```
+
 ---
 
 ### Genre
 
 #### POST /api/catalog/genres
+
 Adds a new genre to the system.
 
 **Request Body Fields:**
-*   `name` (string, required) *Name of the genre.*
+
+- `name` (string, required) _Name of the genre._
 
 **Request Body Example:**
+
 ```json
 {
   "name": "K-POP"
@@ -901,6 +1213,7 @@ Adds a new genre to the system.
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "id": 10,
@@ -909,7 +1222,8 @@ Adds a new genre to the system.
 ```
 
 **Response (400 Bad Request):**
-*Invalid input data*
+_Invalid input data_
+
 ```json
 {
   "message": "Validation failed",
@@ -918,21 +1232,27 @@ Adds a new genre to the system.
   }
 }
 ```
+
 ---
 
 #### PATCH /api/catalog/genres/{id}
+
 Updates an existing genre's name.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Genre ID*
+
+- `id` (integer, path parameter, required) _Genre ID_
 
 **Request Body Example:**
+
 ```json
 {
   "name": "K-Pop"
 }
 ```
-**Response (200 OK):** *Genre's name successfully updated.*
+
+**Response (200 OK):** _Genre's name successfully updated._
+
 ```json
 {
   "id": 10,
@@ -941,14 +1261,17 @@ Updates an existing genre's name.
 ```
 
 **Response (404 Not Found):**
-*Genre not found.*
+_Genre not found._
+
 ```json
 {
   "message": "Genre by id=45 not found."
 }
 ```
+
 **Error Response (400 Bad Request):**
-*Invalid input data*
+_Invalid input data_
+
 ```json
 {
   "message": "Validation failed",
@@ -957,16 +1280,20 @@ Updates an existing genre's name.
   }
 }
 ```
+
 ---
+
 #### DELETE /api/catalog/genres/{id}
+
 Removes a genre from the database by its ID.
 
 **Parameters:**
-*   `id` (integer, path parameter, required) *Genre ID*
 
-**Response (204 No Content):** *Genre deleted successfully. No response body is returned.*
+- `id` (integer, path parameter, required) _Genre ID_
 
-**Response (404 Not Found):** *Genre not found*
+**Response (204 No Content):** _Genre deleted successfully. No response body is returned._
+
+**Response (404 Not Found):** _Genre not found_
 
 ```json
 {
@@ -977,9 +1304,11 @@ Removes a genre from the database by its ID.
 ### Payment Module (`payment`)
 
 #### POST /api/payments/
+
 Creates a new payment record in the local database (status: PENDING), initializes a Stripe Checkout session, and returns the session URL for the user to complete the transaction.
 
-**Request Body:** 
+**Request Body:**
+
 ```json
 {
   "songId": 10,
@@ -987,7 +1316,8 @@ Creates a new payment record in the local database (status: PENDING), initialize
 }
 ```
 
-**Response (201 Created):** *Payment record created and Stripe session initialized successfully.*
+**Response (201 Created):** _Payment record created and Stripe session initialized successfully._
+
 ```json
 {
   "paymentId": 45,
@@ -996,7 +1326,8 @@ Creates a new payment record in the local database (status: PENDING), initialize
 ```
 
 **Response (404 Not Found):**
-*Returned if the song does not exist in the catalog.*
+_Returned if the song does not exist in the catalog._
+
 ```json
 {
   "message": "Song by id=10 not found."
@@ -1004,7 +1335,8 @@ Creates a new payment record in the local database (status: PENDING), initialize
 ```
 
 **Error Response (500 Internal Server Error):**
-*Returned if communication with the Stripe API fails.*
+_Returned if communication with the Stripe API fails._
+
 ```json
 {
   "message": "Could not initialize payment session with Stripe."
@@ -1012,18 +1344,22 @@ Creates a new payment record in the local database (status: PENDING), initialize
 ```
 
 #### POST /api/webhook/payments
+
 Receives asynchronous event notifications from Stripe (e.g., checkout.session.completed, payment_intent.payment_failed).
 
 **Request Headers:**
-*   `Stripe-Signature` (string, required) *Used to verify that the event was sent by Stripe.*
+
+- `Stripe-Signature` (string, required) _Used to verify that the event was sent by Stripe._
 
 **Request Body:**
-*  *Raw JSON payload sent by Stripe containing event details.*
 
-**Response (204 No content):** *Event successfully received and processed. No body is required by Stripe.*
+- _Raw JSON payload sent by Stripe containing event details._
 
-**Error Response (400 Bad Request):** 
-*Returned when the webhook payload is invalid or the Stripe signature verification fails.*
+**Response (204 No content):** _Event successfully received and processed. No body is required by Stripe._
+
+**Error Response (400 Bad Request):**
+_Returned when the webhook payload is invalid or the Stripe signature verification fails._
+
 ```json
 {
   "message": "Webhook signature verification failed."
@@ -1031,7 +1367,8 @@ Receives asynchronous event notifications from Stripe (e.g., checkout.session.co
 ```
 
 **Error Response(500 Internal Server Error):**
-*Returned if there is a server-side error while processing the event (e.g., database failure).*
+_Returned if there is a server-side error while processing the event (e.g., database failure)._
+
 ```json
 {
   "message": "Error processing webhook event."
@@ -1041,9 +1378,11 @@ Receives asynchronous event notifications from Stripe (e.g., checkout.session.co
 ### Licensing Module (`licensing`)
 
 #### GET /api/licenses
+
 Retrieves a list of all licenses owned by the currently authenticated user.
 
 **Response (200 OK):**
+
 ```json
 [
   {
@@ -1062,12 +1401,15 @@ Retrieves a list of all licenses owned by the currently authenticated user.
   }
 ]
 ```
+
 ---
 
 #### GET /api/licenses/{id}
+
 Retrieves the details of a specific license owned by the user.
 
 **Response (200 OK):**
+
 ```json
 {
   "licenseId": 101,
@@ -1081,7 +1423,8 @@ Retrieves the details of a specific license owned by the user.
 ```
 
 **Error Response (403 Forbidden):**
-*Returned if the user attempts to access a license they do not own.*
+_Returned if the user attempts to access a license they do not own._
+
 ```json
 {
   "message": "Access denied. You do not own this license."
@@ -1089,7 +1432,8 @@ Retrieves the details of a specific license owned by the user.
 ```
 
 **Error Response (404 Not Found):**
-*Returned if the license does not exist.*
+_Returned if the license does not exist._
+
 ```json
 {
   "message": "License by id=101 not found."
