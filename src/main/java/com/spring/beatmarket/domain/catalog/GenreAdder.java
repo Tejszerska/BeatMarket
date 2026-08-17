@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
-import com.spring.beatmarket.domain.catalog.dto.GenreDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ class GenreAdder {
     private final GenreMapper genreMapper;
 
 
-    GenreDto addGenre(final SaveGenreDto dto) {
+    LegacyGenreDto addGenre(final SaveGenreDto dto) {
         if(dto.name() == null || dto.name().isBlank()) throw new NameIsBlankException("Genre needs a specified name!");
         Genre genre = new Genre(dto.name());
         return genreMapper.toDto(

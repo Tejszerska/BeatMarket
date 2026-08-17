@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ class SongAdder {
     private final SongMapper songMapper;
 
 
-    SongDto addSong(final CreateSongDto dto) {
+    LegacySongDto addSong(final CreateSongDto dto) {
 
         Genre genreProxy = null;
         if (dto.genreId() != null) {

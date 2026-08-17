@@ -3,7 +3,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistSummaryDto;
-import com.spring.beatmarket.domain.catalog.dto.GenreDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -41,7 +41,7 @@ public record SongResponse(
         List<ArtistSummaryDto> artists,
         @Schema(description = "Genre of the song",
                 example = "{\"id\": 1, \"name\": \"Rock\"}" )
-        GenreDto genre,
+        LegacyGenreDto genre,
         @Schema(description = "Album that is connected to the song",
                 example = """
                         {

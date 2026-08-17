@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
-import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
@@ -18,9 +18,9 @@ public interface AlbumControllerMapper {
 
     AlbumRequestDto mapFromCreateAlbumRequestToDomainDto(CreateAlbumRequest createAlbumRequest);
 
-    CreateAlbumResponse mapFromAlbumDtoToCreateAlbumResponse(AlbumDto albumDto);
+    CreateAlbumResponse mapFromAlbumDtoToCreateAlbumResponse(LegacyAlbumDto legacyAlbumDto);
 
-    default GetAllAlbumsResponseDto mapSliceToGetAllAlbumsResponseDto(Slice<AlbumDto> slice) {
+    default GetAllAlbumsResponseDto mapSliceToGetAllAlbumsResponseDto(Slice<LegacyAlbumDto> slice) {
         return new GetAllAlbumsResponseDto(slice.getContent(), slice.hasNext());
     }
 

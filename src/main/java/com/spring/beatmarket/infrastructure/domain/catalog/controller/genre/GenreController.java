@@ -1,8 +1,8 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
+import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
-import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.request.GenreRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GenreResponse;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GetAllGenresResponse;
@@ -48,8 +48,8 @@ class GenreController {
     @PostMapping
     ResponseEntity<GenreResponse> postGenre(@RequestBody @Valid GenreRequest genreRequest) {
         SaveGenreDto saveGenreDto = genreControllerMapper.toDomain(genreRequest);
-        GenreDto genreDto = facade.addGenre(saveGenreDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(genreControllerMapper.toResponse(genreDto));
+        LegacyGenreDto legacyGenreDto = facade.addGenre(saveGenreDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(genreControllerMapper.toResponse(legacyGenreDto));
     }
 
     @Operation(summary = "Get all genres", description = "Returns a paginated list of all genres available in the system.")
@@ -59,7 +59,7 @@ class GenreController {
     @GetMapping
     ResponseEntity<GetAllGenresResponse> getGenres(
           @ParameterObject @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Slice<GenreDto> allGenresSlice = facade.findAllGenres(pageable);
+        Slice<LegacyGenreDto> allGenresSlice = facade.findAllGenres(pageable);
         return ResponseEntity.ok(genreControllerMapper.toGetAllGenresResponse(allGenresSlice));
     }
 
@@ -71,7 +71,7 @@ class GenreController {
     })
     @GetMapping("/{genreId}")
     ResponseEntity<GenreResponse> getGenreById(@PathVariable Long genreId) {
-        GenreDto dto = facade.findGenreById(genreId);
+        LegacyGenreDto dto = facade.findGenreById(genreId);
         return ResponseEntity.ok(genreControllerMapper.toResponse(dto));
     }
 
@@ -101,7 +101,7 @@ class GenreController {
     ResponseEntity<GenreResponse> updateGenre(@PathVariable Long id,
                                             @RequestBody @Valid GenreRequest request) {
         SaveGenreDto dto = genreControllerMapper.toDomain(request);
-        GenreDto update = facade.update(id, dto);
+        LegacyGenreDto update = facade.update(id, dto);
         return ResponseEntity.ok(genreControllerMapper.toResponse(update));
     }
 }

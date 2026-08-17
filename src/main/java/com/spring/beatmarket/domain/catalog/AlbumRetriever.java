@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ class AlbumRetriever {
         return new HashSet<>(albumRepository.findAllAlbumsByArtistId(artistId));
     }
 
-    Set<AlbumDto> findAlbumsDtoByArtistId(final Long artistId) {
+    Set<LegacyAlbumDto> findAlbumsDtoByArtistId(final Long artistId) {
         return findAlbumsByArtistId(artistId)
                 .stream().map(albumMapper::mapFromEntityToAlbumDto)
                 .collect(Collectors.toSet());
@@ -44,7 +44,7 @@ class AlbumRetriever {
                 .orElseThrow(() -> new  ResourceNotFoundException("Album", albumId));
     }
 
-    Slice<AlbumDto> findAllAlbums(Pageable pageable) {
+    Slice<LegacyAlbumDto> findAllAlbums(Pageable pageable) {
         return albumRepository.findAllAlbums(pageable)
                 .map(albumMapper::mapFromEntityToAlbumDto);
     }

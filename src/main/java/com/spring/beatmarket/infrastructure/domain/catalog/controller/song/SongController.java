@@ -2,8 +2,8 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
 import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
@@ -95,7 +95,7 @@ class SongController {
     @PostMapping
     ResponseEntity<SongResponse> postSong(@RequestBody @Valid CreateSongRequest createSongRequest) {
         CreateSongDto domainRequest = songControllerMapper.toDomain(createSongRequest);
-        SongDto savedSong = songFacade.addSong(domainRequest);
+        LegacySongDto savedSong = songFacade.addSong(domainRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(songControllerMapper.toResponse(savedSong));
     }
 
@@ -123,8 +123,8 @@ class SongController {
      ResponseEntity<SongResponse> updateSong(@PathVariable Long id,
                                                     @RequestBody UpdateSongRequest request) {
         UpdateSongDto updateSongDto = songControllerMapper.toDomain(request);
-        SongDto songDto = songFacade.updateSongById(id, updateSongDto);
-        return ResponseEntity.ok(songControllerMapper.toResponse(songDto));
+        LegacySongDto legacySongDto = songFacade.updateSongById(id, updateSongDto);
+        return ResponseEntity.ok(songControllerMapper.toResponse(legacySongDto));
     }
 
 }

@@ -1,7 +1,7 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
-import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
@@ -49,8 +49,8 @@ class AlbumController {
     @PostMapping
     ResponseEntity<CreateAlbumResponse> postAlbum(@RequestBody CreateAlbumRequest createAlbumRequest) {
         AlbumRequestDto albumRequestDto = albumControllerMapper.mapFromCreateAlbumRequestToDomainDto(createAlbumRequest);
-        AlbumDto albumDto = beatmarketCrudFacade.addAlbumWithSong(albumRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(albumControllerMapper.mapFromAlbumDtoToCreateAlbumResponse(albumDto));
+        LegacyAlbumDto legacyAlbumDto = beatmarketCrudFacade.addAlbumWithSong(albumRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(albumControllerMapper.mapFromAlbumDtoToCreateAlbumResponse(legacyAlbumDto));
     }
 
     @Operation(summary = "Get album by ID", description = "Retrieves full details of an album, including its artists and tracklist.")
@@ -71,7 +71,7 @@ class AlbumController {
     })
     @GetMapping
     ResponseEntity<GetAllAlbumsResponseDto> getAllAlbums(@ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Slice<AlbumDto> allAlbumsSlice = beatmarketCrudFacade.findAllAlbums(pageable);
+        Slice<LegacyAlbumDto> allAlbumsSlice = beatmarketCrudFacade.findAllAlbums(pageable);
         return ResponseEntity.ok(albumControllerMapper.mapSliceToGetAllAlbumsResponseDto(allAlbumsSlice));
     }
 

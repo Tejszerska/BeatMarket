@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 
-import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.artist.dto.request.CreateArtistRequest;
@@ -16,13 +16,13 @@ import org.springframework.data.domain.Slice;
 
 @Mapper(componentModel = "spring")
 interface ArtistControllerMapper {
-    default GetAllArtistsResponseDto mapSliceToGetAllArtistsResponseDto(Slice<ArtistDto> slice){
+    default GetAllArtistsResponseDto mapSliceToGetAllArtistsResponseDto(Slice<LegacyArtistDto> slice){
         return new GetAllArtistsResponseDto(slice.getContent(), slice.hasNext());
     }
 
     ArtistRequestDto mapFromCreateArtistRequestToDomainDto(CreateArtistRequest createArtistRequest);
 
-    CreateArtistResponse mapFromArtistDtoToCreateArtistResponse(ArtistDto artistDto);
+    CreateArtistResponse mapFromArtistDtoToCreateArtistResponse(LegacyArtistDto legacyArtistDto);
 
     @Mapping(source = "artist.id", target = "artistId")
     @Mapping(source = "artist.name", target = "artistName")
@@ -30,10 +30,10 @@ interface ArtistControllerMapper {
     @Mapping(source = "album.title", target = "albumTitle")
     ArtistWithAlbumResponseDto mapFromDomainDtoToArtistWithAlbumResponseDto(ArtistWithAlbumDto domain);
 
-    ArtistUpdateNameResponseDto mapFromArtistDtoToArtistUpdateNameResponseDto(ArtistDto artistDto);
+    ArtistUpdateNameResponseDto mapFromArtistDtoToArtistUpdateNameResponseDto(LegacyArtistDto legacyArtistDto);
 
     ArtistRequestDto mapFromCreateArtistWithDefaultAlbumAndSongRequestToDomainDto(CreateArtistWithDefaultAlbumAndSongRequest createArtistWithDefaultAlbumAndSongRequest);
 
-    CreateArtistWithDefaultAlbumAndSongResponse mapFromArtistDtoToCreateArtistWithDefaultAlbumAndSongResponse(ArtistDto artistDto);
+    CreateArtistWithDefaultAlbumAndSongResponse mapFromArtistDtoToCreateArtistWithDefaultAlbumAndSongResponse(LegacyArtistDto legacyArtistDto);
 
 }

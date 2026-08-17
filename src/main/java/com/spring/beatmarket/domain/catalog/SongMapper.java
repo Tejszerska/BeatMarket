@@ -1,8 +1,8 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.PriceWithCurrencyDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import org.mapstruct.InjectionStrategy;
@@ -30,7 +30,7 @@ interface SongMapper {
     @Mapping(source = "songPricesDto", target = "pricing")
     SongDetailsDto toDetailsDto(Song song, List<SongPriceDto> songPricesDto);
 
-    SongDto toDto(Song song);
+    LegacySongDto toDto(Song song);
 
 
     default List<String> mapArtists (List<Artist> artists){

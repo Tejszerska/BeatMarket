@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistSummaryDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface ArtistMapper {
-    ArtistDto mapFromEntityToArtistDto(Artist artist);
+    LegacyArtistDto mapFromEntityToArtistDto(Artist artist);
 
     @Mapping(target = "order", source = "orderIndex")
     ArtistSummaryDto mapFromEntityToSummaryDto (Artist artist, Integer orderIndex);

@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ class AlbumAdder {
     private final AlbumMapper albumMapper;
 
 
-    AlbumDto addAlbum(final Long songId, final String title, final LocalDate releaseDate) {
+    LegacyAlbumDto addAlbum(final Long songId, final String title, final LocalDate releaseDate) {
         if(title == null || title.isBlank()) throw new TitleIsBlankException("Album needs a specified title!");
         Song songById = songRetriever.findSongById(songId);
         Album album = new Album();
@@ -27,7 +27,7 @@ class AlbumAdder {
         return albumMapper.mapFromEntityToAlbumDto(albumRepository.save(album));
     }
 
-    AlbumDto addDefaultAlbum (final Long songId){
+    LegacyAlbumDto addDefaultAlbum (final Long songId){
         Song songById = songRetriever.findSongById(songId);
         Album album = new Album();
         album.assignDefaultTitle();

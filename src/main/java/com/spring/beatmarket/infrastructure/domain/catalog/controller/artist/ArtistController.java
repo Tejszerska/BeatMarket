@@ -1,7 +1,7 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
-import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.artist.dto.request.ArtistUpdateRequestDto;
@@ -55,8 +55,8 @@ class ArtistController {
     @PostMapping
     ResponseEntity<CreateArtistResponse> postArtist(@RequestBody CreateArtistRequest createArtistRequest) {
         ArtistRequestDto artistRequestDto = artistControllerMapper.mapFromCreateArtistRequestToDomainDto(createArtistRequest);
-        ArtistDto artistDto = beatmarketCrudFacade.addArtist(artistRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(artistControllerMapper.mapFromArtistDtoToCreateArtistResponse(artistDto));
+        LegacyArtistDto legacyArtistDto = beatmarketCrudFacade.addArtist(artistRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(artistControllerMapper.mapFromArtistDtoToCreateArtistResponse(legacyArtistDto));
     }
 
     @Operation(summary = "Get all artists", description = "Returns a paginated list of all artists.")
@@ -65,7 +65,7 @@ class ArtistController {
     })
     @GetMapping
     ResponseEntity<GetAllArtistsResponseDto> getAllArtists(@ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Slice<ArtistDto> allArtistsSlice = beatmarketCrudFacade.findAllArtists(pageable);
+        Slice<LegacyArtistDto> allArtistsSlice = beatmarketCrudFacade.findAllArtists(pageable);
         return ResponseEntity.ok(artistControllerMapper.mapSliceToGetAllArtistsResponseDto(allArtistsSlice));
     }
 
@@ -104,8 +104,8 @@ class ArtistController {
     @PatchMapping("/{artistId}")
     ResponseEntity<ArtistUpdateNameResponseDto> updateArtistNameById(@PathVariable Long artistId,
                                                                      @Valid @RequestBody ArtistUpdateRequestDto updateRequestDto) {
-        ArtistDto artistDto = beatmarketCrudFacade.updateArtistNameById(artistId, updateRequestDto.name());
-        return ResponseEntity.ok(artistControllerMapper.mapFromArtistDtoToArtistUpdateNameResponseDto(artistDto));
+        LegacyArtistDto legacyArtistDto = beatmarketCrudFacade.updateArtistNameById(artistId, updateRequestDto.name());
+        return ResponseEntity.ok(artistControllerMapper.mapFromArtistDtoToArtistUpdateNameResponseDto(legacyArtistDto));
     }
 
     @Operation(summary = "Create artist with default album and song", description = "Quickly creates a new artist along with a default placeholder album and song.")
@@ -117,7 +117,7 @@ class ArtistController {
     @PostMapping("/default")
     ResponseEntity<CreateArtistWithDefaultAlbumAndSongResponse> addArtistWithDefaultAlbumAndSong(@RequestBody CreateArtistWithDefaultAlbumAndSongRequest userRequest) {
         ArtistRequestDto requestDto = artistControllerMapper.mapFromCreateArtistWithDefaultAlbumAndSongRequestToDomainDto(userRequest);
-        ArtistDto artistDto = beatmarketCrudFacade.addArtistWithDefaultAlbumAndSong(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(artistControllerMapper.mapFromArtistDtoToCreateArtistWithDefaultAlbumAndSongResponse(artistDto));
+        LegacyArtistDto legacyArtistDto = beatmarketCrudFacade.addArtistWithDefaultAlbumAndSong(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(artistControllerMapper.mapFromArtistDtoToCreateArtistWithDefaultAlbumAndSongResponse(legacyArtistDto));
     }
 }

@@ -2,7 +2,7 @@ package com.spring.beatmarket.domain.catalog.dto.song;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistSummaryDto;
-import com.spring.beatmarket.domain.catalog.dto.GenreDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ public record SongDetailsDto(Long id,
                              LocalDate releaseDate,
                              String previewUrl,
                              List<ArtistSummaryDto> artists,
-                             GenreDto genre,
+                             LegacyGenreDto genre,
                              AlbumSummaryDto album,
                              Map<String, PriceWithCurrencyDto> pricing) {
 }

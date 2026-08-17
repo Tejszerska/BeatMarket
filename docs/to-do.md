@@ -43,10 +43,10 @@
 ---
 
 
-- [ ] Biblioteka JsonNullable (Standard w OpenAPI) - będę jej używać do odcinania relacji przy PATCH np. /api/catalog/songs/{songId}
-Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie przysłanych (niezmienianie wartości niewpisanych pól)
+- [x] Biblioteka JsonNullable (Standard w OpenAPI) - będę jej używać do odcinania relacji przy PATCH np. /api/catalog/songs/{songId}
+  Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie przysłanych (niezmienianie wartości niewpisanych pól)
 
-- [ ] Poprawić Security Filter Chain - rozważyc grupowanie metod 
+- [ ] Poprawić Security Filter Chain - rozważyc grupowanie metod
 
 ```
 // SONGS endpoint rules
@@ -74,7 +74,7 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 
 - [ ] ujednolicić błędy - MissingRequiredFieldException dla wszystkich pól required ( Rich Domain Model refactor w encjach na wzór Song)
 
-- [ ] obsłużyć kluczowe błedy 
+- [ ] obsłużyć kluczowe błedy
 
 ```
 - Exception.class (Catch-all) na samym dole handlera żeby unikać 500 np Nullpointer,
@@ -85,11 +85,13 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 
 - [ ] walidacja biznesowa w song (RDM) "Czy piosenka może zmienić język, jeśli została już zablokowana przez proces licencyjny?", "Czy można nałożyć zniżkę na utwór, który ma status archiwalny?", "Czy data premiery nie jest przypadkiem z przyszłości?".
 
+- rozwać i zakodować CascadeType w encjach catalog
+
 3. Baza Danych (Skrypty Flyway)
 
 - [x] Aktualizacja song: Dodać kolumny preview_url (do próbki) oraz file_url (do pełnego utworu) pod przyszłą integrację z AWS, .
 
-- [x] Aktualizacja album: Dodać kolumnę cover_url 
+- [x] Aktualizacja album: Dodać kolumnę cover_url
 
 - [x] Aktualizacja artist: Dodać kolumnę image_url
 
@@ -103,12 +105,12 @@ Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie pr
 4. Integracje (Kolejny krok prac)
 
 
-- [ ] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych (moduł catalog) ---- rozważyć w jaki sposób zabezpieczyć te pola w samej encji Song, 
-aby uniemożliwić ich przypadkową zmianę z zewnątrz (np. poprzez usunięcie standardowych setterów i wprowadzenie dedykowanych metod assignFile(...)?)
+- [ ] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych (moduł catalog) ---- rozważyć w jaki sposób zabezpieczyć te pola w samej encji Song,
+  aby uniemożliwić ich przypadkową zmianę z zewnątrz (np. poprzez usunięcie standardowych setterów i wprowadzenie dedykowanych metod assignFile(...)?)
 
 - [ ] Dodawanie wyceny licencji piosenki - komunikacja między modułami catalog, licensing
 
-- [ ] Spring HATEOAS do response edycji piosenki (ceny licencji - tabela pricing)
+- [ ] Spring HATEOAS do response edycji piosenki (ceny licencji - tabela pricing, edycja zasobów url)
 
 - [ ] Stworzenie logiki komunikacji ze Stripe (generowanie URL do Checkoutu).
 

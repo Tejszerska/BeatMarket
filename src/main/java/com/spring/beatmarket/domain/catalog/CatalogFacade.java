@@ -1,17 +1,17 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
-import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
-import com.spring.beatmarket.domain.catalog.dto.GenreDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.SongSearchCriteria;
 import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
 import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
@@ -47,7 +47,7 @@ public class CatalogFacade {
         return albumRetriever.findAlbumByReturnAlbumInfo(id);
     }
 
-    public Slice<ArtistDto> findAllArtists(Pageable pageable) {
+    public Slice<LegacyArtistDto> findAllArtists(Pageable pageable) {
         return artistRetriever.findAllArtist(pageable);
     }
 
@@ -59,23 +59,23 @@ public class CatalogFacade {
         return songRetriever.getSongDetailsById(id);
     }
 
-    public Slice<AlbumDto> findAllAlbums(Pageable pageable) {
+    public Slice<LegacyAlbumDto> findAllAlbums(Pageable pageable) {
         return albumRetriever.findAllAlbums(pageable);
     }
 
-    public Slice<GenreDto> findAllGenres(Pageable pageable) {
+    public Slice<LegacyGenreDto> findAllGenres(Pageable pageable) {
         return genreRetriever.findAll(pageable);
     }
 
-    public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
+    public LegacyArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
         return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
     }
 
-    public GenreDto addGenre(SaveGenreDto dto) {
+    public LegacyGenreDto addGenre(SaveGenreDto dto) {
         return genreAdder.addGenre(dto);
     }
 
-    public AlbumDto addAlbumWithSong(AlbumRequestDto dto) {
+    public LegacyAlbumDto addAlbumWithSong(AlbumRequestDto dto) {
         return albumAdder.addAlbum(dto.songId(), dto.title(), dto.releaseDate());
     }
 
@@ -83,15 +83,15 @@ public class CatalogFacade {
         return artistAssigner.addArtistToAlbum(artistId, albumId);
     }
 
-    public SongDto addSong(final CreateSongDto dto) {
+    public LegacySongDto addSong(final CreateSongDto dto) {
         return songAdder.addSong(dto);
     }
 
-    public ArtistDto addArtist(ArtistRequestDto dto) {
+    public LegacyArtistDto addArtist(ArtistRequestDto dto) {
         return artistAdder.addArtist(dto.name());
     }
 
-    public ArtistDto updateArtistNameById(Long artistId, String name) {
+    public LegacyArtistDto updateArtistNameById(Long artistId, String name) {
         return artistUpdater.updateArtistNameById(artistId, name);
     }
 
@@ -105,11 +105,11 @@ public class CatalogFacade {
         artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
-    public GenreDto findGenreById(final Long genreId) {
+    public LegacyGenreDto findGenreById(final Long genreId) {
         return genreRetriever.getGenreDtoById(genreId);
     }
 
-    public SongDto updateSongById(Long id, UpdateSongDto songFromRequest) {
+    public LegacySongDto updateSongById(Long id, UpdateSongDto songFromRequest) {
         return songUpdater.updateSongById(id, songFromRequest);
     }
 
@@ -123,7 +123,7 @@ public class CatalogFacade {
         return songAssigner.assignSongByIdToAlbumById(albumId, songId);
     }
 
-    public GenreDto update(final Long id, final SaveGenreDto dto) {
+    public LegacyGenreDto update(final Long id, final SaveGenreDto dto) {
         return genreUpdater.update(id, dto);
     }
 }

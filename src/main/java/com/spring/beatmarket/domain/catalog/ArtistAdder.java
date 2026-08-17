@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
-import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ class ArtistAdder {
     private final ArtistMapper artistMapper;
 
 
-    ArtistDto addArtist(final String name) {
+    LegacyArtistDto addArtist(final String name) {
         if (name == null || name.isBlank()) throw new NameIsBlankException("Artist needs a specified name!");
         Artist artist = new Artist(name);
         return artistMapper.mapFromEntityToArtistDto(
@@ -28,7 +28,7 @@ class ArtistAdder {
 
     }
 
-    ArtistDto addArtistWithDefaultAlbumAndSong(final ArtistRequestDto dto) {
+    LegacyArtistDto addArtistWithDefaultAlbumAndSong(final ArtistRequestDto dto) {
         String artistName = dto.name();
         if (artistName == null || artistName.isBlank())
             throw new NameIsBlankException("Artist needs a specified name!");
@@ -39,9 +39,9 @@ class ArtistAdder {
         Artist artist = new Artist(name);
         Artist savedArtist = artistRepository.save(artist);
 
-        //SongDto songDtoOld = new SongDto();
-        AlbumDto albumDto = albumAdder.addDefaultAlbum(1L);
-        Album album = albumRetriever.findById(albumDto.id());
+        //LegacySongDto songDtoOld = new LegacySongDto();
+        LegacyAlbumDto legacyAlbumDto = albumAdder.addDefaultAlbum(1L);
+        Album album = albumRetriever.findById(legacyAlbumDto.id());
 
         artist.setAlbums(Set.of(album));
         album.addArtist(artist);

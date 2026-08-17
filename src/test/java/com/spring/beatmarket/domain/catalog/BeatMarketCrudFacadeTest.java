@@ -1,14 +1,14 @@
 //package com.spring.beatmarket.domain.catalog;
 //
-//import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+//import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 //import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 //import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
-//import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+//import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 //import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
-//import com.spring.beatmarket.domain.catalog.dto.GenreDto;
+//import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 //import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 //import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
-//import com.spring.beatmarket.domain.catalog.dto.song.SongDto;
+//import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
 //import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
 //import com.spring.beatmarket.domain.catalog.exception.AlbumNotFoundException;
 //import com.spring.beatmarket.domain.catalog.exception.ArtistNotFoundException;
@@ -16,6 +16,7 @@
 //import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 //import com.spring.beatmarket.domain.catalog.exception.SongNotFoundException;
 //import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
+//import org.junit.jupiter.api.Disabled;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.params.ParameterizedTest;
@@ -35,6 +36,8 @@
 //import static org.junit.jupiter.api.Assertions.assertFalse;
 //import static org.junit.jupiter.api.Assertions.assertTrue;
 //
+//
+//@Disabled("Temporarily disabled - untill catalog module refactor is completed ")
 //class BeatMarketCrudFacadeTest {
 //
 //    BeatMarketCrudFacade beatmarketCrudFacade = BeatMarketCrudFacadeConfiguration.createBeatMarketCrud(
@@ -48,25 +51,25 @@
 //            new AlbumMapperImpl(),
 //            new ArtistWithAlbumMapperImpl(new ArtistMapperImpl(), new AlbumMapperImpl())
 //    );
-//    //    public Set<AlbumDto> findAlbumsDtoByArtistId(Long artistId)
+//    //    public Set<LegacyAlbumDto> findAlbumsDtoByArtistId(Long artistId)
 //    @Test
 //    @DisplayName("Should return one Album by Artists's ID")
 //    void should_return_one_album_by_artist_id() {
 //        // given
-//        AlbumDto albumDto = createAlbumWithNewSong("test-album", "test-song");
-//        ArtistDto artistDto = createArtist("test-artist");
+//        LegacyAlbumDto albumDto = createAlbumWithNewSong("test-album", "test-song");
+//        LegacyArtistDto artistDto = createArtist("test-artist");
 //
 //        assertThat(beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id())).isEmpty();
 //
 //        beatmarketCrudFacade.addArtistToAlbum(artistDto.id(), albumDto.id());
 //
 //        // when
-//        Set<AlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
+//        Set<LegacyAlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
 //
 //        // then
 //        assertThat(albumsDtoByArtistId)
 //                .hasSize(1)
-//                .extracting(AlbumDto::id)
+//                .extracting(LegacyAlbumDto::id)
 //                .containsExactly(albumDto.id());
 //    }
 //
@@ -74,9 +77,9 @@
 //    @DisplayName("Should return two Albums by Artists's ID")
 //    void should_return_two_albums_by_artist_id() {
 //        // given
-//        AlbumDto albumDto1 = createAlbumWithNewSong("test-album1", "test-song1");
-//        AlbumDto albumDto2 = createAlbumWithNewSong("test-album2", "test-song2");
-//        ArtistDto artistDto = createArtist("test-artist");
+//        LegacyAlbumDto albumDto1 = createAlbumWithNewSong("test-album1", "test-song1");
+//        LegacyAlbumDto albumDto2 = createAlbumWithNewSong("test-album2", "test-song2");
+//        LegacyArtistDto artistDto = createArtist("test-artist");
 //
 //        assertThat(beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id())).isEmpty();
 //
@@ -84,23 +87,23 @@
 //        beatmarketCrudFacade.addArtistToAlbum(artistDto.id(), albumDto2.id());
 //
 //        // when
-//        Set<AlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
+//        Set<LegacyAlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
 //
 //        // then
 //        assertThat(albumsDtoByArtistId)
 //                .hasSize(2)
-//                .extracting(AlbumDto::id)
+//                .extracting(LegacyAlbumDto::id)
 //                .containsExactlyInAnyOrder(albumDto1.id(), albumDto2.id());
 //    }
 //
 //    @Test
-//    @DisplayName("Should return empty Set<AlbumDto> when no Albums assigned to artist")
+//    @DisplayName("Should return empty Set<LegacyAlbumDto> when no Albums assigned to artist")
 //    void should_return_empty_set_of_albums_when_no_albums_assigned_to_artist() {
 //        // given
-//        ArtistDto artistDto = createArtist("test-artist");
+//        LegacyArtistDto artistDto = createArtist("test-artist");
 //
 //        // when
-//        Set<AlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
+//        Set<LegacyAlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
 //
 //        // then
 //        assertThat(albumsDtoByArtistId).isEmpty();
@@ -124,10 +127,10 @@
 //    @DisplayName("Should return an Album by Album's ID")
 //    void should_return_album_by_id() {
 //        // given
-//        SongDto songDto = createSong("test-song");
+//        LegacySongDto songDto = createSong("test-song");
 //        assertThat(beatmarketCrudFacade.findAllAlbums(Pageable.unpaged())).isEmpty();
 //
-//        AlbumDto albumDto = createAlbum("test-album", songDto.id());
+//        LegacyAlbumDto albumDto = createAlbum("test-album", songDto.id());
 //        assertThat(beatmarketCrudFacade.findAllAlbums(Pageable.unpaged()).getContent()).hasSize(1);
 //
 //        // when
@@ -153,19 +156,19 @@
 //                .hasMessage("Album with id=10 not found");
 //    }
 //
-//    //    public Slice<ArtistDto> findAllArtists(Pageable pageable)
+//    //    public Slice<LegacyArtistDto> findAllArtists(Pageable pageable)
 //
 //    @Test
-//    @DisplayName("Should return correct Slice<ArtistDto> when pagination is applied")
+//    @DisplayName("Should return correct Slice<LegacyArtistDto> when pagination is applied")
 //    public void should_return_correct_slice_artistdto_with_pagination() {
 //        // given
-//        ArtistDto test1 = createArtist("test-1");
-//        ArtistDto test2 = createArtist("test-2");
-//        ArtistDto test3 = createArtist("test-3");
+//        LegacyArtistDto test1 = createArtist("test-1");
+//        LegacyArtistDto test2 = createArtist("test-2");
+//        LegacyArtistDto test3 = createArtist("test-3");
 //
 //        // when
 //        Pageable pageRequest = PageRequest.of(0, 2);
-//        Slice<ArtistDto> firstPage = beatmarketCrudFacade.findAllArtists(pageRequest);
+//        Slice<LegacyArtistDto> firstPage = beatmarketCrudFacade.findAllArtists(pageRequest);
 //
 //        // then
 //        assertThat(firstPage)
@@ -174,7 +177,7 @@
 //
 //        // when
 //        pageRequest = PageRequest.of(1, 2);
-//        Slice<ArtistDto> secondPage = beatmarketCrudFacade.findAllArtists(pageRequest);
+//        Slice<LegacyArtistDto> secondPage = beatmarketCrudFacade.findAllArtists(pageRequest);
 //
 //        // then
 //        assertThat(secondPage)
@@ -183,12 +186,12 @@
 //    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<ArtistDto> with one object")
+//    @DisplayName("Should return Slice<LegacyArtistDto> with one object")
 //    public void should_return_one_artist() {
 //        //given
-//        ArtistDto test = createArtist("test");
+//        LegacyArtistDto test = createArtist("test");
 //        //when
-//        Slice<ArtistDto> allArtists = beatmarketCrudFacade.findAllArtists(Pageable.unpaged());
+//        Slice<LegacyArtistDto> allArtists = beatmarketCrudFacade.findAllArtists(Pageable.unpaged());
 //        //then
 //        assertThat(allArtists)
 //                .hasSize(1)
@@ -196,38 +199,38 @@
 //    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<ArtistDto> with two objects")
+//    @DisplayName("Should return Slice<LegacyArtistDto> with two objects")
 //    public void should_return_two_artists() {
 //        //given
-//        ArtistDto test1 = createArtist("test-1");
-//        ArtistDto test2 = createArtist("test-2");
+//        LegacyArtistDto test1 = createArtist("test-1");
+//        LegacyArtistDto test2 = createArtist("test-2");
 //        //when
-//        Slice<ArtistDto> allArtists = beatmarketCrudFacade.findAllArtists(Pageable.unpaged());
+//        Slice<LegacyArtistDto> allArtists = beatmarketCrudFacade.findAllArtists(Pageable.unpaged());
 //        //then
 //        assertThat(allArtists)
 //                .containsExactlyInAnyOrder(test1, test2);
 //    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<ArtistDto> with zero objects")
+//    @DisplayName("Should return Slice<LegacyArtistDto> with zero objects")
 //    public void should_return_zero_artists() {
 //        //when
-//        Slice<ArtistDto> allArtists = beatmarketCrudFacade.findAllArtists(Pageable.unpaged());
+//        Slice<LegacyArtistDto> allArtists = beatmarketCrudFacade.findAllArtists(Pageable.unpaged());
 //        //then
 //        assertThat(allArtists)
 //                .isEmpty();
 //    }
 //
 //////    @TODO Fix after implementing filtering for all songs
-////    //    public Slice<SongDto> findAllSongs(Pageable pageable)
+////    //    public Slice<LegacySongDto> findAllSongs(Pageable pageable)
 ////
 ////    @Test
 ////    @DisplayName("Should return correct Slice<SongSummeryDto> when pagination is applied")
 ////    public void should_return_correct_slice_SongSummeryDto_with_pagination() {
 ////        // given
-////        SongDto test1 = createSong("test-1");
-////        SongDto test2 = createSong("test-2");
-////        SongDto test3 = createSong("test-3");
+////        LegacySongDto test1 = createSong("test-1");
+////        LegacySongDto test2 = createSong("test-2");
+////        LegacySongDto test3 = createSong("test-3");
 ////
 ////
 ////        // when
@@ -254,24 +257,24 @@
 ////    }
 ////
 ////    @Test
-////    @DisplayName("Should return Slice<SongDto> with one object")
+////    @DisplayName("Should return Slice<LegacySongDto> with one object")
 ////    public void should_return_one_song() {
 ////        //given
-////        SongDto test = createSong("test");
-////        AlbumDto testAlbum = createAlbum("test", test.id());
+////        LegacySongDto test = createSong("test");
+////        LegacyAlbumDto testAlbum = createAlbum("test", test.id());
 ////        //when
-////        Slice<AlbumDto> all = beatmarketCrudFacade.findAllAlbums(Pageable.unpaged());
+////        Slice<LegacyAlbumDto> all = beatmarketCrudFacade.findAllAlbums(Pageable.unpaged());
 ////        //then
 ////        assertThat(all)
 ////                .containsExactly(testAlbum);
 ////    }
 ////
 ////    @Test
-////    @DisplayName("Should return Slice<SongDto> with two objects")
+////    @DisplayName("Should return Slice<LegacySongDto> with two objects")
 ////    public void should_return_two_songs() {
 ////        //given
-////        SongDto test1 = createSong("test-1");
-////        SongDto test2 = createSong("test-2");
+////        LegacySongDto test1 = createSong("test-1");
+////        LegacySongDto test2 = createSong("test-2");
 ////        //when
 ////        Slice<SongSummaryDto> all = beatmarketCrudFacade.findAllSongs(Pageable.unpaged());
 ////        //then
@@ -290,7 +293,7 @@
 ////                .isEmpty();
 ////    }
 ////
-////    //    public SongDto findSongDtoById(Long id)
+////    //    public LegacySongDto findSongDtoById(Long id)
 ////
 ////    @Test
 ////    @DisplayName("Should find song 'Test' by id 0 ")
@@ -304,10 +307,10 @@
 ////                .language(SongLanguage.EN)
 ////                .build();
 ////
-////        SongDto songDtoGiven = beatmarketCrudFacade.addSong(songRequestDto);
+////        LegacySongDto songDtoGiven = beatmarketCrudFacade.addSong(songRequestDto);
 ////
 ////        // when
-////        SongDto songDtoWhen = beatmarketCrudFacade.findSongDtoById(songDtoGiven.id());
+////        LegacySongDto songDtoWhen = beatmarketCrudFacade.findSongDtoById(songDtoGiven.id());
 ////
 ////        // then
 ////        assertThat(songDtoWhen.id()).isEqualTo(songDtoGiven.id());
@@ -331,22 +334,22 @@
 ////                .hasMessage("Song with id 10 not found");
 ////    }
 ////
-////    //    public Slice<AlbumDto> findAllAlbums(Pageable pageable)
+////    //    public Slice<LegacyAlbumDto> findAllAlbums(Pageable pageable)
 ////    @Test
-////    @DisplayName("Should return correct Slice<AlbumDto> when pagination is applied")
+////    @DisplayName("Should return correct Slice<LegacyAlbumDto> when pagination is applied")
 ////    public void should_return_correct_slice_AlbumDto_with_pagination() {
 ////        // given
-////        SongDto testS1 = createSong("test-1");
-////        SongDto testS2 = createSong("test-2");
-////        SongDto testS3 = createSong("test-3");
+////        LegacySongDto testS1 = createSong("test-1");
+////        LegacySongDto testS2 = createSong("test-2");
+////        LegacySongDto testS3 = createSong("test-3");
 ////
-////        AlbumDto test1 = createAlbum("test-album-1", testS1.id());
-////        AlbumDto test2 = createAlbum("test-album-2", testS2.id());
-////        AlbumDto test3 = createAlbum("test-album-3", testS3.id());
+////        LegacyAlbumDto test1 = createAlbum("test-album-1", testS1.id());
+////        LegacyAlbumDto test2 = createAlbum("test-album-2", testS2.id());
+////        LegacyAlbumDto test3 = createAlbum("test-album-3", testS3.id());
 ////
 ////        // when
 ////        Pageable pageRequest = PageRequest.of(0, 2);
-////        Slice<AlbumDto> firstPage = beatmarketCrudFacade.findAllAlbums(pageRequest);
+////        Slice<LegacyAlbumDto> firstPage = beatmarketCrudFacade.findAllAlbums(pageRequest);
 ////
 ////        // then
 ////        assertThat(firstPage)
@@ -355,7 +358,7 @@
 ////
 ////        // when
 ////        pageRequest = PageRequest.of(1, 2);
-////        Slice<AlbumDto> secondPage = beatmarketCrudFacade.findAllAlbums(pageRequest);
+////        Slice<LegacyAlbumDto> secondPage = beatmarketCrudFacade.findAllAlbums(pageRequest);
 ////
 ////        // then
 ////        assertThat(secondPage)
@@ -364,10 +367,10 @@
 ////    }
 ////
 ////    @Test
-////    @DisplayName("Should return Slice<AlbumDto> with one object")
+////    @DisplayName("Should return Slice<LegacyAlbumDto> with one object")
 ////    public void should_return_one_album() {
 ////        //given
-////        SongDto test = createSong("test");
+////        LegacySongDto test = createSong("test");
 ////        //when
 ////        Slice<SongSummaryDto> allSongs = beatmarketCrudFacade.findAllSongs(Pageable.unpaged());
 ////        //then
@@ -377,44 +380,44 @@
 ////    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<AlbumDto> with two objects")
+//    @DisplayName("Should return Slice<LegacyAlbumDto> with two objects")
 //    public void should_return_two_albums() {
 //        //given
-//        SongDto test1 = createSong("test-1");
-//        SongDto test2 = createSong("test-2");
-//        AlbumDto testAlbum1 = createAlbum("test", test1.id());
-//        AlbumDto testAlbum2 = createAlbum("test", test2.id());
+//        LegacySongDto test1 = createSong("test-1");
+//        LegacySongDto test2 = createSong("test-2");
+//        LegacyAlbumDto testAlbum1 = createAlbum("test", test1.id());
+//        LegacyAlbumDto testAlbum2 = createAlbum("test", test2.id());
 //
 //        //when
-//        Slice<AlbumDto> all = beatmarketCrudFacade.findAllAlbums(Pageable.unpaged());
+//        Slice<LegacyAlbumDto> all = beatmarketCrudFacade.findAllAlbums(Pageable.unpaged());
 //        //then
 //        assertThat(all)
 //                .containsExactlyInAnyOrder(testAlbum1, testAlbum2);
 //    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<AlbumDto> with zero objects")
+//    @DisplayName("Should return Slice<LegacyAlbumDto> with zero objects")
 //    public void should_return_zero_albums() {
 //        //when
-//        Slice<AlbumDto> all = beatmarketCrudFacade.findAllAlbums(Pageable.unpaged());
+//        Slice<LegacyAlbumDto> all = beatmarketCrudFacade.findAllAlbums(Pageable.unpaged());
 //        //then
 //        assertThat(all)
 //                .isEmpty();
 //    }
 //
-//    //    public Slice<GenreDto> findAllGenres(Pageable pageable)
+//    //    public Slice<LegacyGenreDto> findAllGenres(Pageable pageable)
 //
 //    @Test
-//    @DisplayName("Should return correct Slice<GenreDto> when pagination is applied")
+//    @DisplayName("Should return correct Slice<LegacyGenreDto> when pagination is applied")
 //    public void should_return_correct_slice_GenreDto_with_pagination() {
 //        // given
-//        GenreDto test1 = createGenre("test1");
-//        GenreDto test2 = createGenre("test2");
-//        GenreDto defaultGenre = beatmarketCrudFacade.findGenreById(1L);
+//        LegacyGenreDto test1 = createGenre("test1");
+//        LegacyGenreDto test2 = createGenre("test2");
+//        LegacyGenreDto defaultGenre = beatmarketCrudFacade.findGenreById(1L);
 //
 //        // when
 //        Pageable pageRequest = PageRequest.of(0, 2);
-//        Slice<GenreDto> firstPage = beatmarketCrudFacade.findAllGenres(pageRequest);
+//        Slice<LegacyGenreDto> firstPage = beatmarketCrudFacade.findAllGenres(pageRequest);
 //
 //        // then
 //        assertThat(firstPage)
@@ -423,7 +426,7 @@
 //
 //        // when
 //        pageRequest = PageRequest.of(1, 2);
-//        Slice<GenreDto> secondPage = beatmarketCrudFacade.findAllGenres(pageRequest);
+//        Slice<LegacyGenreDto> secondPage = beatmarketCrudFacade.findAllGenres(pageRequest);
 //
 //        // then
 //        assertThat(secondPage)
@@ -432,12 +435,12 @@
 //    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<GenreDto> with two objects")
+//    @DisplayName("Should return Slice<LegacyGenreDto> with two objects")
 //    public void should_return_two_genre() {
 //        //given
-//        GenreDto test1 = createGenre("test1");
+//        LegacyGenreDto test1 = createGenre("test1");
 //        //when
-//        Slice<GenreDto> all = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
+//        Slice<LegacyGenreDto> all = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
 //        //then
 //        assertThat(all)
 //                .contains(test1)
@@ -445,13 +448,13 @@
 //    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<GenreDto> with three objects")
+//    @DisplayName("Should return Slice<LegacyGenreDto> with three objects")
 //    public void should_return_two_genres() {
 //        //given
-//        GenreDto test1 = createGenre("test1");
-//        GenreDto test2 = createGenre("test2");
+//        LegacyGenreDto test1 = createGenre("test1");
+//        LegacyGenreDto test2 = createGenre("test2");
 //        //when
-//        Slice<GenreDto> all = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
+//        Slice<LegacyGenreDto> all = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
 //        //then
 //        assertThat(all)
 //                .contains(test1, test2)
@@ -460,17 +463,17 @@
 //    }
 //
 //    @Test
-//    @DisplayName("Should return Slice<GenreDto> with one object, Default Genre")
+//    @DisplayName("Should return Slice<LegacyGenreDto> with one object, Default Genre")
 //    public void should_return_zero_genres() {
 //        //when
-//        Slice<GenreDto> all = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
+//        Slice<LegacyGenreDto> all = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
 //        //then
 //        assertThat(all)
-//                .extracting(GenreDto::name)
+//                .extracting(LegacyGenreDto::name)
 //                .contains("Default");
 //    }
 //
-//    //    public ArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
+//    //    public LegacyArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
 //    @Test
 //    @DisplayName("Should add Artist with default values for Album and Song")
 //    public void should_add_artist_with_default_values_for_album_and_song() {
@@ -480,14 +483,14 @@
 //                .name("test")
 //                .build();
 //        //when
-//        ArtistDto artistDto = beatmarketCrudFacade.addArtistWithDefaultAlbumAndSong(requestDto);
+//        LegacyArtistDto artistDto = beatmarketCrudFacade.addArtistWithDefaultAlbumAndSong(requestDto);
 //        //then
-//        Set<AlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
-//        assertThat(albumsDtoByArtistId).extracting(AlbumDto::title).anyMatch(s -> s.startsWith("Default"));
-//        assertThat(albumsDtoByArtistId).extracting(AlbumDto::title).anyMatch(s -> s.startsWith("Default"));
+//        Set<LegacyAlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
+//        assertThat(albumsDtoByArtistId).extracting(LegacyAlbumDto::title).anyMatch(s -> s.startsWith("Default"));
+//        assertThat(albumsDtoByArtistId).extracting(LegacyAlbumDto::title).anyMatch(s -> s.startsWith("Default"));
 //    }
 //
-//    //    public GenreDto addGenre(SaveGenreDto dto) {
+//    //    public LegacyGenreDto addGenre(SaveGenreDto dto) {
 //
 //    @ParameterizedTest
 //    @DisplayName("Should throw NameIsBlankException when invalid name for Genre was sent")
@@ -514,22 +517,22 @@
 //        SaveGenreDto genreRequestDto = new SaveGenreDto("test");
 //
 //        // when
-//        GenreDto genreDto = beatmarketCrudFacade.addGenre(genreRequestDto);
+//        LegacyGenreDto genreDto = beatmarketCrudFacade.addGenre(genreRequestDto);
 //
 //        // then
-//        Slice<GenreDto> allGenres = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
+//        Slice<LegacyGenreDto> allGenres = beatmarketCrudFacade.findAllGenres(Pageable.unpaged());
 //        assertThat(allGenres)
 //                .contains(genreDto)
 //                .hasSize(2);
 //    }
 //
-//    //    public AlbumDto addAlbumWithSong(AlbumRequestDto dto) {
+//    //    public LegacyAlbumDto addAlbumWithSong(AlbumRequestDto dto) {
 //
 //    @Test
 //    @DisplayName("Should add album with song")
 //    void should_add_album_with_song() {
 //        // given
-//        SongDto songDto = createSong("song1");
+//        LegacySongDto songDto = createSong("song1");
 //        assertThat(beatmarketCrudFacade.findAllAlbums(Pageable.unpaged())).isEmpty();
 //
 //        AlbumRequestDto albumRequest = AlbumRequestDto.builder()
@@ -539,7 +542,7 @@
 //                .build();
 //
 //        // when
-//        AlbumDto albumDto = beatmarketCrudFacade.addAlbumWithSong(albumRequest);
+//        LegacyAlbumDto albumDto = beatmarketCrudFacade.addAlbumWithSong(albumRequest);
 //
 //        // then
 //        assertThat(beatmarketCrudFacade.findAllAlbums(Pageable.unpaged()).getContent()).hasSize(1);
@@ -553,7 +556,7 @@
 //    @ValueSource(strings = {"  ", "\t", "\n"})
 //    void should_throw_exception_when_invalid_title_for_album(String invalidName) {
 //        // given
-//        SongDto songDto = createSong("song1");
+//        LegacySongDto songDto = createSong("song1");
 //        assertThat(beatmarketCrudFacade.findAllAlbums(Pageable.unpaged())).isEmpty();
 //
 //        AlbumRequestDto albumRequest = AlbumRequestDto.builder()
@@ -575,8 +578,8 @@
 //    @DisplayName("Should add Artist to Album")
 //    void should_add_artist_to_album() {
 //        // given
-//        ArtistDto artistDto = createArtist("test-artist");
-//        AlbumDto albumDto = createAlbumWithNewSong("test-album", "test-song");
+//        LegacyArtistDto artistDto = createArtist("test-artist");
+//        LegacyAlbumDto albumDto = createAlbumWithNewSong("test-album", "test-song");
 //
 //        assertThat(beatmarketCrudFacade.findAllAlbums(Pageable.unpaged()).getContent()).hasSize(1);
 //        assertThat(beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id())).isEmpty();
@@ -585,14 +588,14 @@
 //        beatmarketCrudFacade.addArtistToAlbum(artistDto.id(), albumDto.id());
 //
 //        // then
-//        Set<AlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
+//        Set<LegacyAlbumDto> albumsDtoByArtistId = beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id());
 //        assertThat(albumsDtoByArtistId)
 //                .hasSize(1)
-//                .extracting(AlbumDto::id)
+//                .extracting(LegacyAlbumDto::id)
 //                .containsExactly(albumDto.id());
 //    }
 ////        @TODO Fix after implementing filtering for all songs
-////    //    public SongDto addSong(final CreateSongDto dto)
+////    //    public LegacySongDto addSong(final CreateSongDto dto)
 ////
 ////    @Test
 ////    @DisplayName("Should add Song")
@@ -607,7 +610,7 @@
 ////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged())).isEmpty();
 ////
 ////        // when
-////        SongDto songDto = beatmarketCrudFacade.addSong(requestDto);
+////        LegacySongDto songDto = beatmarketCrudFacade.addSong(requestDto);
 ////
 ////        // then
 ////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged()).getContent()).hasSize(1);
@@ -615,7 +618,7 @@
 ////        assertThat(songDto.title()).isEqualTo(requestDto.name());
 ////    }
 //
-//    //    public ArtistDto addArtist(ArtistRequestDto dto)
+//    //    public LegacyArtistDto addArtist(ArtistRequestDto dto)
 //
 //    @ParameterizedTest
 //    @DisplayName("Should throw NameIsBlankException when invalid name for Artist was sent")
@@ -643,7 +646,7 @@
 //                .build();
 //
 //        // when
-//        ArtistDto result = beatmarketCrudFacade.addArtist(bono);
+//        LegacyArtistDto result = beatmarketCrudFacade.addArtist(bono);
 //
 //        // then
 //        assertThat(result.id()).isEqualTo(0L);
@@ -651,15 +654,15 @@
 //        assertThat(beatmarketCrudFacade.findAllArtists(Pageable.unpaged()).getContent()).hasSize(1);
 //    }
 //
-//    //    public ArtistDto updateArtistNameById(Long artistId, String name) {
+//    //    public LegacyArtistDto updateArtistNameById(Long artistId, String name) {
 //    @Test
 //    @DisplayName("Should update Artist name")
 //    public void should_update_artist_name() {
 //        //given
-//        ArtistDto before = createArtist("before");
+//        LegacyArtistDto before = createArtist("before");
 //
 //        //when
-//        ArtistDto after = beatmarketCrudFacade.updateArtistNameById(before.id(), "after");
+//        LegacyArtistDto after = beatmarketCrudFacade.updateArtistNameById(before.id(), "after");
 //
 //        //then
 //        assertThat(before.id()).isEqualTo(after.id());
@@ -684,7 +687,7 @@
 ////    @DisplayName("Should delete song by id when song exists")
 ////    public void should_delete_song_by_id_when_song_exists() {
 ////        // given
-////        SongDto songDto = createSong("song to delete");
+////        LegacySongDto songDto = createSong("song to delete");
 ////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged()).getContent()).hasSize(1);
 ////
 ////        // when
@@ -732,7 +735,7 @@
 //    @DisplayName("Should delete Artist when it has no Album")
 //    void should_delete_artist_when_no_albums() {
 //        // given
-//        ArtistDto artistDto = createArtist("bono");
+//        LegacyArtistDto artistDto = createArtist("bono");
 //        assertThat(beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id())).isEmpty();
 //
 //        // when
@@ -746,9 +749,9 @@
 //    @DisplayName("Should delete Artist by Id when Artist has 1 Album and was the only one on that Album")
 //    void should_delete_artist_by_id_when_has_one_album_and_is_only_artist_on_given_album() {
 //        // given
-//        ArtistDto artistDto = createArtist("bono");
-//        SongDto songDto = createSong("song1");
-//        AlbumDto albumDto = createAlbum("album1", songDto.id());
+//        LegacyArtistDto artistDto = createArtist("bono");
+//        LegacySongDto songDto = createSong("song1");
+//        LegacyAlbumDto albumDto = createAlbum("album1", songDto.id());
 //
 //        beatmarketCrudFacade.addArtistToAlbum(artistDto.id(), albumDto.id());
 //        assertThat(beatmarketCrudFacade.findAlbumsDtoByArtistId(artistDto.id())).hasSize(1);
@@ -771,19 +774,19 @@
 //    @DisplayName("Should remove Artist from Album when Album has 2+ Artists")
 //    void should_only_remove_artist_from_album_when_more_than_two_artists() {
 //        // given
-//        ArtistDto artist1 = createArtist("artist-1");
-//        ArtistDto artist2 = createArtist("artist-2");
+//        LegacyArtistDto artist1 = createArtist("artist-1");
+//        LegacyArtistDto artist2 = createArtist("artist-2");
 //        assertThat(beatmarketCrudFacade.findAllArtists(Pageable.unpaged()).getContent()).hasSize(2);
 //
-//        AlbumDto album1 = createAlbumWithNewSong("album-1", "song-1");
+//        LegacyAlbumDto album1 = createAlbumWithNewSong("album-1", "song-1");
 //        beatmarketCrudFacade.addArtistToAlbum(artist1.id(), album1.id());
 //        beatmarketCrudFacade.addArtistToAlbum(artist2.id(), album1.id());
 //
-//        Set<AlbumDto> albumsByArtist1 = beatmarketCrudFacade.findAlbumsDtoByArtistId(artist1.id());
-//        Set<AlbumDto> albumsByArtist2 = beatmarketCrudFacade.findAlbumsDtoByArtistId(artist2.id());
+//        Set<LegacyAlbumDto> albumsByArtist1 = beatmarketCrudFacade.findAlbumsDtoByArtistId(artist1.id());
+//        Set<LegacyAlbumDto> albumsByArtist2 = beatmarketCrudFacade.findAlbumsDtoByArtistId(artist2.id());
 //        assertThat(albumsByArtist1).isEqualTo(albumsByArtist2);
 //
-//        AlbumDto album2 = createAlbumWithNewSong("album-2", "song-2");
+//        LegacyAlbumDto album2 = createAlbumWithNewSong("album-2", "song-2");
 //        beatmarketCrudFacade.addArtistToAlbum(artist1.id(), album2.id());
 //
 //        assertThat(beatmarketCrudFacade.findAlbumsDtoByArtistId(artist1.id())).hasSize(2);
@@ -797,24 +800,24 @@
 //                .hasMessage("Artist by id=0 wasn't found in the database");
 //        assertThat(beatmarketCrudFacade.findAlbumsDtoByArtistId(artist2.id()))
 //                .hasSize(1)
-//                .extracting(AlbumDto::id)
+//                .extracting(LegacyAlbumDto::id)
 //                .contains(album1.id());
 //    }
 //
-//    //public GenreDto findGenreById(final Long genreId)
+//    //public LegacyGenreDto findGenreById(final Long genreId)
 //
 //    @Test
 //    @DisplayName("Should retrieve Genre by ID")
 //    public void should_find_genre_by_id() {
 //        //given
-//        GenreDto test = createGenre("test");
+//        LegacyGenreDto test = createGenre("test");
 //        assertThat(beatmarketCrudFacade.findAllGenres(Pageable.unpaged())).hasSize(2);
 //        //when
-//        GenreDto genreById = beatmarketCrudFacade.findGenreById(test.id());
+//        LegacyGenreDto genreById = beatmarketCrudFacade.findGenreById(test.id());
 //        //then
 //        assertThat(genreById).isEqualTo(test);
 //        //when
-//        GenreDto defaultGenreById = beatmarketCrudFacade.findGenreById(1L);
+//        LegacyGenreDto defaultGenreById = beatmarketCrudFacade.findGenreById(1L);
 //        //then
 //        assertThat(defaultGenreById.id()).isEqualTo(1L);
 //        assertThat(defaultGenreById.name()).isEqualTo("Default");
@@ -831,20 +834,20 @@
 //                .hasMessage("Genre by id=" + nonExistingGenreId + "wasn't found");
 //    }
 //
-////    public SongDto updateSongPartiallyById(Long id, SongDto songFromRequest) {
+////    public LegacySongDto updateSongPartiallyById(Long id, LegacySongDto songFromRequest) {
 //
 ////    @Test
 ////    @DisplayName("Should update just Song's title")
 ////    public void should_update_song_partially_just_the_title() {
 ////        //given
-////        SongDto original = createSong("old-title");
-////        SongDto newSongTitle = SongDto.builder().title("new-title").build();
+////        LegacySongDto original = createSong("old-title");
+////        LegacySongDto newSongTitle = LegacySongDto.builder().title("new-title").build();
 ////        //when
-////        SongDto updated = beatmarketCrudFacade.updateSongPartiallyById(original.id(), newSongTitle);
+////        LegacySongDto updated = beatmarketCrudFacade.updateSongPartiallyById(original.id(), newSongTitle);
 ////        //then
 ////        assertThat(updated.id()).isEqualTo(original.id());
 ////        assertThat(updated.title()).isEqualTo("new-title");
-////        SongDto songFromDb = beatmarketCrudFacade.findSongDtoById(original.id());
+////        LegacySongDto songFromDb = beatmarketCrudFacade.findSongDtoById(original.id());
 ////        assertThat(songFromDb.title()).isEqualTo("new-title");
 ////        assertThat(songFromDb.genre()).isEqualTo(original.genre());
 ////    }
@@ -874,16 +877,16 @@
 //                .hasMessage("Genre by id=999 was not found");
 //    }
 //
-//    //    public SongDto assignGenreByIdToSongById(final Long songId, final Long genreId) {
+//    //    public LegacySongDto assignGenreByIdToSongById(final Long songId, final Long genreId) {
 //    @Test
 //    @DisplayName("Should assign Genre By id=2 to Song by id=0")
 //    public void should_assign_genre_by_id_to_song_by_id(){
 //        //given
-//        SongDto song = createSong("song");
-//        GenreDto genre = createGenre("genre");
+//        LegacySongDto song = createSong("song");
+//        LegacyGenreDto genre = createGenre("genre");
 //        assertThat(song.genre().id()).isNotEqualTo(genre.id());
 //        //when
-//        SongDto updated = beatmarketCrudFacade.assignGenreByIdToSongById(song.id(), genre.id());
+//        LegacySongDto updated = beatmarketCrudFacade.assignGenreByIdToSongById(song.id(), genre.id());
 //        //then
 //        assertThat(updated.genre().id()).isEqualTo(genre.id());
 //    }
@@ -893,9 +896,9 @@
 //    @DisplayName("Should assign Song By id=0 to Album by id=0")
 //    public void should_assign_song_by_id_to_album_by_id(){
 //        //given
-//        SongDto song1 = createSong("song1");
-//        SongDto song2 = createSong("song2");
-//        AlbumDto album = createAlbum("album", song1.id());
+//        LegacySongDto song1 = createSong("song1");
+//        LegacySongDto song2 = createSong("song2");
+//        LegacyAlbumDto album = createAlbum("album", song1.id());
 //        Set<AlbumInfo.SongInfo> songsBefore = beatmarketCrudFacade.findAlbumByIdReturnAlbumInfo(album.id()).getSongs();
 //        assertThat(songsBefore.size()).isEqualTo(1);
 //        //when
@@ -912,14 +915,14 @@
 //
 //        // --- HELPER METHODS ---
 //
-//    private ArtistDto createArtist(String name) {
+//    private LegacyArtistDto createArtist(String name) {
 //        ArtistRequestDto request = ArtistRequestDto.builder()
 //                .name(name)
 //                .build();
 //        return beatmarketCrudFacade.addArtist(request);
 //    }
 //
-//    private GenreDto createGenre(String name) {
+//    private LegacyGenreDto createGenre(String name) {
 //        SaveGenreDto request = new SaveGenreDto(name);
 //        return beatmarketCrudFacade.addGenre(request);
 //    }
@@ -936,7 +939,7 @@
 //
 //
 //
-//    private AlbumDto createAlbum(String title, Long songId) {
+//    private LegacyAlbumDto createAlbum(String title, Long songId) {
 //        AlbumRequestDto request = AlbumRequestDto.builder()
 //                .title(title)
 //                .songId(songId)
@@ -945,8 +948,8 @@
 //        return beatmarketCrudFacade.addAlbumWithSong(request);
 //    }
 //
-//    private AlbumDto createAlbumWithNewSong(String albumTitle, String songName) {
-//        SongDto song = createSong(songName);
+//    private LegacyAlbumDto createAlbumWithNewSong(String albumTitle, String songName) {
+//        LegacySongDto song = createSong(songName);
 //        return createAlbum(albumTitle, song.id());
 //    }
 //}

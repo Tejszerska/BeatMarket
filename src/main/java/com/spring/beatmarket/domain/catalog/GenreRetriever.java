@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.GenreDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +15,12 @@ class GenreRetriever {
     private final GenreRepository genreRepository;
     private final GenreMapper genreMapper;
 
-    Slice<GenreDto> findAll(Pageable pageable) {
+    Slice<LegacyGenreDto> findAll(Pageable pageable) {
         return genreRepository.findAll(pageable)
                 .map(genreMapper::toDto);
     }
 
-    GenreDto getGenreDtoById(final Long genreId) {
+    LegacyGenreDto getGenreDtoById(final Long genreId) {
         return genreMapper.toDto(findGenreById(genreId));
     }
 
