@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
+import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

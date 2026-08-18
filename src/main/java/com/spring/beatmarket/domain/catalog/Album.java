@@ -6,8 +6,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +19,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 @Builder
 @Entity
@@ -39,8 +44,14 @@ class Album extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String coverUrl;
 
-    @ManyToMany(mappedBy = "albums")
-    private Set<Artist> artists = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "album_artist",
+            joinColumns = @JoinColumn(name = "album_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    @OrderColumn(name = "artist_order")
+    private List<Artist> artists = new ArrayList<>();
 
     @OneToMany(mappedBy = "album")
     private Set<Song> songs = new HashSet<>();

@@ -1,9 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.PriceWithCurrencyDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -21,16 +19,15 @@ import java.util.Map;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface SongMapper {
 
-    @Mapping(source = "song.genre.name", target = "genre")
-    @Mapping(source = "song.album.title", target = "album")
-    @Mapping(source = "song.artists", target = "artists")
     @Mapping(source = "songPricesDto", target = "pricing")
-    SongSummaryDto toSummaryDto(Song song, List<SongPriceDto> songPricesDto);
+    SongDto.Summary toSummaryDto(Song song, List<SongPriceDto> songPricesDto);
 
     @Mapping(source = "songPricesDto", target = "pricing")
-    SongDetailsDto toDetailsDto(Song song, List<SongPriceDto> songPricesDto);
+    SongDto.Details toDetailsDto(Song song, List<SongPriceDto> songPricesDto);
 
     LegacySongDto toDto(Song song);
+
+    SongDto.Info toInfoDto (Song song);
 
 
     default List<String> mapArtists (List<Artist> artists){
@@ -40,11 +37,11 @@ interface SongMapper {
                 .toList();
     }
 
-    default Map<String, PriceWithCurrencyDto> mapPricing(List<SongPriceDto> songPriceDtos){
+    default Map<String, SongDto.Price> mapPricing(List<SongPriceDto> songPriceDtos){
         if (songPriceDtos == null || songPriceDtos.isEmpty()) return Collections.emptyMap();
-        Map<String, PriceWithCurrencyDto> mappedPricing = new HashMap<>();
+        Map<String, SongDto.Price> mappedPricing = new HashMap<>();
         for (SongPriceDto dto : songPriceDtos ) {
-            mappedPricing.put(dto.tier(), new PriceWithCurrencyDto(dto.price(), dto.currency()));
+            mappedPricing.put(dto.tier(), new SongDto.Price(dto.price(), dto.currency()));
         }
         return mappedPricing;
     }

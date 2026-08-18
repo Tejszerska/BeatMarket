@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 

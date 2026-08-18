@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OrderColumn;
@@ -54,7 +55,7 @@ class Song extends BaseEntity {
     private LocalDate releaseDate;
 
     @Column(nullable = false)
-    private Long duration;
+    private Integer duration;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -69,6 +70,11 @@ class Song extends BaseEntity {
     private Album album;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "song_artist",
+            joinColumns = @JoinColumn(name = "song_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
     @OrderColumn(name = "artist_order")
     private List<Artist> artists = new ArrayList<>();
 
@@ -78,14 +84,14 @@ class Song extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String fileUrl;
 
-    Song(final String title, final LocalDate releaseDate, final Long duration, final SongLanguage language,
+    Song(final String title, final LocalDate releaseDate, final Integer duration, final SongLanguage language,
          final Genre genre, final Album album, final List<Artist> artists){
         this(title, releaseDate, duration, language,
                 genre, album, artists, null, null);
     }
 
     @Builder
-    Song(final String title, final LocalDate releaseDate, final Long duration, final SongLanguage language,
+    Song(final String title, final LocalDate releaseDate, final Integer duration, final SongLanguage language,
          final Genre genre, final Album album, final List<Artist> artists,
          final String previewUrl, final String fileUrl) {
         if (title == null || title.isBlank()) throw new MissingRequiredFieldException("title");
@@ -113,7 +119,7 @@ class Song extends BaseEntity {
         this.title = newTitle;
     }
 
-    void changeDuration(Long newDuration) {
+    void changeDuration(Integer newDuration) {
         if (newDuration == null) throw new MissingRequiredFieldException("duration");
         if (newDuration <= 0) throw new IllegalArgumentException("Duration must be a positive number");
         this.duration = newDuration;

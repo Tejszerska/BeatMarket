@@ -1,7 +1,8 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
+import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistSummaryDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +17,9 @@ interface ArtistMapper {
 
     @Mapping(target = "order", source = "orderIndex")
     ArtistSummaryDto mapFromEntityToSummaryDto (Artist artist, Integer orderIndex);
+
+    @Mapping(target = "displayOrder", source = "orderIndex")
+    ArtistDto.Basic mapToBasicDto (Artist artist, Integer orderIndex);
 
     default List<ArtistSummaryDto> mapFromArtistsToSummaryList (List<Artist> artists){
         if(artists == null)  return null;

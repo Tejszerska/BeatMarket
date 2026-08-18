@@ -1,9 +1,9 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
-import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.album.dto.request.CreateAlbumRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.album.dto.response.AssignAlbumSongResponseDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.album.dto.response.CreateAlbumResponse;

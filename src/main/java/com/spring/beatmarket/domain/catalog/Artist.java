@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.shared.domain.BaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 
 @Builder
 @Entity
@@ -44,8 +46,8 @@ class Artist extends BaseEntity {
     @ManyToMany(mappedBy = "artists")
     private Set<Song> songs = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Album> albums = new HashSet<>();
+    @ManyToMany(mappedBy = "artists")
+    private List<Album> albums = new ArrayList<>();
 
     Artist(final String name) {
         this.name = name;

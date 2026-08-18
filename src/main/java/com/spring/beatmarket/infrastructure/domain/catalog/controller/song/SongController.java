@@ -1,18 +1,7 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
-import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongSearchCriteria;
-import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
-import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.CreateSongRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.SongSearchRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.request.UpdateSongRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.GetAllSongsResponse;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongDetailsResponse;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.dto.response.SongResponse;
+import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
 import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,8 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 public
 class SongController {
 
-    private final CatalogFacade songFacade;
-    private final SongControllerMapper songControllerMapper;
+    private final CatalogFacade facade;
+    private final SongControllerMapper mapper;
 
     @Operation(summary = "Get all songs", description = "Returns a paginated list of all songs in the database, with an option to limit results.")
     @ApiResponses(value = {
@@ -59,19 +48,20 @@ class SongController {
 
     })
     @GetMapping
-    ResponseEntity<GetAllSongsResponse> getAllSongs(
-            SongSearchRequest searchRequestDto,
-            @ParameterObject @PageableDefault(size = 20, sort = "createdOn", direction = Sort.Direction.ASC) Pageable pageable) {
+    ResponseEntity<SongApiDto.GetAllResponse> getAllSongs(
+            SongApiDto.SearchRequest searchRequestDto,
+            @ParameterObject @PageableDefault(size = 20, sort = "createdOn", direction = Sort.Direction.DESC) Pageable pageable) {
         if(searchRequestDto.maxPrice() != null){
             if(searchRequestDto.currency() == null || searchRequestDto.license() == null){
                 throw new InvalidSearchCriteriaException("maxPrice",
                         "Filtering by maxPrice requires declaring currency and license.");
             }
         }
-        SongSearchCriteria songSearchCriteria = songControllerMapper.toDomain(searchRequestDto);
-        Slice<SongSummaryDto> allSongs = songFacade.findAllSongs(songSearchCriteria, pageable);
+        SongDto.SearchCriteria searchCriteria = mapper.toDomain(searchRequestDto);
 
-        return ResponseEntity.ok(songControllerMapper.toResponse(allSongs));
+        Slice<SongDto.Summary> allSongs = facade.findAllSongs(searchCriteria, pageable);
+
+        return ResponseEntity.ok(mapper.toResponse(allSongs));
     }
 
     @Operation(summary = "Get song by ID", description = "Retrieves detailed information about a specific song by its ID.")
@@ -81,9 +71,9 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
     })
     @GetMapping("/{id}")
-    ResponseEntity<SongDetailsResponse> getSongById(@PathVariable Long id) {
-        SongDetailsDto songDetails = songFacade.getSongDetailsById(id);
-        return ResponseEntity.ok(songControllerMapper.toDomain(songDetails));
+    ResponseEntity<SongApiDto.DetailsResponse> getSongById(@PathVariable Long id) {
+        SongDto.Details songDetails = facade.getSongDetailsById(id);
+        return ResponseEntity.ok(mapper.toResponse(songDetails));
     }
 
     @Operation(summary = "Create a new song", description = "Adds a new song to the system.")
@@ -93,10 +83,10 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
     })
     @PostMapping
-    ResponseEntity<SongResponse> postSong(@RequestBody @Valid CreateSongRequest createSongRequest) {
-        CreateSongDto domainRequest = songControllerMapper.toDomain(createSongRequest);
-        LegacySongDto savedSong = songFacade.addSong(domainRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(songControllerMapper.toResponse(savedSong));
+    ResponseEntity<SongApiDto.InfoResponse> postSong(@RequestBody @Valid SongApiDto.CreateRequest createSongRequest) {
+        SongDto.Create domainRequest = mapper.toDomain(createSongRequest);
+        SongDto.Info addedSong = facade.addSong(domainRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(addedSong));
     }
 
     @Operation(summary = "Delete song", description = "Removes a song from the database by its ID.")
@@ -107,7 +97,7 @@ class SongController {
     })
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
-        songFacade.deleteSongById(id);
+        facade.deleteSongById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -120,11 +110,11 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
     @PatchMapping("/{id}")
-     ResponseEntity<SongResponse> updateSong(@PathVariable Long id,
-                                                    @RequestBody UpdateSongRequest request) {
-        UpdateSongDto updateSongDto = songControllerMapper.toDomain(request);
-        LegacySongDto legacySongDto = songFacade.updateSongById(id, updateSongDto);
-        return ResponseEntity.ok(songControllerMapper.toResponse(legacySongDto));
+     ResponseEntity<SongApiDto.InfoResponse> updateSong(@PathVariable Long id,
+                                                        @RequestBody SongApiDto.UpdateRequest request) {
+        SongDto.Update updateSongDto = mapper.toDomain(request);
+        SongDto.Info songDto = facade.updateSongById(id, updateSongDto);
+        return ResponseEntity.ok(mapper.toResponse(songDto));
     }
 
 }

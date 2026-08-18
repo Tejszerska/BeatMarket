@@ -25,11 +25,13 @@ class ArtistRetriever {
                 .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
     }
 
-    boolean existsById(final Long artistId) {
-       return artistRepository.existsById(artistId);
+    void existsById(Long id) {
+        if (!artistRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Artist", id);
+        }
     }
-
     Artist getArtistReference (Long id){
+        existsById(id);
         return artistRepository.getReferenceById(id);
     }
 }

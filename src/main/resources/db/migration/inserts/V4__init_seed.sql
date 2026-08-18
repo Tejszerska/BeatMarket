@@ -28,10 +28,10 @@ INSERT INTO album (id, uuid, created_on, version, title, release_date, cover_url
 
 SELECT setval('album_id_seq', (SELECT MAX(id) FROM album));
 
--- Link artists with albums
-INSERT INTO artist_albums (albums_id, artists_id) VALUES
-                                                      (1, 1),
-                                                      (2, 2);
+-- Link artists with albums (Zmieniono nazwę tabeli, kolumn oraz dodano artist_order)
+INSERT INTO album_artist (album_id, artist_id, artist_order) VALUES
+                                                                 (1, 1, 0),
+                                                                 (2, 2, 0);
 
 -- Seed songs
 INSERT INTO song (id, uuid, created_on, version, genre_id, title, release_date, duration, preview_url, file_url, language, album_id) VALUES
@@ -41,12 +41,12 @@ INSERT INTO song (id, uuid, created_on, version, genre_id, title, release_date, 
 
 SELECT setval('song_id_seq', (SELECT MAX(id) FROM song));
 
--- Link songs with artists
-INSERT INTO song_artists (artists_id, songs_id, artist_order) VALUES
-                                                                  (1, 1, 0),
-                                                                  (2, 1, 1),
-                                                                  (1, 2, 0),
-                                                                  (2, 3, 0);
+-- Link songs with artists (Zmieniono nazwę tabeli i usunięto końcówkę 's' z nazw kolumn kluczy obcych)
+INSERT INTO song_artist (artist_id, song_id, artist_order) VALUES
+                                                               (1, 1, 0),
+                                                               (2, 1, 1),
+                                                               (1, 2, 0),
+                                                               (2, 3, 0);
 
 -- Seed song prices
 INSERT INTO song_price (song_id, uuid, created_on, version, tier, price, currency) VALUES

@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,32 +17,29 @@ class SongAdder {
     private final AlbumRetriever albumRetriever;
     private final ArtistRetriever artistRetriever;
     private final SongMapper songMapper;
+    private final SongRetriever songRetriever;
 
 
-    LegacySongDto addSong(final CreateSongDto dto) {
+    SongDto.Info addSong(final SongDto.Create dto) {
 
-        Genre genreProxy = null;
-        if (dto.genreId() != null) {
-            genreProxy = genreRetriever.getGenreReference(dto.genreId());
-        }
+        Genre genreProxy = dto.genreId() != null
+                ? genreRetriever.getGenreReference(dto.genreId()) : null;
 
-        Album albumProxy = null;
-        if (dto.albumId() != null) {
-            albumProxy = albumRetriever.getAlbumReferenceById(dto.albumId());
-        }
+        Album albumProxy = dto.albumId() != null
+                ? albumRetriever.getAlbumReferenceById(dto.albumId()) : null;
 
         List<Artist> artistsProxyList = new ArrayList<>();
-        List<Long> artistIdsFromDto = dto.artistIds();
         if (dto.artistIds() != null) {
-            for (Long artistsId : artistIdsFromDto) {
+            for (Long artistsId : dto.artistIds()) {
                 artistsProxyList.add(artistRetriever.getArtistReference(artistsId));
             }
         }
 
-        Song save = songRepository.save(
+        Song saved = songRepository.save(
                 new Song(dto.title(), dto.releaseDate(), dto.duration(), dto.language(), genreProxy, albumProxy, artistsProxyList));
 
-        return songMapper.toDto(save);
+        Song songForResponse = songRetriever.findSongById(saved.getId());
+        return songMapper.toInfoDto(songForResponse);
     }
 
 }

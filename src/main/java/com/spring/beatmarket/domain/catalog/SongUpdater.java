@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +20,7 @@ class SongUpdater {
     private final SongMapper songMapper;
 
 
-    LegacySongDto updateSongById(final Long id, final UpdateSongDto songFromRequest) {
+    SongDto.Info updateSongById(final Long id, final SongDto.Update songFromRequest) {
         Song songFromDB = songRetriever.findSongById(id);
 
         if (songFromRequest.title() != null) {
@@ -103,7 +102,7 @@ class SongUpdater {
         }
 
 
-        return songMapper.toDto(songFromDB);
+        return songMapper.toInfoDto(songFromDB);
     }
 }
 

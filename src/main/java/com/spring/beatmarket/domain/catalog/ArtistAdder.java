@@ -1,14 +1,14 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
-import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ class ArtistAdder {
         LegacyAlbumDto legacyAlbumDto = albumAdder.addDefaultAlbum(1L);
         Album album = albumRetriever.findById(legacyAlbumDto.id());
 
-        artist.setAlbums(Set.of(album));
+        artist.setAlbums(List.of(album));
         album.addArtist(artist);
         return savedArtist;
     }

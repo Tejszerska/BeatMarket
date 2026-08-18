@@ -31,11 +31,12 @@ CREATE TABLE artist
     CONSTRAINT pk_artist PRIMARY KEY (id)
 );
 
-CREATE TABLE artist_albums
+CREATE TABLE album_artist
 (
-    albums_id  BIGINT NOT NULL,
-    artists_id BIGINT NOT NULL,
-    CONSTRAINT pk_artist_albums PRIMARY KEY (albums_id, artists_id)
+    album_id  BIGINT NOT NULL,
+    artist_id BIGINT NOT NULL,
+    artist_order INTEGER NOT NULL,
+    CONSTRAINT pk_artist_albums PRIMARY KEY (album_id, artist_id)
 );
 
 CREATE TABLE genre
@@ -57,7 +58,7 @@ CREATE TABLE song
     genre_id     BIGINT,
     title        VARCHAR(255) NOT NULL,
     release_date date NOT NULL,
-    duration     BIGINT NOT NULL,
+    duration     INTEGER NOT NULL,
     preview_url  TEXT,
     file_url     TEXT,
     language     VARCHAR(255) NOT NULL,
@@ -66,12 +67,12 @@ CREATE TABLE song
 );
 
 
-CREATE TABLE song_artists
+CREATE TABLE song_artist
 (
-    artists_id BIGINT NOT NULL,
-    songs_id   BIGINT NOT NULL,
+    artist_id BIGINT NOT NULL,
+    song_id   BIGINT NOT NULL,
     artist_order INTEGER NOT NULL,
-    CONSTRAINT pk_song_artists PRIMARY KEY (artist_order, songs_id)
+    CONSTRAINT pk_song_artists PRIMARY KEY (artist_id, song_id)
 );
 
 CREATE TABLE users
@@ -99,14 +100,14 @@ ALTER TABLE song
 ALTER TABLE song
     ADD CONSTRAINT FK_SONG_ON_GENRE FOREIGN KEY (genre_id) REFERENCES genre (id);
 
-ALTER TABLE artist_albums
-    ADD CONSTRAINT fk_artalb_on_album FOREIGN KEY (albums_id) REFERENCES album (id);
+ALTER TABLE album_artist
+    ADD CONSTRAINT fk_artalb_on_album FOREIGN KEY (album_id) REFERENCES album (id);
 
-ALTER TABLE artist_albums
-    ADD CONSTRAINT fk_artalb_on_artist FOREIGN KEY (artists_id) REFERENCES artist (id);
+ALTER TABLE album_artist
+    ADD CONSTRAINT fk_artalb_on_artist FOREIGN KEY (artist_id) REFERENCES artist (id);
 
-ALTER TABLE song_artists
-    ADD CONSTRAINT fk_sonart_on_artist FOREIGN KEY (artists_id) REFERENCES artist (id);
+ALTER TABLE song_artist
+    ADD CONSTRAINT fk_sonart_on_artist FOREIGN KEY (artist_id) REFERENCES artist (id);
 
-ALTER TABLE song_artists
-    ADD CONSTRAINT fk_sonart_on_song FOREIGN KEY (songs_id) REFERENCES song (id);
+ALTER TABLE song_artist
+    ADD CONSTRAINT fk_sonart_on_song FOREIGN KEY (song_id) REFERENCES song (id);

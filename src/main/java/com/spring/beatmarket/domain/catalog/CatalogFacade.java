@@ -1,20 +1,15 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
-import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
-import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongDetailsDto;
-import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.SongSearchCriteria;
-import com.spring.beatmarket.domain.catalog.dto.song.SongSummaryDto;
-import com.spring.beatmarket.domain.catalog.dto.song.UpdateSongDto;
+import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -51,11 +46,11 @@ public class CatalogFacade {
         return artistRetriever.findAllArtist(pageable);
     }
 
-    public Slice<SongSummaryDto> findAllSongs(SongSearchCriteria searchCriteria, Pageable pageable) {
+    public Slice<SongDto.Summary> findAllSongs(SongDto.SearchCriteria searchCriteria, Pageable pageable) {
         return songRetriever.findAll(searchCriteria, pageable);
     }
 
-    public SongDetailsDto getSongDetailsById(Long id) {
+    public SongDto.Details  getSongDetailsById(Long id) {
         return songRetriever.getSongDetailsById(id);
     }
 
@@ -83,7 +78,7 @@ public class CatalogFacade {
         return artistAssigner.addArtistToAlbum(artistId, albumId);
     }
 
-    public LegacySongDto addSong(final CreateSongDto dto) {
+    public SongDto.Info addSong(final SongDto.Create dto) {
         return songAdder.addSong(dto);
     }
 
@@ -109,7 +104,7 @@ public class CatalogFacade {
         return genreRetriever.getGenreDtoById(genreId);
     }
 
-    public LegacySongDto updateSongById(Long id, UpdateSongDto songFromRequest) {
+    public SongDto.Info updateSongById(Long id, SongDto.Update songFromRequest) {
         return songUpdater.updateSongById(id, songFromRequest);
     }
 

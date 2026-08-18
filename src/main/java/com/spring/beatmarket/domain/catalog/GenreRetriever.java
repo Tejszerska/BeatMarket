@@ -36,6 +36,7 @@ class GenreRetriever {
     }
 
     Genre getGenreReference(Long id){
+        existsById(id);
         return  genreRepository.getReferenceById(id);
     }
 }

@@ -50,4 +50,6 @@ interface AlbumRepository extends Repository<Album, Long> {
     Slice<Album> findAllAlbums(Pageable pageable);
 
     Album getReferenceById(Long id);
+
+    boolean existsById(Long id);
 }

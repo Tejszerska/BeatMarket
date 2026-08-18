@@ -1,9 +1,9 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 
 import com.spring.beatmarket.domain.catalog.CatalogFacade;
-import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.artist.dto.request.ArtistUpdateRequestDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.artist.dto.request.CreateArtistRequest;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.artist.dto.request.CreateArtistWithDefaultAlbumAndSongRequest;
