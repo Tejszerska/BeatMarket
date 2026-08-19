@@ -5,6 +5,7 @@ import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
+import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
@@ -66,7 +67,7 @@ public class CatalogFacade {
         return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
     }
 
-    public LegacyGenreDto addGenre(SaveGenreDto dto) {
+    public GenreDto.Info addGenre(GenreDto.Create dto) {
         return genreAdder.addGenre(dto);
     }
 
@@ -92,7 +93,6 @@ public class CatalogFacade {
 
 
     public void deleteSongById(Long id) {
-        songRetriever.existsById(id);
         songDeleter.deleteById(id);
     }
 
@@ -109,7 +109,6 @@ public class CatalogFacade {
     }
 
     public void deleteGenreById(final Long genreId) {
-        genreRetriever.existsById(genreId);
         genreDeleter.deleteById(genreId);
     }
 

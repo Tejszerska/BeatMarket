@@ -64,13 +64,18 @@ class SongRetriever {
     }
 
     SongDto.Details getSongDetailsById(Long id) {
-        Song song = findSongById(id);
+        Song song = findSongByIdEagerly(id);
         List<SongPriceDto> pricing = licensingFacade.getPricingForSingleSong(id);
         return songMapper.toDetailsDto(song, pricing);
     }
 
-    Song findSongById(Long id) {
+    Song findSongByIdEagerly(Long id) {
         return songRepository.findSongByIdEagerly(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Song", id));
+    }
+
+    Song findSongByIdLazily(Long id) {
+        return songRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Song", id));
     }
 

@@ -1,8 +1,10 @@
 package com.spring.beatmarket.domain.shared.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -14,9 +16,17 @@ public abstract class BaseEntity implements Serializable {
     protected UUID uuid = UUID.randomUUID();
     @CreationTimestamp
     protected Instant createdOn;
+    @UpdateTimestamp
+    protected Instant editedOn;
+    @Column(nullable = false)
+    protected boolean active = true;
+
     @Version
     protected Long version;
 
+    public void deactivate(){
+        this.active = false;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -30,4 +40,6 @@ public abstract class BaseEntity implements Serializable {
     public int hashCode() {
         return Objects.hash(uuid);
     }
+
+
 }

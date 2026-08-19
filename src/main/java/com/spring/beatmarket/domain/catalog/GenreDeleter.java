@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 class GenreDeleter {
-    private final GenreRepository genreRepository;
+    private final GenreRetriever genreRetriever;
 
     void deleteById(Long id) {
-        log.info("deleting genre by id: " + id);
-        genreRepository.deleteGenreDirectly(id);
+        log.info("soft deleting genre by id: " + id);
+        Genre genreById = genreRetriever.findGenreById(id);
+        genreById.deactivate();
     }
 
 }

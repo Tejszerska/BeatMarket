@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -21,15 +20,10 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
             "WHERE s.id = :id")
     Optional<Song> findSongByIdEagerly(Long id);
 
-    @Modifying
-    @Query("DELETE FROM Song s WHERE s.id = :id")
-    void deleteSongDirectly(@Param("id") Long id);
-
     boolean existsById(Long id);
 
     Song save(Song song);
 
-    @Modifying
-    @Query("delete from Song s where s.id in :ids")
-    void deleteByIdIn(@Param("ids") Collection<Long> ids);
+    @Query("SELECT s FROM Song s where s.id in :ids")
+    Collection<Song> findAllById(@Param("ids") Collection<Long> ids);
 }

@@ -5,6 +5,8 @@ CREATE TABLE payment
     id                BIGINT NOT NULL,
     uuid              UUID,
     created_on        TIMESTAMP WITHOUT TIME ZONE,
+    edited_on    TIMESTAMP WITHOUT TIME ZONE,
+    active       BOOLEAN NOT NULL,
     version           BIGINT,
     user_id           BIGINT,
     license_id        BIGINT,
