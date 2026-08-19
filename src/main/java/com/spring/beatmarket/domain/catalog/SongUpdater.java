@@ -21,7 +21,7 @@ class SongUpdater {
 
 
     SongDto.Info updateSongById(final Long id, final SongDto.Update songFromRequest) {
-        Song songFromDB = songRetriever.findSongById(id);
+        Song songFromDB = songRetriever.findSongByIdEagerly(id);
 
         if (songFromRequest.title() != null) {
             songFromRequest.title().ifPresentOrElse(

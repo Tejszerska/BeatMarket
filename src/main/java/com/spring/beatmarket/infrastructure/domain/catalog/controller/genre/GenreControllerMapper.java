@@ -1,10 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 
-import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
-import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.request.GenreRequest;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GenreResponse;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.dto.response.GetAllGenresResponse;
+import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Slice;
 
@@ -13,12 +9,19 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 interface GenreControllerMapper {
 
-    SaveGenreDto toDomain(GenreRequest genreRequest);
+    GenreDto.Create toCreateDto(GenreApiDto.Request request);
 
-    GenreResponse toResponse(LegacyGenreDto legacyGenreDto);
+    GenreDto.Update toUpdateDto(GenreApiDto.Request request);
 
-    List<GenreResponse> toResponse(List<LegacyGenreDto> list);
+    GenreApiDto.InfoResponse toInfoResponse(GenreDto.Info dto);
 
-    default GetAllGenresResponse toGetAllGenresResponse(Slice<LegacyGenreDto> slice) {
-        return new GetAllGenresResponse(toResponse(slice.getContent()), slice.hasNext());    }
+    GenreApiDto.DetailsResponse toDetailsResponse(GenreDto.Details dto);
+
+    GenreApiDto.SummaryResponse toSummaryResponse(GenreDto.Summary dto);
+
+    List<GenreApiDto.SummaryResponse> toSummaryResponseList(List<GenreDto.Summary> list);
+
+    default GenreApiDto.GetAllResponse toGetAllResponse(Slice<GenreDto.Summary> slice) {
+        return new GenreApiDto.GetAllResponse(this.toSummaryResponseList(slice.getContent()), slice.hasNext());
+    }
 }

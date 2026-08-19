@@ -50,7 +50,7 @@ class SongController {
     @GetMapping
     ResponseEntity<SongApiDto.GetAllResponse> getAllSongs(
             SongApiDto.SearchRequest searchRequestDto,
-            @ParameterObject @PageableDefault(size = 20, sort = "createdOn", direction = Sort.Direction.DESC) Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 20, sort = "editedOn", direction = Sort.Direction.DESC) Pageable pageable) {
         if(searchRequestDto.maxPrice() != null){
             if(searchRequestDto.currency() == null || searchRequestDto.license() == null){
                 throw new InvalidSearchCriteriaException("maxPrice",
@@ -96,7 +96,7 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
     })
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteSongByIdUsingPathVariable(@PathVariable Long id) {
+    ResponseEntity<Void> deleteSongById(@PathVariable Long id) {
         facade.deleteSongById(id);
         return ResponseEntity.noContent().build();
     }

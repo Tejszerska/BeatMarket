@@ -8,6 +8,11 @@ import java.util.Set;
 
 class SongSpecifications {
 
+    static Specification<Song> isActive() {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.isTrue(root.get("active"));
+    }
+
     static Specification<Song> hasGenre(String genre) {
         return (root, query, criteriaBuilder) -> {
             if (genre == null || genre.isBlank()) {

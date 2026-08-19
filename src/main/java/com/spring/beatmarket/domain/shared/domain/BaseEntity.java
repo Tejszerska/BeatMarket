@@ -28,6 +28,8 @@ public abstract class BaseEntity implements Serializable {
         this.active = false;
     }
 
+    public boolean isActive() {return this.active;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

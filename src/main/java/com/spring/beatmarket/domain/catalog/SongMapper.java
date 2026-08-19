@@ -25,17 +25,7 @@ interface SongMapper {
     @Mapping(source = "songPricesDto", target = "pricing")
     SongDto.Details toDetailsDto(Song song, List<SongPriceDto> songPricesDto);
 
-    LegacySongDto toDto(Song song);
-
     SongDto.Info toInfoDto (Song song);
-
-
-    default List<String> mapArtists (List<Artist> artists){
-        if(artists == null || artists.isEmpty()) return Collections.emptyList();
-        return artists.stream()
-                .map(Artist::getName)
-                .toList();
-    }
 
     default Map<String, SongDto.Price> mapPricing(List<SongPriceDto> songPriceDtos){
         if (songPriceDtos == null || songPriceDtos.isEmpty()) return Collections.emptyMap();
@@ -45,4 +35,6 @@ interface SongMapper {
         }
         return mappedPricing;
     }
+
+    LegacySongDto toDto(Song song);
 }

@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.licensing;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +24,8 @@ interface SongPriceRepository extends Repository<SongPrice, SongPriceId> {
 
 
     List<SongPrice> findAllBySongId(Long songId);
+
+    @Modifying
+    @Query("UPDATE SongPrice sp SET sp.active = false WHERE sp.songId = :songId")
+    void deactivateAllBySongId(@Param("songId") Long songId);
 }

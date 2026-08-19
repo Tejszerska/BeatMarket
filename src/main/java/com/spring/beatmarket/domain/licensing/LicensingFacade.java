@@ -15,6 +15,7 @@ import java.util.Set;
 @Transactional
 public class LicensingFacade {
     private final SongPricesRetriever songPricesRetriever;
+    private final SongPriceDeleter songPriceDeleter;
 
     public Map<Long, List<SongPriceDto>> getMultiplePricingDto(List<Long> songIds) {
         return songPricesRetriever.getMultiplePricingDto(songIds);
@@ -26,5 +27,9 @@ public class LicensingFacade {
 
     public List<SongPriceDto> getPricingForSingleSong(Long songId) {
         return songPricesRetriever.getPricingForSingleSong(songId);
+    }
+
+    public void deactivatePricesForSong(Long songId) {
+        songPriceDeleter.deactivatePricesForSong(songId);
     }
 }

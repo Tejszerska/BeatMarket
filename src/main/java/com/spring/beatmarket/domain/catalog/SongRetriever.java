@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,8 @@ class SongRetriever {
 
         Set<Long> matchingIdsFromLicensing = null;
 
+        Specification<Song> spec = Specification.where(SongSpecifications.isActive());
+
         if (searchCriteria.maxPrice() != null) {
             matchingIdsFromLicensing = licensingFacade.findSongIdByMaxPrice(
                     searchCriteria.currency(),
@@ -36,8 +39,8 @@ class SongRetriever {
             );
         }
 
-        Specification<Song> spec = Specification
-                .where(SongSpecifications.hasGenre(searchCriteria.genre()))
+        spec = spec
+                .and(SongSpecifications.hasGenre(searchCriteria.genre()))
                 .and(SongSpecifications.hasArtist(searchCriteria.artist()))
                 .and(SongSpecifications.hasLanguage(searchCriteria.language()))
                 .and(SongSpecifications.hasAlbum(searchCriteria.album()))
@@ -50,7 +53,7 @@ class SongRetriever {
         Slice<Song> songsSlice = songRepository.findAll(spec, pageable);
 
         if (songsSlice.isEmpty()) {
-            return songsSlice.map(song -> null);
+            return new SliceImpl<>(Collections.emptyList(), pageable, false);
         }
 
         List<Long> idsList = songsSlice.getContent().stream().map(Song::getId).toList();
@@ -75,12 +78,12 @@ class SongRetriever {
     }
 
     Song findSongByIdLazily(Long id) {
-        return songRepository.findById(id)
+        return songRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Song", id));
     }
 
-    void existsById(Long id) {
-        if (!songRepository.existsById(id)) {
+    void existsByIdAndActive(Long id) {
+        if (!songRepository.existsByIdAndActiveTrue(id)) {
             throw new ResourceNotFoundException("Song", id);
         }
     }

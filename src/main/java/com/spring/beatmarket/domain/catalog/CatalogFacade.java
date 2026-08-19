@@ -8,8 +8,6 @@ import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
-import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
-import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -59,7 +57,7 @@ public class CatalogFacade {
         return albumRetriever.findAllAlbums(pageable);
     }
 
-    public Slice<LegacyGenreDto> findAllGenres(Pageable pageable) {
+    public Slice<GenreDto.Summary> findAllGenres(Pageable pageable) {
         return genreRetriever.findAll(pageable);
     }
 
@@ -100,7 +98,7 @@ public class CatalogFacade {
         artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
-    public LegacyGenreDto findGenreById(final Long genreId) {
+    public GenreDto.Details findGenreById(final Long genreId) {
         return genreRetriever.getGenreDtoById(genreId);
     }
 
@@ -117,7 +115,7 @@ public class CatalogFacade {
         return songAssigner.assignSongByIdToAlbumById(albumId, songId);
     }
 
-    public LegacyGenreDto update(final Long id, final SaveGenreDto dto) {
+    public GenreDto.Info update(final Long id, final GenreDto.Update dto) {
         return genreUpdater.update(id, dto);
     }
 }

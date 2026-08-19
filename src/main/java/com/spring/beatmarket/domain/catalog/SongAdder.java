@@ -38,7 +38,7 @@ class SongAdder {
         Song saved = songRepository.save(
                 new Song(dto.title(), dto.releaseDate(), dto.duration(), dto.language(), genreProxy, albumProxy, artistsProxyList));
 
-        Song songForResponse = songRetriever.findSongById(saved.getId());
+        Song songForResponse = songRetriever.findSongByIdEagerly(saved.getId());
         return songMapper.toInfoDto(songForResponse);
     }
 

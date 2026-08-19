@@ -19,7 +19,7 @@ class AlbumAdder {
 
     LegacyAlbumDto addAlbum(final Long songId, final String title, final LocalDate releaseDate) {
         if(title == null || title.isBlank()) throw new TitleIsBlankException("Album needs a specified title!");
-        Song songById = songRetriever.findSongById(songId);
+        Song songById = songRetriever.findSongByIdEagerly(songId);
         Album album = new Album();
         album.setTitle(title);
         album.addSongToAlbum(songById);
@@ -28,7 +28,7 @@ class AlbumAdder {
     }
 
     LegacyAlbumDto addDefaultAlbum (final Long songId){
-        Song songById = songRetriever.findSongById(songId);
+        Song songById = songRetriever.findSongByIdEagerly(songId);
         Album album = new Album();
         album.assignDefaultTitle();
         album.addSongToAlbum(songById);

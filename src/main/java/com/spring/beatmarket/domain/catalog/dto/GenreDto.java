@@ -16,6 +16,7 @@ public interface GenreDto {
 
     record Reference(Long id, String name) {
     }
+
     record Info(Long id, String name) {
     }
 
