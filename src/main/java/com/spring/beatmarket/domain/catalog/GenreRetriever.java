@@ -35,9 +35,13 @@ class GenreRetriever {
         }
     }
 
-    Genre getGenreReference(Long id){
+    Genre getGenreReference(Long id) {
         existsById(id);
-        return  genreRepository.getReferenceById(id);
+        return genreRepository.getReferenceById(id);
     }
 
+    Genre getActive(final Long id) {
+        return genreRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Genre", id));
+    }
 }

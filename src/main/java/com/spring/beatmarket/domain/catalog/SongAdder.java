@@ -17,29 +17,26 @@ class SongAdder {
     private final AlbumRetriever albumRetriever;
     private final ArtistRetriever artistRetriever;
     private final SongMapper songMapper;
-    private final SongRetriever songRetriever;
 
 
     SongDto.Info addSong(final SongDto.Create dto) {
 
-        Genre genreProxy = dto.genreId() != null
-                ? genreRetriever.getGenreReference(dto.genreId()) : null;
+        Genre genre = dto.genreId() != null
+                ? genreRetriever.getActive(dto.genreId()) : null;
 
-        Album albumProxy = dto.albumId() != null
-                ? albumRetriever.getAlbumReferenceById(dto.albumId()) : null;
+        Album album = dto.albumId() != null
+                ? albumRetriever.getActive(dto.albumId()) : null;
 
-        List<Artist> artistsProxyList = new ArrayList<>();
-        if (dto.artistIds() != null) {
-            for (Long artistsId : dto.artistIds()) {
-                artistsProxyList.add(artistRetriever.getArtistReference(artistsId));
-            }
+        List<Artist> artists = new ArrayList<>();
+        if (dto.artistIds() != null && !dto.artistIds().isEmpty()) {
+            artists = artistRetriever.getActiveArtists(dto.artistIds());
         }
 
         Song saved = songRepository.save(
-                new Song(dto.title(), dto.releaseDate(), dto.duration(), dto.language(), genreProxy, albumProxy, artistsProxyList));
+                new Song(dto.title(), dto.releaseDate(), dto.duration(), dto.language(), genre, album, artists)
+        );
 
-        Song songForResponse = songRetriever.findSongByIdEagerly(saved.getId());
-        return songMapper.toInfoDto(songForResponse);
+        return songMapper.toInfoDto(saved);
     }
 
 }

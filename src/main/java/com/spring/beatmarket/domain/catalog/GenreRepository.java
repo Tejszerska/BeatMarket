@@ -19,4 +19,5 @@ interface GenreRepository extends Repository<Genre, Long> {
 
     boolean existsById(Long id);
 
+    Optional<Genre> findByIdAndActiveTrue(Long id);
 }

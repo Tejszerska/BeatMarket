@@ -8,6 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -33,5 +37,25 @@ class ArtistRetriever {
     Artist getArtistReference (Long id){
         existsById(id);
         return artistRepository.getReferenceById(id);
+    }
+    public List<Artist> getActiveArtists(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Artist> foundArtists = artistRepository.findByIdInAndActiveTrue(ids);
+
+        if (foundArtists.size() != new HashSet<>(ids).size()) {
+
+            List<Long> foundIds = foundArtists.stream().map(Artist::getId).toList();
+            Long missingId = ids.stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .findFirst()
+                    .orElse(0L);
+
+            throw new ResourceNotFoundException("Artist", missingId);
+        }
+
+        return foundArtists;
     }
 }

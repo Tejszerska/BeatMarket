@@ -4,8 +4,8 @@
 
 #### Account Module
 - [x] The authentication flow incorporates OAuth2 Google login as well as traditional manual registration requiring a password and a mandatory email verification loop.
-- [ ] All newly registered users are automatically assigned a customer role.
-- [ ] An admin role is provisioned manually within the database to grant secure access for catalog management.
+- [x] All newly registered users are automatically assigned a customer role.
+- [x] An admin role is provisioned manually within the database to grant secure access for catalog management.
 
 #### Catalog Module
 - [ ] Unauthenticated users can search the system using filtering options for the artist, genre, album, language, release date, price and duration, alongside specific sorting capabilities.

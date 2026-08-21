@@ -13,7 +13,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 class UserRegisterer {
-    private final static List<String> DEFAULT_USER_ROLES = List.of("ROLE_ADMIN", "ROLE_CUSTOMER"); // @TODO ADMIN just for the development
+    private final static List<String> DEFAULT_USER_ROLES = List.of("ROLE_CUSTOMER");
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserRetriever userRetriever;

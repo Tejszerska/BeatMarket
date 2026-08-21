@@ -57,4 +57,9 @@ class AlbumRetriever {
         existsById(id);
         return albumRepository.getReferenceById(id);
     }
+
+    Album getActive(final Long id) {
+        return albumRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Album", id));
+    }
 }

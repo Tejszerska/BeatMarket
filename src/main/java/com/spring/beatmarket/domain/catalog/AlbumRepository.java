@@ -52,4 +52,6 @@ interface AlbumRepository extends Repository<Album, Long> {
     Album getReferenceById(Long id);
 
     boolean existsById(Long id);
+
+    Optional<Album> findByIdAndActiveTrue(Long id);
 }
