@@ -1,9 +1,13 @@
 package com.spring.beatmarket.domain.catalog.dto;
 
+import java.util.List;
+
 public interface ArtistDto {
 
     record Create(
-            String name
+            String name,
+            List<Long> songIds,
+            List<Long> albumIds
     ) {}
 
     record Update(String name) {}
@@ -22,7 +26,9 @@ public interface ArtistDto {
     record Info(
             Long id,
             String name,
-            String imageUrl
+            List<SongDto.Reference> songs,
+            List<AlbumDto.Reference> albums
+
     ) {}
 
     // for nesting - the smallest

@@ -80,8 +80,8 @@ public class CatalogFacade {
         return songAdder.addSong(dto);
     }
 
-    public ArtistDto.Info addArtist(ArtistDto.Create dto) {
-        return artistAdder.addArtist(dto.name());
+    public ArtistDto.Info addArtist(ArtistDto.Create createDto) {
+        return artistAdder.addArtist(createDto);
     }
 
     public ArtistDto.Info updateArtistNameById(Long artistId, String name) {

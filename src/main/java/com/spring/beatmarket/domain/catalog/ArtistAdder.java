@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -16,13 +19,28 @@ class ArtistAdder {
     private final AlbumAdder albumAdder;
     private final AlbumRetriever albumRetriever;
     private final ArtistMapper artistMapper;
+    private final SongRetriever songRetriever;
 
 
-    ArtistDto.Info addArtist(final String name) {
-        if (name == null || name.isBlank()) throw new NameIsBlankException("Artist needs a specified name!");
-        Artist artist = new Artist(name);
-        return artistMapper.toInfoDto(
-                artistRepository.save(artist));
+    ArtistDto.Info addArtist(ArtistDto.Create createDto) {
+
+        Artist newArtist = Artist.builder()
+                .name(createDto.name().trim())
+                .build();
+
+        if (createDto.songIds() != null && !createDto.songIds().isEmpty()) {
+            List<Song> songs = songRetriever.getActive(createDto.songIds());
+            newArtist.changeSongsList(new HashSet<>(songs));
+
+        }
+
+        if (createDto.albumIds() != null && !createDto.albumIds().isEmpty()) {
+            List<Album> albums = albumRetriever.getActive(createDto.albumIds());
+            newArtist.changeAlbumsList(albums);
+        }
+
+        Artist savedArtist = artistRepository.save(newArtist);
+        return artistMapper.toInfoDto(savedArtist);
 
     }
 

@@ -13,7 +13,9 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,5 +95,23 @@ class SongRetriever {
        if(songRepository.existsByGenreId(genreId)) {
            throw new DataConflictException(String.format("Genre by id='%s' has songs assigned", genreId));
        }
+    }
+
+    List<Song> getActive(final List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Song> foundSongs = songRepository.findByIdInAndActiveTrue(ids);
+
+        if (foundSongs.size() != new HashSet<>(ids).size()) {
+            List<Long> foundIds = foundSongs.stream().map(Song::getId).toList();
+            Long missingId = ids.stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .findFirst()
+                    .orElse(0L);
+            throw new ResourceNotFoundException("Song", missingId);
+        }
+        return foundSongs;
     }
 }

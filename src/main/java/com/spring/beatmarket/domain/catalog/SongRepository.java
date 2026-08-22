@@ -7,6 +7,7 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Repository
@@ -25,7 +26,7 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
 
     Song save(Song song);
 
-    Collection<Song> findByIdInAndActiveTrue(Collection<Long> ids);
+    List<Song> findByIdInAndActiveTrue(Collection<Long> ids);
 
     boolean existsByGenreId(Long genreId);
 

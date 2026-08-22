@@ -81,7 +81,7 @@ class Artist extends BaseEntity {
      * Delegates the actual physical database mapping to the Album entity.
      */
     void addAlbum(Album album) {
-        if (album != null) {
+        if (album != null && !this.albums.contains(album)) {
             this.albums.add(album);
             if (!album.getArtists().contains(this)) {
                 album.addArtist(this);

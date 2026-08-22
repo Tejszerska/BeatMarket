@@ -44,7 +44,7 @@ class ArtistRetriever {
         existsById(id);
         return artistRepository.getReferenceById(id);
     }
-    public List<Artist> getActiveArtists(List<Long> ids) {
+    List<Artist> getActiveArtists(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }

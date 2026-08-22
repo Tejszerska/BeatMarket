@@ -15,7 +15,7 @@
   **Artists (Artyści)**
 * [x] GET /api/catalog/artists
 * [ ] GET /api/catalog/artists/{id}
-* [ ] POST /api/catalog/artists
+* [x] POST /api/catalog/artists
 * [ ] PUT /api/catalog/artists/{id}
 * [ ] DELETE /api/catalog/artists/{id}
 
@@ -38,7 +38,7 @@
 * [x] GET /api/catalog/genres/{id}
 * [x] POST /api/catalog/genres
 * [x] PATCH  /api/catalog/genres/{id}
-* [ ] DELETE /api/catalog/genres/{id}
+* [x] DELETE /api/catalog/genres/{id}
 
 ---
 

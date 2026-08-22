@@ -36,5 +36,12 @@ interface SongMapper {
         return mappedPricing;
     }
 
+    default SongDto.Reference toActiveReferenceDto(Song song) {
+        if (song == null || !song.isActive()) {
+            return null;
+        }
+        return new SongDto.Reference(song.getId(), song.getTitle());
+    }
+
     LegacySongDto toDto(Song song);
 }

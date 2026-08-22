@@ -345,7 +345,7 @@ Retrieves a chunked list of available artists.
 **Parameters:**
 
 - `page` (integer, query parameter) _Page index; default value: 0_
-- `size` (integer, query parameter) _The size of the page to be returned; default value: 10_
+- `size` (integer, query parameter) _The size of the page to be returned; default value: 20_
 - `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
 - `name` (string, query parameter, optional) _Filter by partial or exact artist name._
 
@@ -1280,7 +1280,14 @@ _Invalid input data_
   }
 }
 ```
+**Error Response (409 Conflict):**
+_Genre name is not unique._
 
+```json
+{
+  "message": "Genre name must be unique."
+}
+```
 ---
 
 #### DELETE /api/catalog/genres/{id}
@@ -1334,7 +1341,7 @@ The service bulk-updates the genre_id field in the associated songs to the new I
 
 ```json
 {
-  "error": "Source and target genre IDs cannot be the same."
+  "message": "Source and target genre IDs cannot be the same."
 }
 ```
 

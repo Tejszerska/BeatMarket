@@ -9,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,5 +63,26 @@ class AlbumRetriever {
     Album getActive(final Long id) {
         return albumRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Album", id));
+    }
+
+    List<Album> getActive(final List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Album> foundAlbums = albumRepository.findByIdInAndActiveTrue(ids);
+        if (foundAlbums.size() != new HashSet<>(ids).size()) {
+
+            List<Long> foundIds = foundAlbums.stream().map(Album::getId).toList();
+            Long missingId = ids.stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .findFirst()
+                    .orElse(0L);
+
+            throw new ResourceNotFoundException("Album", missingId);
+        }
+
+        return foundAlbums;
+
     }
 }
