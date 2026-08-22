@@ -90,6 +90,11 @@ class Song extends BaseEntity {
                 genre, album, artists, null, null);
     }
 
+    /**
+     * Enforces strict business invariants for Song creation.
+     * Blocks invalid states (e.g., negative duration, future release dates)
+     * to act as the primary process guardian.
+     */
     @Builder
     Song(final String title, final LocalDate releaseDate, final Integer duration, final SongLanguage language,
          final Genre genre, final Album album, final List<Artist> artists,
@@ -109,7 +114,7 @@ class Song extends BaseEntity {
         this.language = language;
         this.genre = genre;
         this.album = album;
-        this.artists = artists;
+        this.artists = artists != null ? artists : new ArrayList<>();
         this.previewUrl = previewUrl;
         this.fileUrl = fileUrl;
     }
@@ -130,6 +135,9 @@ class Song extends BaseEntity {
         this.language = language;
     }
 
+    /**
+     * Updates the release date while ensuring compliance with the active catalog business rules.
+     */
     void changeReleaseDate(LocalDate releaseDate) {
         if (releaseDate == null) throw new MissingRequiredFieldException("releaseDate");
         if (releaseDate.isAfter(LocalDate.now())) throw new IllegalArgumentException("Release date can't be in the future");
@@ -150,6 +158,30 @@ class Song extends BaseEntity {
 
     void detachFromGenre() {
         this.genre = null;
+    }
+
+    /**
+     * Manages bidirectional synchronization with Artist.
+     * The 'contains' check prevents infinite recursion during the assignment process.
+     */
+    void addArtist(Artist artist) {
+        if (artist != null && !this.artists.contains(artist)) {
+            this.artists.add(artist);
+
+            if (!artist.getSongs().contains(this)) {
+                artist.addSong(this);
+            }
+        }
+    }
+
+    void removeArtist(Artist artist) {
+        if (artist != null && this.artists.contains(artist)) {
+            this.artists.remove(artist);
+
+            if (artist.getSongs().contains(this)) {
+                artist.removeSong(this);
+            }
+        }
     }
 
     void changeArtistList(List<Artist> newArtists) {

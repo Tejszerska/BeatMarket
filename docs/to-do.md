@@ -13,7 +13,7 @@
 ---
 - Dopasować endpointy `catalog` do API contracts
   **Artists (Artyści)**
-* [ ] GET /api/catalog/artists
+* [x] GET /api/catalog/artists
 * [ ] GET /api/catalog/artists/{id}
 * [ ] POST /api/catalog/artists
 * [ ] PUT /api/catalog/artists/{id}
@@ -34,10 +34,10 @@
 * [x] DELETE /api/catalog/songs/{id}
 
 **Genres (Gatunki)**
-* [ ] GET /api/catalog/genres
-* [ ] GET /api/catalog/genres/{id}
+* [x] GET /api/catalog/genres
+* [x] GET /api/catalog/genres/{id}
 * [x] POST /api/catalog/genres
-* [ ] PUT /api/catalog/genres/{id}
+* [ ] PATCH  /api/catalog/genres/{id}
 * [ ] DELETE /api/catalog/genres/{id}
 
 ---

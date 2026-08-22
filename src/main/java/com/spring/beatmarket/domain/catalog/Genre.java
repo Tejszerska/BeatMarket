@@ -12,6 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Anemic Domain Model acting purely as a data dictionary for other entities.
+ * Encapsulation is intentionally omitted; state protection relies completely
+ * on database constraints and outer layer input validation.
+ */
 @Entity
 @NoArgsConstructor
 @Setter
@@ -25,6 +30,7 @@ class Genre extends BaseEntity {
             allocationSize = 1
     )
     private Long id;
+
     @Column(nullable = false, unique = true)
     @Size(min = 3)
     private String name;
