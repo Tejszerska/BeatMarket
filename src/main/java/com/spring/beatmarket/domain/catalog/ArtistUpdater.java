@@ -14,7 +14,7 @@ class ArtistUpdater {
     ArtistDto.Info updateArtistNameById(final Long artistId, final String name) {
         Artist artist = artistRetriever.findById(artistId);
         if (name == null || name.isBlank()) throw new NameIsBlankException("Artist needs name specified!");
-        artist.setName(name);
+        artist.changeName(name);
         return artistMapper.toInfoDto(artist);
     }
 }

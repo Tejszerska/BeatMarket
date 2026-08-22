@@ -18,7 +18,7 @@ class SongAssigner {
     AlbumSongsDto assignSongByIdToAlbumById(final Long albumId, final Long songId) {
         Album album = albumRetriever.findById(albumId);
         Song song = songRetriever.findSongByIdEagerly(songId);
-        album.addSongToAlbum(song);
+        album.addSong(song);
         LegacyAlbumDto legacyAlbumDto = albumMapper.mapFromEntityToAlbumDto(album);
         LegacySongDto legacySongDtoOld = songMapper.toDto(song);
 

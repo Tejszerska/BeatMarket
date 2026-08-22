@@ -37,7 +37,7 @@
 * [x] GET /api/catalog/genres
 * [x] GET /api/catalog/genres/{id}
 * [x] POST /api/catalog/genres
-* [ ] PATCH  /api/catalog/genres/{id}
+* [x] PATCH  /api/catalog/genres/{id}
 * [ ] DELETE /api/catalog/genres/{id}
 
 ---

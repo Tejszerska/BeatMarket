@@ -181,7 +181,7 @@ class Album extends BaseEntity {
 //        artists.add(artist);
 //    }
 //
-//    void assignDefaultTitle(){
-//        this.title = "Default album:" + this.uuid.toString();
-//    }
+    void assignDefaultTitle(){
+        this.title = "Default album:" + this.uuid.toString();
+    }
 }

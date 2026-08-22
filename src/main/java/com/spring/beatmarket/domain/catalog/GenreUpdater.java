@@ -13,10 +13,8 @@ class GenreUpdater {
     private final GenreRetriever genreRetriever;
     private final GenreMapper genreMapper;
 
-
     GenreDto.Info update(final Long id, final GenreDto.Update dto) {
-        Genre genreById = genreRetriever.findGenreById(id);
-
+        Genre genreById = genreRetriever.getGenre(id);
         genreById.setName(dto.name().trim());
         genreRepository.save(genreById);
         return genreMapper.toInfoDto(genreById);

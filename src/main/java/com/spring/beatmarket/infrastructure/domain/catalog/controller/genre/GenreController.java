@@ -69,7 +69,7 @@ class GenreController {
     })
     @GetMapping("/{genreId}")
     ResponseEntity<GenreApiDto.DetailsResponse> getGenreById(@PathVariable Long genreId) {
-        GenreDto.Details dto = facade.findGenreById(genreId);
+        GenreDto.Details dto = facade.getGenreDetails(genreId);
         return ResponseEntity.ok(mapper.toDetailsResponse(dto));
     }
 

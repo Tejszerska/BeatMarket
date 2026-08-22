@@ -97,8 +97,8 @@ public class CatalogFacade {
         artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
-    public GenreDto.Details findGenreById(final Long genreId) {
-        return genreRetriever.getGenreDtoById(genreId);
+    public GenreDto.Details getGenreDetails(final Long genreId) {
+        return genreRetriever.getGenreDetails(genreId);
     }
 
     public SongDto.Info updateSongById(Long id, SongDto.Update songFromRequest) {

@@ -10,8 +10,7 @@ import java.util.Optional;
 interface GenreRepository extends Repository<Genre, Long> {
     Genre save(Genre genre);
 
-
-    Slice<Genre> findAll(Pageable pageable);
+    Slice<Genre> findByActiveTrue(Pageable pageable);
 
     Optional<Genre> findById(Long id);
 

@@ -12,7 +12,7 @@ class GenreDeleter {
 
     void deleteById(Long id) {
         log.info("soft deleting genre by id: " + id);
-        Genre genreById = genreRetriever.findGenreById(id);
+        Genre genreById = genreRetriever.getGenre(id);
         genreById.deactivate();
     }
 

@@ -16,16 +16,16 @@ class GenreRetriever {
     private final GenreMapper genreMapper;
 
     Slice<GenreDto.Summary> findAll(Pageable pageable) {
-        return genreRepository.findAll(pageable)
+        return genreRepository.findByActiveTrue(pageable)
                 .map(genreMapper::toSummary);
     }
 
-    GenreDto.Details getGenreDtoById(final Long genreId) {
-        return genreMapper.toDetails(findGenreById(genreId));
+    GenreDto.Details getGenreDetails(final Long genreId) {
+        return genreMapper.toDetails(getGenre(genreId));
     }
 
-    Genre findGenreById(final Long genreId) {
-        return genreRepository.findById(genreId)
+    Genre getGenre(final Long genreId) {
+        return genreRepository.findByIdAndActiveTrue(genreId)
                 .orElseThrow(() -> new ResourceNotFoundException("Genre", genreId));
     }
 

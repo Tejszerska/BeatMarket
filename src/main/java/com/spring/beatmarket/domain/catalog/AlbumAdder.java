@@ -21,9 +21,9 @@ class AlbumAdder {
         if(title == null || title.isBlank()) throw new TitleIsBlankException("Album needs a specified title!");
         Song songById = songRetriever.findSongByIdEagerly(songId);
         Album album = new Album();
-        album.setTitle(title);
-        album.addSongToAlbum(songById);
-        album.setReleaseDate(releaseDate);
+        album.changeTitle(title);
+        album.addSong(songById);
+        album.changeReleaseDate(releaseDate);
         return albumMapper.mapFromEntityToAlbumDto(albumRepository.save(album));
     }
 
@@ -31,7 +31,7 @@ class AlbumAdder {
         Song songById = songRetriever.findSongByIdEagerly(songId);
         Album album = new Album();
         album.assignDefaultTitle();
-        album.addSongToAlbum(songById);
+        album.addSong(songById);
         return albumMapper.mapFromEntityToAlbumDto(albumRepository.save(album));
     }
 }

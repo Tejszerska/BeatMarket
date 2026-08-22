@@ -43,7 +43,7 @@ class ArtistAdder {
         LegacyAlbumDto legacyAlbumDto = albumAdder.addDefaultAlbum(1L);
         Album album = albumRetriever.findById(legacyAlbumDto.id());
 
-        artist.setAlbums(List.of(album));
+        artist.addAlbum(album);
         album.addArtist(artist);
         return savedArtist;
     }
