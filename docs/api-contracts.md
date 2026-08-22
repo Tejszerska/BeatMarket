@@ -1301,6 +1301,43 @@ Removes a genre from the database by its ID.
 }
 ```
 
+---
+
+#### PATCH /api/catalog/genres/{oldId}/transfer-to/{newId}
+
+The service bulk-updates the genre_id field in the associated songs to the new ID
+
+**Parameters:**
+
+- `oldId` (integer, path parameter, required) _Genre ID to be changed in songs_
+- `newId` (integer, path parameter, required) _ New genre ID for songs related to `oldId` genre_
+
+
+**Response (200 OK):** _Genre transferred successfully._
+```json
+{
+  "updatedSongsCount": 15,
+  "oldGenreId": 5,
+  "newGenreId": 12
+}
+```
+**Response (404 Not Found):** _Either the source (oldId) or target (newId) genre does not exist.
+
+
+```json
+{
+  "message": "Genre by id=5 not found."
+}
+```
+
+**400 Bad Request:** _Provided IDs are identical._
+
+```json
+{
+  "error": "Source and target genre IDs cannot be the same."
+}
+```
+
 ### Payment Module (`payment`)
 
 #### POST /api/payments/

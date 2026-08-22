@@ -117,4 +117,16 @@ public class CatalogFacade {
     public GenreDto.Info update(final Long id, final GenreDto.Update dto) {
         return genreUpdater.update(id, dto);
     }
+
+    public GenreDto.Transfer transferGenre(final Long oldId, final Long newId) {
+        if (oldId.equals(newId)) {
+            throw new IllegalArgumentException("Source and target genre IDs cannot be the same.");
+        }
+        genreRetriever.validateExistsAndActive(oldId);
+        genreRetriever.validateExistsAndActive(newId);
+
+        Integer updatedSongsCount = songUpdater.transferGenre(oldId, newId);
+
+        return new GenreDto.Transfer(updatedSongsCount, oldId, newId);
+    }
 }

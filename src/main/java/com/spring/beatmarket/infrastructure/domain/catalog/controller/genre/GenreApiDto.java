@@ -37,6 +37,14 @@ public interface GenreApiDto {
     ) {
     }
 
+    @Schema(name = "GenreTransferResponse")
+    record TransferResponse(
+            Integer updatedSongsCount,
+            Long oldGenreId,
+            Long newGenreId
+    ) {
+    }
+
     @Schema(name = "GetAllGenresResponse")
     record GetAllResponse(
             List<SummaryResponse> genres,

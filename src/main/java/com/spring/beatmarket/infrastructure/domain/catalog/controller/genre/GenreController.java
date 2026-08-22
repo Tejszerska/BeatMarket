@@ -85,6 +85,21 @@ class GenreController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Transfer genres in songs", description = "The service bulk-updates the genre_id field in the associated songs to the new ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Genre transferred successfully."),
+            @ApiResponse(responseCode = "400", description = "Provided IDs are identical.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Genre not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+    })
+    @PatchMapping("/{oldId}/transfer-to/{newId}")
+    ResponseEntity<GenreApiDto.TransferResponse> transferGenre(@PathVariable Long oldId, @PathVariable Long newId) {
+
+        GenreDto.Transfer update = facade.transferGenre(oldId, newId);
+        return ResponseEntity.ok(mapper.toResponse(update));
+    }
+
     @Operation(summary = "Update genre name", description = "Updates name of the genre")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Genre updated successfully."),

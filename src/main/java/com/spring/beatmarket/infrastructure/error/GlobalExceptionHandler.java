@@ -1,6 +1,7 @@
 package com.spring.beatmarket.infrastructure.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
@@ -30,6 +31,17 @@ class GlobalExceptionHandler {
         log.warn("Resource not found: {}", exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
+    @ExceptionHandler({
+            DataConflictException.class
+    })
+    public ResponseEntity<SingleStringErrorResponseDto> handleDataConflictExceptions(RuntimeException exception) {
+        SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(exception.getMessage());
+
+        log.warn("Data conflict: {}", exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(errorResponse);
     }
 
@@ -84,6 +96,11 @@ class GlobalExceptionHandler {
 
         log.warn("Data integrity violation: {} ", exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<SingleStringErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
+        SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler({

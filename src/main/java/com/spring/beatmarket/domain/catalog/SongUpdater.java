@@ -17,6 +17,8 @@ class SongUpdater {
     private final AlbumRetriever albumRetriever;
     private final GenreRetriever genreRetriever;
     private final ArtistRetriever artistRetriever;
+
+    private final SongRepository songRepository;
     private final SongMapper songMapper;
 
 
@@ -103,6 +105,10 @@ class SongUpdater {
 
 
         return songMapper.toInfoDto(songFromDB);
+    }
+
+    Integer transferGenre(final Long oldId, final Long newId) {
+       return songRepository.bulkUpdateGenre(oldId, newId);
     }
 }
 

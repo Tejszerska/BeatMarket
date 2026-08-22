@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 class GenreDeleter {
     private final GenreRetriever genreRetriever;
+    private final SongRetriever songRetriever;
 
     void deleteById(Long id) {
         log.info("soft deleting genre by id: " + id);
-        Genre genreById = genreRetriever.getGenre(id);
+        songRetriever.validateGenreHasNoActiveSongs(id);
+        Genre genreById = genreRetriever.getActive(id);
         genreById.deactivate();
     }
 

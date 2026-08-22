@@ -21,12 +21,12 @@ class GenreRetriever {
     }
 
     GenreDto.Details getGenreDetails(final Long genreId) {
-        return genreMapper.toDetails(getGenre(genreId));
+        return genreMapper.toDetails(getActive(genreId));
     }
 
-    Genre getGenre(final Long genreId) {
-        return genreRepository.findByIdAndActiveTrue(genreId)
-                .orElseThrow(() -> new ResourceNotFoundException("Genre", genreId));
+    Genre getActive(final Long id) {
+        return genreRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Genre", id));
     }
 
     void existsById(Long id) {
@@ -40,8 +40,10 @@ class GenreRetriever {
         return genreRepository.getReferenceById(id);
     }
 
-    Genre getActive(final Long id) {
-        return genreRepository.findByIdAndActiveTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Genre", id));
+    void validateExistsAndActive(Long id) {
+        if (!genreRepository.existsByIdAndActiveTrue(id)) {
+            throw new ResourceNotFoundException("Genre", id);
+        }
     }
+
 }

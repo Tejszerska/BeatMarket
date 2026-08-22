@@ -19,6 +19,8 @@ interface GenreControllerMapper {
 
     GenreApiDto.SummaryResponse toSummaryResponse(GenreDto.Summary dto);
 
+    GenreApiDto.TransferResponse toResponse (GenreDto.Transfer dto);
+
     List<GenreApiDto.SummaryResponse> toSummaryResponseList(List<GenreDto.Summary> list);
 
     default GenreApiDto.GetAllResponse toGetAllResponse(Slice<GenreDto.Summary> slice) {

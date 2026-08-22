@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.licensing.LicensingFacade;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
@@ -86,5 +87,11 @@ class SongRetriever {
         if (!songRepository.existsByIdAndActiveTrue(id)) {
             throw new ResourceNotFoundException("Song", id);
         }
+    }
+
+    void validateGenreHasNoActiveSongs(final Long genreId) {
+       if(songRepository.existsByGenreId(genreId)) {
+           throw new DataConflictException(String.format("Genre by id='%s' has songs assigned", genreId));
+       }
     }
 }

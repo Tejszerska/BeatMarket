@@ -20,4 +20,10 @@ public interface GenreDto {
     record Info(Long id, String name) {
     }
 
+    record Transfer(
+            Integer updatedSongsCount,
+            Long oldGenreId,
+            Long newGenreId
+    ) {
+    }
 }

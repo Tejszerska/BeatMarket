@@ -1,8 +1,10 @@
 package com.spring.beatmarket.domain.catalog;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -24,4 +26,10 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
     Song save(Song song);
 
     Collection<Song> findByIdInAndActiveTrue(Collection<Long> ids);
+
+    boolean existsByGenreId(Long genreId);
+
+    @Modifying
+    @Query("UPDATE Song s SET s.genre.id = :newGenreId WHERE s.genre.id = :oldGenreId AND s.active = true")
+    Integer bulkUpdateGenre(@Param("oldGenreId") Long oldGenreId, @Param("newGenreId") Long newGenreId);
 }
