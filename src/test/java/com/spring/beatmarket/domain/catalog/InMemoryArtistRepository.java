@@ -12,11 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class InMemoryArtistRepository implements ArtistRepository {
+class InMemoryArtistRepository  {
     Map<Long, Artist> db = new HashMap<>();
     AtomicInteger index = new AtomicInteger(0);
 
-    @Override
     public Artist save(final Artist artist) {
         if(artist.getId() == null){
             long index = this.index.getAndIncrement();
@@ -30,8 +29,7 @@ class InMemoryArtistRepository implements ArtistRepository {
 
     }
 
-    @Override
-    public Slice<Artist> findAll(final Pageable pageable) {
+    public Slice<Artist> findByActiveTrue(final Pageable pageable) {
             List<Artist> list = new ArrayList<>(db.values());
         if (pageable.isUnpaged()) {
             return new SliceImpl<>(list);
@@ -45,12 +43,11 @@ class InMemoryArtistRepository implements ArtistRepository {
             return new SliceImpl<>(currentSlice, pageable, hasNext);
 
     }
-    @Override
-    public Optional<Artist> findById(final Long artistId) {
+
+    public Optional<Artist> findByIdAndActiveTrue(final Long artistId) {
         return Optional.ofNullable(db.get(artistId));
     }
 
-    @Override
     public int deleteArtistById(final Long id) {
 
         if(db.containsKey(id)){
@@ -61,17 +58,14 @@ class InMemoryArtistRepository implements ArtistRepository {
         }
     }
 
-    @Override
     public boolean existsById(final Long id) {
         return db.containsKey(id);
     }
 
-    @Override
     public Artist getReferenceById(final Long id) {
         return null;
     }
 
-    @Override
     public List<Artist> findByIdInAndActiveTrue(final List<Long> ids) {
         return List.of();
     }

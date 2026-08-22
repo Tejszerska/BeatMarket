@@ -1,6 +1,5 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,13 +8,13 @@ import org.springframework.stereotype.Service;
 class ArtistAssigner {
     private final ArtistRetriever artistRetriever;
     private final AlbumRetriever albumRetriever;
-    private final ArtistWithAlbumMapper artistWithAlbumMapper;
-
-
-    ArtistWithAlbumDto addArtistToAlbum(final Long artistId, final Long albumId) {
-        Artist artist = artistRetriever.findById(artistId);
-        Album album = albumRetriever.findById(albumId);
-        artist.addAlbum(album);
-        return artistWithAlbumMapper.mapToDto(artist, album);
-    }
+//    private final ArtistWithAlbumMapper artistWithAlbumMapper;
+//
+//
+//    ArtistDto.Details addArtistToAlbum(final Long artistId, final Long albumId) {
+//        Artist artist = artistRetriever.findById(artistId);
+//        Album album = albumRetriever.findById(albumId);
+//        artist.addAlbum(album);
+//        return artistWithAlbumMapper.mapToDto(artist, album);
+//    }
 }

@@ -6,31 +6,33 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 public interface ArtistApiDto {
-    // POST **/artists
+
     @Schema(name = "CreateArtistRequest")
-    record CreateRequest(
-            @NotBlank String name,
-            List<Long> songIds,
-            List<Long> albumIds
-    ) {}
+    record CreateRequest(@NotBlank String name) {}
 
-    // GET **/artists
+    @Schema(name = "UpdateArtistRequest")
+    record UpdateRequest(@NotBlank String name) {}
+
+
     @Schema(name = "ArtistSummaryResponse")
-    record Summary(Long id, String name, String imageUrl) {}
+    record SummaryResponse(Long id, String name, String imageUrl) {}
 
-    // GET **/artists/{id}
     @Schema(name = "ArtistDetailsResponse")
-    record Details(Long id, String name, String imageUrl
-                   //  , List<AlbumDtoOld.Reference> albums,
-                   //  List<SongDtoOld.Reference> songs
-    ) {}
+    record DetailsResponse(Long id, String name, String imageUrl) {}
 
-    // for nesting - the smallest
+    @Schema(name = "ArtistInfoResponse")
+    record InfoResponse(Long id, String name, String imageUrl) {}
+
     @Schema(name = "ArtistReference")
     record Reference(Long id, String name) {}
 
-
-    // for nesting in detailed records (eg. SongDetailsDto)
     @Schema(name = "ArtistBasic")
     record Basic(Long id, String name, String imageUrl, Integer displayOrder) {}
+
+    @Schema(name = "GetAllArtistsResponse")
+    record GetAllResponse(
+            List<SummaryResponse> artists,
+            boolean hasNext
+    ) {
+    }
 }

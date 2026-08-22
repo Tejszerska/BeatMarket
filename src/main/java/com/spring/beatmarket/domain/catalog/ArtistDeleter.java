@@ -18,6 +18,10 @@ class ArtistDeleter {
     private final SongDeleter songDeleter;
     private final AlbumDeleter albumDeleter;
 
+    void deleteById(Long id){
+        log.info("soft deleting artist by id: " + id);
+    }
+
     void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
         Artist artist = artistRetriever.findById(artistId);
         Set<Album> artistsAlbums = albumRetriever.findAlbumsByArtistId(artistId);

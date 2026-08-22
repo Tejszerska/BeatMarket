@@ -11,9 +11,12 @@ import java.util.Optional;
 interface ArtistRepository extends Repository<Artist, Long> {
     Artist save(Artist artist);
 
-    Slice<Artist> findAll(Pageable pageable);
+    Slice<Artist> findByActiveTrue(Pageable pageable);
 
-    Optional<Artist> findById(Long artistId);
+    Slice<Artist> findByActiveTrueAndNameContainsIgnoreCase(String name, Pageable pageable);
+
+
+    Optional<Artist> findByIdAndActiveTrue(Long artistId);
 
     int deleteArtistById(Long id);
 

@@ -146,7 +146,7 @@ Fetches a chunked list of all songs
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 5_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported; default value: ["id,ASC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported; default value: ["editedOn,ASC"]_
 - `genre` (string, query parameter, optional) _Filter by exact genre name._
 - `artist` (string, query parameter, optional) _Filter by exact artist name._
 - `language` (string, query parameter, optional) _Filter by track language (e.g., "EN", "NONE" for instrumentals)._
@@ -291,7 +291,7 @@ Retrieves a chunked list of available music genres.
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 20_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["name,ASC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
 
 **Response (200 OK):**
 
@@ -313,7 +313,7 @@ Retrieves a chunked list of available music genres.
 
 #### GET /api/catalog/genres/{id}
 
-Retrieves the details of a specific genre by its ID.
+Retrieves the detailsResponse of a specific genre by its ID.
 
 **Parameters:**
 
@@ -346,7 +346,7 @@ Retrieves a chunked list of available artists.
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 10_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["name,ASC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
 - `name` (string, query parameter, optional) _Filter by partial or exact artist name._
 
 **Response (200 OK):**
@@ -424,7 +424,7 @@ Retrieves a chunked list of available albums.
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 10_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["releaseDate,DESC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
 - `title` (string, query parameter, optional) _Filter by partial or exact album title._
 - `artistId` (integer, query parameter, optional) _Filter albums by a specific artist._
 
@@ -1353,7 +1353,7 @@ Receives asynchronous event notifications from Stripe (e.g., checkout.session.co
 
 **Request Body:**
 
-- _Raw JSON payload sent by Stripe containing event details._
+- _Raw JSON payload sent by Stripe containing event detailsResponse._
 
 **Response (204 No content):** _Event successfully received and processed. No body is required by Stripe._
 
@@ -1406,7 +1406,7 @@ Retrieves a list of all licenses owned by the currently authenticated user.
 
 #### GET /api/licenses/{id}
 
-Retrieves the details of a specific license owned by the user.
+Retrieves the detailsResponse of a specific license owned by the user.
 
 **Response (200 OK):**
 

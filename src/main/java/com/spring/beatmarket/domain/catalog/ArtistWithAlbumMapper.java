@@ -1,6 +1,5 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
@@ -8,5 +7,5 @@ import org.mapstruct.Mapper;
         uses = {ArtistMapper.class, AlbumMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface  ArtistWithAlbumMapper {
-        ArtistWithAlbumDto mapToDto(Artist artist, Album album);
+       // ArtistDto.Details mapToDto(Artist artist, Album album);
 }

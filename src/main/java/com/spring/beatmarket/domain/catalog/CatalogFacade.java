@@ -3,11 +3,10 @@ package com.spring.beatmarket.domain.catalog;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
+import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
-import com.spring.beatmarket.domain.catalog.dto.ArtistWithAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
-import com.spring.beatmarket.domain.catalog.dto.LegacyArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -41,8 +40,8 @@ public class CatalogFacade {
         return albumRetriever.findAlbumByReturnAlbumInfo(id);
     }
 
-    public Slice<LegacyArtistDto> findAllArtists(Pageable pageable) {
-        return artistRetriever.findAllArtist(pageable);
+    public Slice<ArtistDto.Summary> findAllArtists(String name, Pageable pageable) {
+        return artistRetriever.findAllArtist(name, pageable);
     }
 
     public Slice<SongDto.Summary> findAllSongs(SongDto.SearchCriteria searchCriteria, Pageable pageable) {
@@ -61,7 +60,7 @@ public class CatalogFacade {
         return genreRetriever.findAll(pageable);
     }
 
-    public LegacyArtistDto addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
+    public ArtistDto.Info addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
         return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
     }
 
@@ -73,19 +72,19 @@ public class CatalogFacade {
         return albumAdder.addAlbum(dto.songId(), dto.title(), dto.releaseDate());
     }
 
-    public ArtistWithAlbumDto addArtistToAlbum(Long artistId, Long albumId) {
-        return artistAssigner.addArtistToAlbum(artistId, albumId);
-    }
+//    public ArtistDto.Details addArtistToAlbum(Long artistId, Long albumId) {
+//        return artistAssigner.addArtistToAlbum(artistId, albumId);
+//    }
 
     public SongDto.Info addSong(final SongDto.Create dto) {
         return songAdder.addSong(dto);
     }
 
-    public LegacyArtistDto addArtist(ArtistRequestDto dto) {
+    public ArtistDto.Info addArtist(ArtistDto.Create dto) {
         return artistAdder.addArtist(dto.name());
     }
 
-    public LegacyArtistDto updateArtistNameById(Long artistId, String name) {
+    public ArtistDto.Info updateArtistNameById(Long artistId, String name) {
         return artistUpdater.updateArtistNameById(artistId, name);
     }
 
