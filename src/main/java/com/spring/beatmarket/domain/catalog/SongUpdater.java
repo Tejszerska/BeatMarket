@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -66,7 +65,7 @@ class SongUpdater {
             songFromRequest.genreId().ifPresentOrElse(
                     newGenreId ->
                     {
-                        Genre genreProxy = genreRetriever.getGenreReference(newGenreId);
+                        Genre genreProxy = genreRetriever.getActive(newGenreId);
                         songFromDB.assignToGenre(genreProxy);
 
                     },
@@ -78,7 +77,7 @@ class SongUpdater {
             songFromRequest.albumId().ifPresentOrElse(
                     newAlbumId ->
                     {
-                        Album albumProxy = albumRetriever.getAlbumReferenceById(newAlbumId);
+                        Album albumProxy = albumRetriever.getActive(newAlbumId);
                         songFromDB.assignToAlbum(albumProxy);
 
                     },
@@ -91,19 +90,12 @@ class SongUpdater {
             songFromRequest.artistIds().ifPresentOrElse(
                     newArtistIds ->
                     {
-                        List<Artist> newArtists = new ArrayList<>();
-                        for (Long newArtistId : newArtistIds) {
-                            Artist artistProxy = artistRetriever.getArtistReference(newArtistId);
-                            newArtists.add(artistProxy);
-                        }
+                        List<Artist> newArtists = artistRetriever.getActiveArtists(newArtistIds);
                         songFromDB.changeArtistList(newArtists);
-
                     },
                     songFromDB::clearArtists
             );
         }
-
-
         return songMapper.toInfoDto(songFromDB);
     }
 
