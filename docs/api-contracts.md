@@ -1093,7 +1093,7 @@ Partially updates an existing artist's metadata and its relationships. All field
 **Request Body Fields:**
 
 - `name` (string, optional) _Name of the artist._
-- `songIds` (array[integer], optional) \*List of song IDs. Use an empty array `[]` to clear song list completly
+- `songIds` (array[integer], optional) \*List of song IDs. Use an empty array `[]` to clear song list completly._
 - `albumIds` (array[integer], optional) _List of album IDs. Use an empty array `[]` to clear album list completly._
 
 **Request Body Example:**

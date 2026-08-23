@@ -91,7 +91,6 @@ class ArtistController {
         return ResponseEntity.noContent().build();
     }
 
-    // @TODO expand logic - should update more than just name now
     @Operation(summary = "Update artist details", description = "Partially updates an existing artist's metadata and its relationships.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist successfully updated."),
@@ -100,12 +99,12 @@ class ArtistController {
             @ApiResponse(responseCode = "404", description = "Song, Album, or Artist(s) not found.",
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
-    @PatchMapping("/{artistId}")
-    ResponseEntity<ArtistApiDto.InfoResponse> updateArtistName(
-            @PathVariable Long artistId,
+    @PatchMapping("/{id}")
+    ResponseEntity<ArtistApiDto.InfoResponse> updateArtist(
+            @PathVariable Long id,
             @Valid @RequestBody ArtistApiDto.UpdateRequest request) {
-        // TODO: Expand beyond just name
-        ArtistDto.Info updatedArtist = facade.updateArtistNameById(artistId, request.name());
+        ArtistDto.Update domainUpdate = mapper.toDomainUpdate(request);
+        ArtistDto.Info updatedArtist = facade.updateArtist(id, domainUpdate);
         return ResponseEntity.ok(mapper.toWebInfo(updatedArtist));
     }
 

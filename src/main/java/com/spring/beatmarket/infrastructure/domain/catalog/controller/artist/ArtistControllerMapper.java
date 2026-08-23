@@ -1,12 +1,14 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.infrastructure.domain.shared.JsonNullableMapper;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        uses = JsonNullableMapper .class)
 public interface ArtistControllerMapper {
 
     ArtistDto.Create toDomainCreate(ArtistApiDto.CreateRequest request);
@@ -14,8 +16,6 @@ public interface ArtistControllerMapper {
     ArtistDto.Update toDomainUpdate(ArtistApiDto.UpdateRequest request);
 
     ArtistApiDto.SummaryResponse toWebSummary(ArtistDto.Summary domain);
-
-    ArtistApiDto.DetailsResponse toWebDetails(ArtistDto.Details domain);
 
     ArtistApiDto.InfoResponse toWebInfo(ArtistDto.Info domain);
 

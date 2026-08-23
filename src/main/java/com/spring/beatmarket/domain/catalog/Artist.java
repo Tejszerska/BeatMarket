@@ -69,7 +69,7 @@ class Artist extends BaseEntity {
         if (newName == null || newName.isBlank()) {
             throw new MissingRequiredFieldException("name");
         }
-        this.name = newName;
+        this.name = newName.trim();
     }
 
     void changeImageUrl(String newImageUrl) {

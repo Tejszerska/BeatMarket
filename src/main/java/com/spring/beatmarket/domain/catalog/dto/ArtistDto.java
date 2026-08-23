@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ArtistDto {
 
@@ -10,7 +11,9 @@ public interface ArtistDto {
             List<Long> albumIds
     ) {}
 
-    record Update(String name) {}
+    record Update(Optional<String> name,
+                  Optional<List<Long>> songIds,
+                  Optional<List<Long>> albumIds) {}
 
 
     // GET **/artists

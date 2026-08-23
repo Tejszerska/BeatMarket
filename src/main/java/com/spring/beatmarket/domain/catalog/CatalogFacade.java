@@ -84,8 +84,8 @@ public class CatalogFacade {
         return artistAdder.addArtist(createDto);
     }
 
-    public ArtistDto.Info updateArtistNameById(Long artistId, String name) {
-        return artistUpdater.updateArtistNameById(artistId, name);
+    public ArtistDto.Info updateArtist(Long artistId, ArtistDto.Update dto) {
+        return artistUpdater.updateArtist(artistId, dto);
     }
 
 

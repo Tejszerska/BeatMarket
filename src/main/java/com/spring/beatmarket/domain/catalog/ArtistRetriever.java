@@ -64,4 +64,14 @@ class ArtistRetriever {
 
         return foundArtists;
     }
+
+    Artist findByIdEagerly(final Long artistId) {
+        Artist artist = artistRepository.findByIdWithSongs(artistId)
+                .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
+
+        artistRepository.findByIdWithAlbums(artistId)
+                .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
+
+        return artist;
+    }
 }
