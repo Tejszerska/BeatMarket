@@ -97,12 +97,12 @@ class SongRetriever {
        }
     }
 
-    List<Song> getActive(final List<Long> ids) {
+    List<Song> getActiveWithArtist(final List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
 
-        List<Song> foundSongs = songRepository.findByIdInAndActiveTrue(ids);
+        List<Song> foundSongs = songRepository.findActiveWithArtistsByIds(ids);
 
         if (foundSongs.size() != new HashSet<>(ids).size()) {
             List<Long> foundIds = foundSongs.stream().map(Song::getId).toList();

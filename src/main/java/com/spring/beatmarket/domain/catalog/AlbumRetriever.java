@@ -60,17 +60,17 @@ class AlbumRetriever {
         return albumRepository.getReferenceById(id);
     }
 
-    Album getActive(final Long id) {
+    Album getActiveWithArtist(final Long id) {
         return albumRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Album", id));
     }
 
-    List<Album> getActive(final List<Long> ids) {
+    List<Album> getActiveWithArtist(final List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
 
-        List<Album> foundAlbums = albumRepository.findByIdInAndActiveTrue(ids);
+        List<Album> foundAlbums = albumRepository.findActiveWithArtistsByIds(ids);
         if (foundAlbums.size() != new HashSet<>(ids).size()) {
 
             List<Long> foundIds = foundAlbums.stream().map(Album::getId).toList();

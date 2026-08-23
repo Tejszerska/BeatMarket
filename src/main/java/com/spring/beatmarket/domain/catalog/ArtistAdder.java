@@ -29,13 +29,13 @@ class ArtistAdder {
                 .build();
 
         if (createDto.songIds() != null && !createDto.songIds().isEmpty()) {
-            List<Song> songs = songRetriever.getActive(createDto.songIds());
+            List<Song> songs = songRetriever.getActiveWithArtist(createDto.songIds());
             newArtist.changeSongsList(new HashSet<>(songs));
 
         }
 
         if (createDto.albumIds() != null && !createDto.albumIds().isEmpty()) {
-            List<Album> albums = albumRetriever.getActive(createDto.albumIds());
+            List<Album> albums = albumRetriever.getActiveWithArtist(createDto.albumIds());
             newArtist.changeAlbumsList(albums);
         }
 

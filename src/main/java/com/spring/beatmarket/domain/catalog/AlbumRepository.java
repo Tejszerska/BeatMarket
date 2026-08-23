@@ -6,6 +6,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -55,6 +56,8 @@ interface AlbumRepository extends Repository<Album, Long> {
 
     Optional<Album> findByIdAndActiveTrue(Long id);
 
+    @Query("SELECT DISTINCT a FROM Album a LEFT JOIN FETCH a.artists WHERE a.id IN :ids AND a.active = true")
+    List<Album> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
 
     List<Album> findByIdInAndActiveTrue (Collection<Long> ids);
 }

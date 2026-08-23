@@ -30,6 +30,9 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
 
     boolean existsByGenreId(Long genreId);
 
+    @Query("SELECT DISTINCT s FROM Song s LEFT JOIN FETCH s.artists WHERE s.id IN :ids AND s.active = true")
+    List<Song> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
+
     @Modifying
     @Query("UPDATE Song s SET s.genre.id = :newGenreId WHERE s.genre.id = :oldGenreId AND s.active = true")
     Integer bulkUpdateGenre(@Param("oldGenreId") Long oldGenreId, @Param("newGenreId") Long newGenreId);
