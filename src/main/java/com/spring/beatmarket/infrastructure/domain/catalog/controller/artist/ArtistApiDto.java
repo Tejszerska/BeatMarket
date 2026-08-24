@@ -40,7 +40,11 @@ public interface ArtistApiDto {
     }
 
     @Schema(name = "ArtistDetailsResponse")
-    record DetailsResponse(Long id, String name, String imageUrl) {
+    record DetailsResponse(Long id,
+                           String name,
+                           String imageUrl,
+                           List<SongApiDto.Reference> songs,
+                           List<AlbumApiDto.Reference> albums) {
     }
 
     @Schema(name = "ArtistInfoResponse")

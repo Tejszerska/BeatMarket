@@ -21,7 +21,11 @@ public interface ArtistControllerMapper {
 
     List<ArtistApiDto.SummaryResponse> toSummaryResponseList(List<ArtistDto.Summary> list);
 
+    ArtistApiDto.DetailsResponse toDetailsResponse(ArtistDto.Details dto);
+
     default ArtistApiDto.GetAllResponse toGetAllResponse(Slice<ArtistDto.Summary> slice) {
         return new ArtistApiDto.GetAllResponse(this.toSummaryResponseList(slice.getContent()), slice.hasNext());
     }
+
+
 }

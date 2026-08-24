@@ -74,4 +74,9 @@ class ArtistRetriever {
 
         return artist;
     }
+
+    ArtistDto.Details getArtistDetails(final Long artistId) {
+        Artist artist = findByIdEagerly(artistId);
+        return artistMapper.toDetailsDto(artist);
+    }
 }

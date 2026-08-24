@@ -129,4 +129,8 @@ public class CatalogFacade {
 
         return new GenreDto.Transfer(updatedSongsCount, oldId, newId);
     }
+
+    public ArtistDto.Details getArtistDetails(final Long artistId) {
+        return artistRetriever.getArtistDetails(artistId);
+    }
 }

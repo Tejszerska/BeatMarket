@@ -60,9 +60,8 @@ class ArtistController {
     })
     @GetMapping("/{artistId}")
     ResponseEntity<ArtistApiDto.DetailsResponse> getArtistById(@PathVariable Long artistId) {
-        // ArtistDto.Details dto = facade.getArtistDetails(artistId);
-        // return ResponseEntity.ok(mapper.toDetailsResponse(dto));
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        ArtistDto.Details dto = facade.getArtistDetails(artistId);
+        return ResponseEntity.ok(mapper.toDetailsResponse(dto));
     }
 
     @Operation(summary = "Create a new artist", description = "Adds a new artist to the system.")
