@@ -519,7 +519,7 @@ Adds a new song to the system.
 - `duration` (integer, required) _Duration of the song in seconds. Must be > 0._
 - `language` (string, required) _Language of the song (e.g., "EN")._
 - `genreId` (integer, optional) _ID of the genre. Can be omitted if the genre is not yet in the system._
-- `artistIds` (array[integer], optional) _List of artist IDs. Use an empty array `[]` if no artists are assigned yet._
+- `artistIds` (array[integer], optional) _List of artist IDs. Use an empty array `[]` if no artists are assigned yet. The first ID in the array is treated as the primary artist, while subsequent IDs represent featuring artists._
 - `albumId` (integer, optional) _ID of the album. Can be omitted if the song is not part of an album or it's not yet in the system._
 
 **Request Body Example:**
@@ -987,18 +987,23 @@ Adds a new artist to the system.
 **Request Body Fields:**
 
 - `name` (string, required) _Name of the artist._
-- `songIds` (array[integer], optional) _List of song IDs. Use an empty array `[]` if no songs are assigned yet._
-- `albumIds` (array[integer], optional) _List of album IDs. Use an empty array `[]` if no album are assigned yet._
+- `mainSongIds` (array[integer], optional) _List of song IDs where the artist is the primary performer. Use an empty array `[]` if no songs are assigned yet._
+- `featSongIds` (array[integer], optional) _List of song IDs where the artist is a featured (guest) performer. Use an empty array `[]` if no songs are assigned yet._
+- `mainAlbumIds` (array[integer], optional) _List of album IDs where the artist is the primary creator. Use an empty array `[]` if no albums are assigned yet._
+- `featAlbumIds` (array[integer], optional) _List of album IDs where the artist is a featured/collaborating creator. Use an empty array `[]` if no albums are assigned yet._
 
 **Request Body Example:**
 
 ```json
 {
   "name": "Mr. Nimbus",
-  "songIds": [1, 2],
-  "albumIds": [1]
+  "mainSongIds": [1, 2],
+  "featSongIds": [7],
+  "mainAlbumIds": [1],
+  "featAlbumIds": []
 }
 ```
+
 
 **Response (201 Created):**
 
@@ -1093,8 +1098,10 @@ Partially updates an existing artist's metadata and its relationships. All field
 **Request Body Fields:**
 
 - `name` (string, optional) _Name of the artist._
-- `songIds` (array[integer], optional) \*List of song IDs. Use an empty array `[]` to clear song list completly._
-- `albumIds` (array[integer], optional) _List of album IDs. Use an empty array `[]` to clear album list completly._
+- `mainSongIds` (array[integer], optional) _List of song IDs where the artist is the primary performer. Use an empty array `[]` to clear songs list._
+- `featSongIds` (array[integer], optional) _List of song IDs where the artist is a featured (guest) performer. Use an empty array `[]` to clear songs list._
+- `mainAlbumIds` (array[integer], optional) _List of album IDs where the artist is the primary creator. Use an empty array `[]` to clear albums list._
+- `featAlbumIds` (array[integer], optional) _List of album IDs where the artist is a featured/collaborating creator. Use an empty array `[]` to clear albums list._
 
 **Request Body Example:**
 

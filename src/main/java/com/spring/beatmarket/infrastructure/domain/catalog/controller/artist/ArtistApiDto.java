@@ -16,21 +16,34 @@ public interface ArtistApiDto {
             @NotBlank(message = "name must be declared")
             String name,
 
-            @Schema(description = "List of song IDs. Use an empty array `[]` if no songs are assigned yet.", example = "[1]")
-            List<Long> songIds,
+            @Schema(description = "List of song IDs where the artist is the main performer. Use an empty array `[]` if no songs are assigned yet.", example = "[1, 2]")
+            List<Long> mainSongIds,
 
-            @Schema(description = "List of album IDs. Use an empty array `[]` if no albums are assigned yet.", example = "[]")
-            List<Long> albumIds
+            @Schema(description = "List of song IDs where the artist is a featured performer. Use an empty array `[]` if no songs are assigned yet.", example = "[7]")
+            List<Long> featSongIds,
+
+            @Schema(description = "List of album IDs where the artist is the primary creator. Use an empty array `[]` if no albums are assigned yet.", example = "[1]")
+            List<Long> mainAlbumIds,
+
+            @Schema(description = "List of album IDs where the artist is a featured/collaborating creator. Use an empty array `[]` if no albums are assigned yet.", example = "[]")
+            List<Long> featAlbumIds
     ) {
     }
 
     @Schema(name = "UpdateArtistRequest")
     record UpdateRequest(
             @NotBlank JsonNullable<String> name,
-            @Schema(description = "List of song IDs. Use an empty array `[]` to clear song list completely.", example = "[1, 2]")
-            JsonNullable<List<Long>> songIds,
-            @Schema(description = "List of album IDs.Use an empty array `[]` to clear album list completely.", example = "[]")
-            JsonNullable<List<Long>> albumIds
+            @Schema(description = "List of song IDs where the artist is the main performer. Use an empty array `[]` to clear the list completely.", example = "[1, 2]")
+            JsonNullable<List<Long>> mainSongIds,
+
+            @Schema(description = "List of song IDs where the artist is a featured performer. Use an empty array `[]` to clear the list completely.", example = "[7]")
+            JsonNullable<List<Long>> featSongIds,
+
+            @Schema(description = "List of album IDs where the artist is the main creator. Use an empty array `[]` to clear the list completely.", example = "[1]")
+            JsonNullable<List<Long>> mainAlbumIds,
+
+            @Schema(description = "List of album IDs where the artist is a featured creator. Use an empty array `[]` to clear the list completely.", example = "[]")
+            JsonNullable<List<Long>> featAlbumIds
     ) {
     }
 

@@ -7,13 +7,17 @@ public interface ArtistDto {
 
     record Create(
             String name,
-            List<Long> songIds,
-            List<Long> albumIds
+            List<Long> mainSongIds,
+            List<Long> featSongIds,
+            List<Long> mainAlbumIds,
+            List<Long> featAlbumIds
     ) {}
 
     record Update(Optional<String> name,
-                  Optional<List<Long>> songIds,
-                  Optional<List<Long>> albumIds) {}
+                  Optional<List<Long>> mainSongIds,
+                  Optional<List<Long>> featSongIds,
+                  Optional<List<Long>> mainAlbumIds,
+                  Optional<List<Long>> featAlbumIds) {}
 
 
     // GET **/artists
