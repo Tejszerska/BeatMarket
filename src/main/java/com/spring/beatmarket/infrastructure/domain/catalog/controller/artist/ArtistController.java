@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,7 +50,6 @@ class ArtistController {
         return ResponseEntity.ok(mapper.toGetAllResponse(artistsSlice));
     }
 
-    // @TODO Expand logic - implement missing GET by ID from api-contracts
     @Operation(summary = "Get artist by ID", description = "Retrieves detailed information about a specific artist by their ID, including their albums and songs.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist found and returned successfully."),
@@ -78,7 +76,6 @@ class ArtistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toWebInfo(createdArtist));
     }
 
-    // @TODO expand logic - implement deletion strategy from docs
     @Operation(summary = "Delete artist", description = "Removes an artist from the database by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Artist deleted successfully (No Content)."),
@@ -87,6 +84,8 @@ class ArtistController {
     })
     @DeleteMapping("/{artistId}")
     ResponseEntity<Void> deleteArtist(@PathVariable Long artistId) {
+        facade.deleteArtists(artistId);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -107,18 +106,4 @@ class ArtistController {
         return ResponseEntity.ok(mapper.toWebInfo(updatedArtist));
     }
 
-    // @TODO check logic, AI refactored
-    @Operation(summary = "Assign artist to album", description = "Assigns an existing album to the specified artist.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Artist successfully updated."),
-            @ApiResponse(responseCode = "404", description = "Album or Artist not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
-    })
-    @PutMapping("/{artistId}/albums/{albumId}")
-    ResponseEntity<Void> addArtistToAlbum(
-            @PathVariable Long artistId,
-            @PathVariable Long albumId) {
-        // facade.addArtistToAlbum(artistId, albumId);
-        return ResponseEntity.noContent().build();
-    }
 }

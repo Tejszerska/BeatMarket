@@ -9,9 +9,11 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @org.springframework.stereotype.Repository
 interface AlbumRepository extends Repository<Album, Long> {
@@ -60,4 +62,9 @@ interface AlbumRepository extends Repository<Album, Long> {
     List<Album> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
 
     List<Album> findByIdInAndActiveTrue (Collection<Long> ids);
+
+    @Modifying
+    @Query("UPDATE Album a SET a.active = false, a.version = a.version + 1, a.editedOn = :now WHERE a.id IN :albumIds")
+    void deactivateAllByIds(@Param("albumIds")Set<Long> albumIds,
+                            @Param("now") Instant now);
 }

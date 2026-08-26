@@ -4,59 +4,45 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 class ArtistDeleter {
     private final ArtistRetriever artistRetriever;
-    private final AlbumRetriever albumRetriever;
-    private final ArtistRepository artistRepository;
     private final SongDeleter songDeleter;
     private final AlbumDeleter albumDeleter;
 
-    void deleteById(Long id){
+    void deleteById(Long id) {
         log.info("soft deleting artist by id: " + id);
-    }
+        Artist artist = artistRetriever.findByIdEagerly(id);
 
-    void deleteArtistByIdWithAlbumsAndSongs(final Long artistId) {
-        Artist artist = artistRetriever.findById(artistId);
-        Set<Album> artistsAlbums = albumRetriever.findAlbumsByArtistId(artistId);
-        if (artistsAlbums.isEmpty()) {
-            log.info("Artist with id={} doesn't have any albums", artistId);
-            artistRepository.deleteArtistById(artistId);
-            return;
+        List<Song> songs = new ArrayList<>(artist.getSongs());
+        Set<Long> songToDeleteIds = new HashSet<>();
+
+        for (Song song : songs) {
+            int order = song.getArtists().indexOf(artist);
+            if (order == 0) {
+                songToDeleteIds.add(song.getId());
+            }
         }
-        // get this artist solo albums
-        Set<Album> albumsWithOneArtist = artistsAlbums.stream()
-                .filter(album -> album.getArtists().size() == 1)
-                .collect(Collectors.toSet());
+        songDeleter.deleteAllSongsByIds(songToDeleteIds);
 
-        // get albums with 2 or more artists
-        Stream<Album> albumsWithMultipleArtists = artistsAlbums.stream()
-                .filter(album -> album.getArtists().size() >= 2);
+        List<Album> albums = artist.getAlbums();
+        Set<Long> albumsToDeleteIds = new HashSet<>();
+        for (Album album : albums) {
+            int order = album.getArtists().indexOf(artist);
+            if (order == 0) {
+                albumsToDeleteIds.add(album.getId());
+            }
+        }
+        albumDeleter.deleteAllAlbumsByIds(albumsToDeleteIds);
 
-        // remove artist from albums with 2+ artists
-        albumsWithMultipleArtists.forEach(album -> album.removeArtist(artist));
-
-
-        // flatmap song ids from solo albums
-        Set<Long> allSongsIdsFromAllAlbumsWithOnlyThisArtist = albumsWithOneArtist.stream()
-                .flatMap(album -> album.getSongs().stream())
-                .map(Song::getId)
-                .collect(Collectors.toSet());
-        // delete songs
-        songDeleter.deleteAllSongsById(allSongsIdsFromAllAlbumsWithOnlyThisArtist);
-        // get solo album ids
-        Set<Long> albumIdsWithThisArtist = albumsWithOneArtist.stream()
-                .map(Album::getId)
-                .collect(Collectors.toSet());
-        // delete solo albums
-        albumDeleter.deleteAllAlbumsByIds(albumIdsWithThisArtist);
-        // delete this artist
-        artistRepository.deleteArtistById(artistId);
+        artist.deactivate();
     }
+
 }

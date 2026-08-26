@@ -32,4 +32,7 @@ public class LicensingFacade {
     public void deactivatePricesForSong(Long songId) {
         songPriceDeleter.deactivatePricesForSong(songId);
     }
+    public void deactivatePricesForSongs(Set<Long> songIds) {
+        songPriceDeleter.deactivatePricesForSongs(songIds);
+    }
 }

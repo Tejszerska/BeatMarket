@@ -1159,28 +1159,6 @@ _Invalid input data._
 
 ---
 
-#### PUT /api/catalog/artists/{artistId}/albums/{albumId}
-
-Assigns an existing album to the specified artist.
-
-**Parameters:**
-
-- `artistId` (integer, path parameter, required) _Artists ID_
-- `albumId` (integer, path parameter, required) _Album ID_
-
-**Response (204 No Content):** _Artist successfully updated._
-
-**Response (404 Not Found):**
-_Album, or Artist not found._
-
-```json
-{
-  "message": "Album by id=45 not found."
-}
-```
-
----
-
 #### DELETE /api/catalog/artists/{id}
 
 Removes an artist from the database by its ID.

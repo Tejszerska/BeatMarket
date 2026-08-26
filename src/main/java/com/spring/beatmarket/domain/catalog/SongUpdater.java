@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 @Log4j2
@@ -100,7 +101,7 @@ class SongUpdater {
     }
 
     Integer transferGenre(final Long oldId, final Long newId) {
-       return songRepository.bulkUpdateGenre(oldId, newId);
+       return songRepository.bulkUpdateGenre(oldId, newId, Instant.now());
     }
 }
 

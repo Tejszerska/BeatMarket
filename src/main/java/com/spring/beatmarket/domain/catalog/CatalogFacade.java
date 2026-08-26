@@ -4,7 +4,6 @@ import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.dto.AlbumRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumSongsDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
-import com.spring.beatmarket.domain.catalog.dto.ArtistRequestDto;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
@@ -28,7 +27,6 @@ public class CatalogFacade {
     private final ArtistRetriever artistRetriever;
     private final AlbumRetriever albumRetriever;
     private final ArtistDeleter artistDeleter;
-    private final ArtistAssigner artistAssigner;
     private final ArtistUpdater artistUpdater;
     private final GenreRetriever genreRetriever;
     private final SongAssigner songAssigner;
@@ -60,10 +58,6 @@ public class CatalogFacade {
         return genreRetriever.findAll(pageable);
     }
 
-    public ArtistDto.Info addArtistWithDefaultAlbumAndSong(ArtistRequestDto dto) {
-        return artistAdder.addArtistWithDefaultAlbumAndSong(dto);
-    }
-
     public GenreDto.Info addGenre(GenreDto.Create dto) {
         return genreAdder.addGenre(dto);
     }
@@ -71,10 +65,6 @@ public class CatalogFacade {
     public LegacyAlbumDto addAlbumWithSong(AlbumRequestDto dto) {
         return albumAdder.addAlbum(dto.songId(), dto.title(), dto.releaseDate());
     }
-
-//    public ArtistDto.Details addArtistToAlbum(Long artistId, Long albumId) {
-//        return artistAssigner.addArtistToAlbum(artistId, albumId);
-//    }
 
     public SongDto.Info addSong(final SongDto.Create dto) {
         return songAdder.addSong(dto);
@@ -88,13 +78,8 @@ public class CatalogFacade {
         return artistUpdater.updateArtist(artistId, dto);
     }
 
-
     public void deleteSongById(Long id) {
         songDeleter.deleteById(id);
-    }
-
-    public void deleteArtistByIdWithAlbumsAndSongs(Long artistId) {
-        artistDeleter.deleteArtistByIdWithAlbumsAndSongs(artistId);
     }
 
     public GenreDto.Details getGenreDetails(final Long genreId) {
@@ -132,5 +117,9 @@ public class CatalogFacade {
 
     public ArtistDto.Details getArtistDetails(final Long artistId) {
         return artistRetriever.getArtistDetails(artistId);
+    }
+
+    public void deleteArtists(final Long artistId) {
+        artistDeleter.deleteById(artistId);
     }
 }

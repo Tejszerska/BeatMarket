@@ -6,6 +6,7 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -22,10 +23,15 @@ interface SongPriceRepository extends Repository<SongPrice, SongPriceId> {
              @Param("tier") LicenseTier tier,
              @Param("maxPrice") BigDecimal maxPrice);
 
-
     List<SongPrice> findAllBySongId(Long songId);
 
     @Modifying
-    @Query("UPDATE SongPrice sp SET sp.active = false WHERE sp.songId = :songId")
-    void deactivateAllBySongId(@Param("songId") Long songId);
+    @Query("UPDATE SongPrice sp SET sp.active = false, sp.version = sp.version + 1, sp.editedOn = :now WHERE sp.songId = :songId")
+    void deactivateAllBySongId(@Param("songId") Long songId,
+                               @Param("now") Instant now);
+
+    @Modifying
+    @Query("UPDATE SongPrice sp SET sp.active = false, sp.version = sp.version + 1, sp.editedOn = :now WHERE sp.songId IN :songIds")
+    void deactivateAllBySongIds(@Param("songIds") Set<Long> songIds,
+                                @Param("now") Instant now);
 }

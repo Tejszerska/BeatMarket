@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.Set;
 
 @Service
@@ -23,8 +23,10 @@ class SongDeleter {
         licensingFacade.deactivatePricesForSong(id);
     }
 
-    void deleteAllSongsById(final Set<Long> songIds) {
-        List<Song> byIdIn = songRepository.findByIdInAndActiveTrue(songIds);
-        for(Song song : byIdIn) song.deactivate();
+    void deleteAllSongsByIds(final Set<Long> songIds) {
+        if (songIds == null || songIds.isEmpty()) return;
+        log.info("soft deleting songs by ids: " + songIds);
+        songRepository.deactivateAllByIds(songIds, Instant.now());
+        licensingFacade.deactivatePricesForSongs(songIds);
     }
 }

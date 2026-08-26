@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @org.springframework.stereotype.Repository
 interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecutor<Song> {
@@ -26,14 +28,18 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
 
     Song save(Song song);
 
-    List<Song> findByIdInAndActiveTrue(Collection<Long> ids);
-
     boolean existsByGenreId(Long genreId);
 
     @Query("SELECT DISTINCT s FROM Song s LEFT JOIN FETCH s.artists WHERE s.id IN :ids AND s.active = true")
     List<Song> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
 
     @Modifying
-    @Query("UPDATE Song s SET s.genre.id = :newGenreId WHERE s.genre.id = :oldGenreId AND s.active = true")
-    Integer bulkUpdateGenre(@Param("oldGenreId") Long oldGenreId, @Param("newGenreId") Long newGenreId);
+    @Query("UPDATE Song s SET s.genre.id = :newGenreId, s.version = s.version + 1, s.editedOn = :now WHERE s.genre.id = :oldGenreId AND s.active = true")    Integer bulkUpdateGenre(@Param("oldGenreId") Long oldGenreId,
+                            @Param("newGenreId") Long newGenreId,
+                            @Param("now") Instant now);
+
+    @Modifying
+    @Query("UPDATE Song s SET s.active = false, s.version = s.version + 1, s.editedOn = :now WHERE s.id IN :songIds")
+    void deactivateAllByIds(@Param("songIds") Set<Long> songIds,
+                            @Param("now") Instant now);
 }
