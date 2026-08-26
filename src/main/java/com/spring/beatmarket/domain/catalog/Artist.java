@@ -49,10 +49,6 @@ class Artist extends BaseEntity {
         this(name, null, new HashSet<>(), new ArrayList<>());
     }
 
-    /**
-     * Eagerly initializes collections to empty structures to prevent NullPointerExceptions
-     * during bidirectional entity synchronization and graph traversals.
-     */
     @Builder
     Artist(final String name, final String imageUrl, final Set<Song> songs, final List<Album> albums) {
         if (name == null || name.isBlank()) {
@@ -77,71 +73,40 @@ class Artist extends BaseEntity {
     }
 
     /**
-     * Synchronizes the inverse side of the ManyToMany relationship.
-     * Delegates the actual physical database mapping to the Album entity.
+     * Passive side of the ManyToMany relationship with Album.
+     * Persistence is managed by the Album entity. Use Album.assignArtist()
+     * to properly establish database relationships.
      */
     void addAlbum(Album album) {
-        if (album != null && !this.albums.contains(album)) {
+        if (album != null){
             this.albums.add(album);
-            if (!album.getArtists().contains(this)) {
-                album.addArtist(this);
-            }
         }
     }
 
     void removeAlbum(Album album) {
         if (album != null) {
             this.albums.remove(album);
-            if (album.getArtists().contains(this)) {
-                album.removeArtist(this);
-            }
         }
-    }
-
-    void changeAlbumsList(List<Album> newAlbums) {
-        this.albums.clear();
-        if (newAlbums != null) {
-            newAlbums.forEach(this::addAlbum);
-        }
-    }
-
-    void clearAlbums() {
-        List<Album> albumsToRemove = new ArrayList<>(this.albums);
-        albumsToRemove.forEach(this::removeAlbum);
     }
 
     /**
-     * Synchronizes the inverse side of the ManyToMany relationship with Song.
+     * Passive side of the ManyToMany relationship with Song.
+     * Persistence is managed by the Song entity. Use Song.assignArtist()
+     * to properly establish database relationships.
      */
     void addSong(Song song) {
         if (song != null) {
             this.songs.add(song);
-            if (!song.getArtists().contains(this)) {
-                song.addArtist(this);
-            }
         }
     }
 
     void removeSong(Song song) {
         if (song != null) {
             this.songs.remove(song);
-            if (song.getArtists().contains(this)) {
-                song.removeArtist(this);
-            }
         }
     }
 
-    void changeSongsList(Set<Song> newSongs) {
-        this.songs.clear();
-        if (newSongs != null) {
-            newSongs.forEach(this::addSong);
-        }
-    }
-
-    void clearSongs() {
-        Set<Song> songsToRemove = new HashSet<>(this.songs);
-        songsToRemove.forEach(this::removeSong);
-    }
+}
 
 //    --------- legacy versions -----------
 //    void removeAlbum(Album album){
@@ -152,4 +117,3 @@ class Artist extends BaseEntity {
 //        albums.add(album);
 //        album.addArtist(this);
 //    }
-}

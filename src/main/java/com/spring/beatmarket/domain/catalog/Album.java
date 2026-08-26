@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.shared.domain.BaseEntity;
 import jakarta.persistence.Column;
@@ -104,12 +105,28 @@ class Album extends BaseEntity {
      * Manages the owning side of the ManyToMany relationship with Artist.
      * Safely updates both entities to keep the Persistence Context synchronized.
      */
-    void addArtist(Artist artist) {
-        if (artist != null && !this.artists.contains(artist)) {
-            this.artists.add(artist);
-            if (!artist.getAlbums().contains(this)) {
-                artist.addAlbum(this);
+
+    void assignArtist(Artist artist, boolean isMain) {
+        if (artist == null) return;
+
+        boolean wasRemoved = this.artists.remove(artist);
+
+        if (wasRemoved)  artist.removeAlbum(this);
+
+        if (isMain) {
+            if (!this.artists.isEmpty()) {
+                throw new DataConflictException(String.format("Album by id='%s' already has a main artist", this.getId()));
             }
+            this.artists.add(0, artist);
+        } else {
+            if (this.artists.isEmpty()) {
+                throw new DataConflictException(String.format("Cannot add featured artist to Album by id='%s' without a main artist", this.getId()));
+            }
+            this.artists.add(artist);
+        }
+
+        if (!artist.getAlbums().contains(this)) {
+            artist.getAlbums().add(this);
         }
     }
 
@@ -125,7 +142,7 @@ class Album extends BaseEntity {
     void changeArtistsList(List<Artist> newArtists) {
         this.artists.clear();
         if (newArtists != null) {
-            newArtists.forEach(this::addArtist);
+            this.artists.addAll(newArtists);
         }
     }
 
@@ -181,7 +198,7 @@ class Album extends BaseEntity {
 //        artists.add(artist);
 //    }
 //
-    void assignDefaultTitle(){
+    void assignDefaultTitle() {
         this.title = "Default album:" + this.uuid.toString();
     }
 }

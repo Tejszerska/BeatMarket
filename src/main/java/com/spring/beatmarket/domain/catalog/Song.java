@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.shared.domain.BaseEntity;
 import jakarta.persistence.Column;
@@ -164,14 +165,27 @@ class Song extends BaseEntity {
      * Manages bidirectional synchronization with Artist.
      * The 'contains' check prevents infinite recursion during the assignment process.
      */
-    void addArtist(Artist artist) {
-        if (artist != null && !this.artists.contains(artist)) {
-            this.artists.add(artist);
 
-            if (!artist.getSongs().contains(this)) {
-                artist.addSong(this);
+    void assignArtist(Artist artist, boolean isMain){
+        if (artist == null) return;
+
+        boolean wasRemoved = this.artists.remove(artist);
+
+        if(wasRemoved) artist.getSongs().remove(this);
+
+        if(isMain){
+            if(!this.artists.isEmpty()){
+                throw new DataConflictException(String.format("Song by id='%s' already has a main artist", this.getId()));
             }
+            this.artists.add(0, artist);
+        } else {
+            if(this.artists.isEmpty()){
+                throw new DataConflictException(String.format("Cannot add featured artist to Song by id='%s' without a main artist", this.getId()));
+            }
+            this.artists.add(artist);
         }
+
+        artist.getSongs().add(this);
     }
 
     void removeArtist(Artist artist) {
