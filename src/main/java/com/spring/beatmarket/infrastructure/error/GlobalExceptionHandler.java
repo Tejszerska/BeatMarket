@@ -1,9 +1,11 @@
 package com.spring.beatmarket.infrastructure.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.spring.beatmarket.domain.catalog.dto.RoleConflictErrorResponse;
 import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
+import com.spring.beatmarket.domain.catalog.exception.RoleConflictException;
 import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,16 @@ class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(errorResponse);
+    }
+
+    @ExceptionHandler(RoleConflictException.class)
+    ResponseEntity<RoleConflictErrorResponse> handleRoleConflictException(final RoleConflictException ex) {
+        RoleConflictErrorResponse response = new RoleConflictErrorResponse(
+                ex.getMessage(),
+                ex.getTargetName(),
+                ex.getConflictingIds()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
