@@ -41,8 +41,11 @@ public interface SongApiDto {
             @Schema(description = "ID of the genre. Can be omitted if the genre is not yet in the system.", example = "1")
             Long genreId,
 
-            @Schema(description = "List of artist IDs. Use an empty array `[]` if no artists are assigned yet.", example = "[1, 2]")
-            List<Long> artistIds,
+            @Schema(description = "ID of the main artist. Can be omitted if no artist is assigned yet.", example = "1")
+            Long mainArtistId,
+
+            @Schema(description = "List of featured artist IDs. Use an empty array `[]` if no featured artists.", example = "[2, 3]")
+            List<Long> featArtistIds,
 
             @Schema(description = "ID of the album. Can be omitted if the song is not part of an album or it's not yet in the system.", example = "2")
             Long albumId
@@ -66,10 +69,13 @@ public interface SongApiDto {
             @Schema(description = "ID of the genre. Can be omitted if the genre is not yet in the system.", example = "1")
             JsonNullable<Long> genreId,
 
-            @Schema(description = "List of artist IDs. Use an empty array `[]` if no artists are assigned yet.", example = "[1, 2]")
-            JsonNullable<List<Long>> artistIds,
+            @Schema(description = "ID of the main artist. Null omits update, empty clears.", example = "1")
+            JsonNullable<Long> mainArtistId,
 
-            @Schema(description = "ID of the album. Can be omitted if the song is not part of an album or it's not yet in the system.", example = "2")
+            @Schema(description = "List of featured artist IDs. Null omits update, empty list `[]` clears.", example = "[1, 2]")
+            JsonNullable<List<Long>> featArtistIds,
+
+            @Schema(description = "ID of the album.", example = "1")
             JsonNullable<Long> albumId
     ) {
         public UpdateRequest {
@@ -78,7 +84,8 @@ public interface SongApiDto {
             if (duration == null) duration = JsonNullable.undefined();
             if (language == null) language = JsonNullable.undefined();
             if (genreId == null) genreId = JsonNullable.undefined();
-            if (artistIds == null) artistIds = JsonNullable.undefined();
+            if (mainArtistId == null) mainArtistId = JsonNullable.undefined();
+            if (featArtistIds == null) featArtistIds = JsonNullable.undefined();
             if (albumId == null) albumId = JsonNullable.undefined();
         }
     }

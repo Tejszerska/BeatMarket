@@ -7,6 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Log4j2
@@ -19,6 +21,8 @@ class SongUpdater {
     private final ArtistRetriever artistRetriever;
 
     private final SongRepository songRepository;
+
+    private final RoleValidator roleValidator;
     private final SongMapper songMapper;
 
 
@@ -87,16 +91,41 @@ class SongUpdater {
         }
 
 
-        if (songFromRequest.artistIds() != null) {
-            songFromRequest.artistIds().ifPresentOrElse(
-                    newArtistIds ->
-                    {
-                        List<Artist> newArtists = artistRetriever.getActiveArtists(newArtistIds);
-                        songFromDB.changeArtistList(newArtists);
-                    },
-                    songFromDB::clearArtists
+        if (songFromRequest.mainArtistId() != null || songFromRequest.featArtistIds() != null) {
+            List<Artist> allCurrentArtists = new ArrayList<>(songFromDB.getArtists());
+
+            Long currentMainId = allCurrentArtists.isEmpty() ? null : allCurrentArtists.get(0).getId();
+            List<Long> currentFeatIds = allCurrentArtists.stream().skip(1).map(Artist::getId).toList();
+
+            Long targetMainId = songFromRequest.mainArtistId() == null
+                    ? currentMainId
+                    : songFromRequest.mainArtistId().orElse(null);
+
+            List<Long> targetFeatIds = songFromRequest.featArtistIds() == null
+                    ? currentFeatIds
+                    : songFromRequest.featArtistIds().orElse(Collections.emptyList());
+
+            List<Long> targetMainList = targetMainId != null ? List.of(targetMainId) : null;
+
+            List<Long> allTargetIds = roleValidator.combineAndValidateIds(
+                    targetMainList, targetFeatIds, "Song", "Artist"
             );
+
+            for (Artist oldArtist : allCurrentArtists) {
+                if (!allTargetIds.contains(oldArtist.getId())) {
+                    songFromDB.removeArtist(oldArtist);
+                }
+            }
+
+            if (!allTargetIds.isEmpty()) {
+                List<Artist> newArtists = artistRetriever.getActiveArtists(allTargetIds);
+                for (Artist artist : newArtists) {
+                    boolean isMain = targetMainId != null && targetMainId.equals(artist.getId());
+                    songFromDB.assignArtist(artist, isMain);
+                }
+            }
         }
+
         return songMapper.toInfoDto(songFromDB);
     }
 

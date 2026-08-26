@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface SongDto {
-
     record Create(String title,
                   LocalDate releaseDate,
                   Integer duration,
                   SongLanguage language,
                   Long genreId,
-                  List<Long> artistIds,
+                  Long mainArtistId,
+                  List<Long> featArtistIds,
                   Long albumId) {
     }
 
@@ -24,7 +24,8 @@ public interface SongDto {
                   Optional<Integer> duration,
                   Optional<SongLanguage> language,
                   Optional<Long> genreId,
-                  Optional<List<Long>> artistIds,
+                  Optional<Long> mainArtistId,
+                  Optional<List<Long>> featArtistIds,
                   Optional<Long> albumId) {
     }
 

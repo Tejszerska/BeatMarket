@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -16,27 +15,43 @@ class SongAdder {
     private final GenreRetriever genreRetriever;
     private final AlbumRetriever albumRetriever;
     private final ArtistRetriever artistRetriever;
+    private final RoleValidator roleValidator;
     private final SongMapper songMapper;
 
-
     SongDto.Info addSong(final SongDto.Create dto) {
-
         Genre genre = dto.genreId() != null
                 ? genreRetriever.getActive(dto.genreId()) : null;
 
         Album album = dto.albumId() != null
                 ? albumRetriever.getActiveWithArtist(dto.albumId()) : null;
 
-        List<Artist> artists = new ArrayList<>();
-        if (dto.artistIds() != null && !dto.artistIds().isEmpty()) {
-            artists = artistRetriever.getActiveArtists(dto.artistIds());
-        }
+        Song song = Song.builder()
+                .title(dto.title())
+                .releaseDate(dto.releaseDate())
+                .duration(dto.duration())
+                .language(dto.language())
+                .genre(genre)
+                .album(album)
+                .build();
 
-        Song saved = songRepository.save(
-                new Song(dto.title(), dto.releaseDate(), dto.duration(), dto.language(), genre, album, artists)
+        // Pakujemy mainArtistId do listy dla walidatora
+        List<Long> mainList = dto.mainArtistId() != null ? List.of(dto.mainArtistId()) : null;
+
+        List<Long> allArtistIds = roleValidator.combineAndValidateIds(
+                mainList, dto.featArtistIds(), "Song", "Artist"
         );
 
+        if (!allArtistIds.isEmpty()) {
+            List<Artist> artists = artistRetriever.getActiveArtists(allArtistIds);
+
+            for (Artist artist : artists) {
+                // Sprawdzanie po konkretnym obiekcie / identyfikatorze
+                boolean isMain = dto.mainArtistId() != null && dto.mainArtistId().equals(artist.getId());
+                song.assignArtist(artist, isMain);
+            }
+        }
+
+        Song saved = songRepository.save(song);
         return songMapper.toInfoDto(saved);
     }
-
 }
