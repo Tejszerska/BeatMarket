@@ -18,7 +18,7 @@ class SongAdder {
     private final RoleValidator roleValidator;
     private final SongMapper songMapper;
 
-    SongDto.Info addSong(final SongDto.Create dto) {
+    SongDto.Info add(final SongDto.Create dto) {
         Genre genre = dto.genreId() != null
                 ? genreRetriever.getActive(dto.genreId()) : null;
 
@@ -34,7 +34,6 @@ class SongAdder {
                 .album(album)
                 .build();
 
-        // Pakujemy mainArtistId do listy dla walidatora
         List<Long> mainList = dto.mainArtistId() != null ? List.of(dto.mainArtistId()) : null;
 
         List<Long> allArtistIds = roleValidator.combineAndValidateIds(
@@ -42,10 +41,9 @@ class SongAdder {
         );
 
         if (!allArtistIds.isEmpty()) {
-            List<Artist> artists = artistRetriever.getActiveArtists(allArtistIds);
+            List<Artist> artists = artistRetriever.getActive(allArtistIds);
 
             for (Artist artist : artists) {
-                // Sprawdzanie po konkretnym obiekcie / identyfikatorze
                 boolean isMain = dto.mainArtistId() != null && dto.mainArtistId().equals(artist.getId());
                 song.assignArtist(artist, isMain);
             }

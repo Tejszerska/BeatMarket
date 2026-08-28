@@ -18,7 +18,7 @@ class ArtistAdder {
     private final RoleValidator roleValidator;
     private final ArtistMapper artistMapper;
 
-    ArtistDto.Info addArtist(final ArtistDto.Create createDto) {
+    ArtistDto.Info add(final ArtistDto.Create createDto) {
 
         Artist newArtist = Artist.builder()
                 .name(createDto.name().trim())

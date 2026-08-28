@@ -26,8 +26,8 @@ class SongUpdater {
     private final SongMapper songMapper;
 
 
-    SongDto.Info updateSongById(final Long id, final SongDto.Update songFromRequest) {
-        Song songFromDB = songRetriever.findSongByIdEagerly(id);
+    SongDto.Info update(final Long id, final SongDto.Update songFromRequest) {
+        Song songFromDB = songRetriever.getEagerly(id);
 
         if (songFromRequest.title() != null) {
             songFromRequest.title().ifPresentOrElse(
@@ -118,7 +118,7 @@ class SongUpdater {
             }
 
             if (!allTargetIds.isEmpty()) {
-                List<Artist> newArtists = artistRetriever.getActiveArtists(allTargetIds);
+                List<Artist> newArtists = artistRetriever.getActive(allTargetIds);
                 for (Artist artist : newArtists) {
                     boolean isMain = targetMainId != null && targetMainId.equals(artist.getId());
                     songFromDB.assignArtist(artist, isMain);
@@ -129,7 +129,7 @@ class SongUpdater {
         return songMapper.toInfoDto(songFromDB);
     }
 
-    Integer transferGenre(final Long oldId, final Long newId) {
+    Integer bulkUpdateSongsByGenreId(final Long oldId, final Long newId) {
        return songRepository.bulkUpdateGenre(oldId, newId, Instant.now());
     }
 }

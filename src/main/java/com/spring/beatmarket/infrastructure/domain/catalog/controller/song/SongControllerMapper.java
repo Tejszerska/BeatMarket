@@ -11,26 +11,22 @@ import java.util.List;
         uses = JsonNullableMapper.class)
 public interface SongControllerMapper {
 
-    SongApiDto.CreateRequest toResponse(SongDto.Create createSongRequest);
+    SongApiDto.DetailsResponse toGetAllResponse(SongDto.Details songDetailsDto);
 
-    SongApiDto.DetailsResponse toResponse(SongDto.Details songDetailsDto);
+    SongApiDto.InfoResponse toInfoResponse(SongDto.Info dto);
 
-    SongApiDto.InfoResponse toResponse(SongDto.Info dto);
+    List<SongApiDto.SummaryResponse> toSummaryResponse(List<SongDto.Summary> list);
 
-    List<SongApiDto.SummaryResponse> toResponse(List<SongDto.Summary> list);
+    SongDto.SearchCriteria toDomainSearchCriteria(SongApiDto.SearchRequest songSearchRequest);
 
-    SongDto.SearchCriteria toDomain(SongApiDto.SearchRequest songSearchRequest);
+    SongDto.Update toDomainUpdate(SongApiDto.UpdateRequest request);
 
-    SongDto.Update toDomain(SongApiDto.UpdateRequest request);
+    SongDto.Create toDomainCreate(SongApiDto.CreateRequest createSongRequest);
 
-    SongDto.Create toDomain(SongApiDto.CreateRequest createSongRequest);
-
-    default SongApiDto.GetAllResponse toResponse(Slice<SongDto.Summary> slice) {
+    default SongApiDto.GetAllResponse toGetAllResponse(Slice<SongDto.Summary> slice) {
         return new SongApiDto.GetAllResponse(
-                toResponse(slice.getContent()),
+                toSummaryResponse(slice.getContent()),
                 slice.hasNext()
         );
     }
-
-
 }

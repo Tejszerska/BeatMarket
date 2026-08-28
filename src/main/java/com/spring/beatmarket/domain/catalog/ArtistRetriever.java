@@ -19,7 +19,7 @@ class ArtistRetriever {
     private final ArtistRepository artistRepository;
     private final ArtistMapper artistMapper;
 
-    Slice<ArtistDto.Summary> findAllArtist(String name, Pageable pageable) {
+    Slice<ArtistDto.Summary> findAll(String name, Pageable pageable) {
         Slice<Artist> all;
         if(name == null || name.isBlank()) {
             all = artistRepository.findByActiveTrue(pageable);
@@ -30,21 +30,8 @@ class ArtistRetriever {
         return all.map(artistMapper::toSummaryDto);
     }
 
-    Artist findById(final Long artistId) {
-        return artistRepository.findByIdAndActiveTrue(artistId)
-                .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
-    }
 
-    void existsById(Long id) {
-        if (!artistRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Artist", id);
-        }
-    }
-    Artist getArtistReference (Long id){
-        existsById(id);
-        return artistRepository.getReferenceById(id);
-    }
-    List<Artist> getActiveArtists(List<Long> ids) {
+    List<Artist> getActive(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
@@ -65,7 +52,7 @@ class ArtistRetriever {
         return foundArtists;
     }
 
-    Artist findByIdEagerly(final Long artistId) {
+    Artist findEagerly(final Long artistId) {
         Artist artist = artistRepository.findByIdWithSongs(artistId)
                 .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
 
@@ -75,8 +62,8 @@ class ArtistRetriever {
         return artist;
     }
 
-    ArtistDto.Details getArtistDetails(final Long artistId) {
-        Artist artist = findByIdEagerly(artistId);
+    ArtistDto.Details getDetails(final Long artistId) {
+        Artist artist = findEagerly(artistId);
         return artistMapper.toDetailsDto(artist);
     }
 }

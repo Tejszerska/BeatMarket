@@ -17,9 +17,9 @@ class ArtistDeleter {
     private final SongDeleter songDeleter;
     private final AlbumDeleter albumDeleter;
 
-    void deleteById(Long id) {
+    void deactivate(Long id) {
         log.info("soft deleting artist by id: " + id);
-        Artist artist = artistRetriever.findByIdEagerly(id);
+        Artist artist = artistRetriever.findEagerly(id);
 
         List<Song> songs = new ArrayList<>(artist.getSongs());
         Set<Long> songToDeleteIds = new HashSet<>();
@@ -30,7 +30,7 @@ class ArtistDeleter {
                 songToDeleteIds.add(song.getId());
             }
         }
-        songDeleter.deleteAllSongsByIds(songToDeleteIds);
+        songDeleter.bulkDeactivate(songToDeleteIds);
 
         List<Album> albums = artist.getAlbums();
         Set<Long> albumsToDeleteIds = new HashSet<>();

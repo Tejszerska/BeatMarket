@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
-import com.spring.beatmarket.domain.catalog.CatalogFacade;
+import com.spring.beatmarket.domain.catalog.SongFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
 import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public
 class SongController {
 
-    private final CatalogFacade facade;
+    private final SongFacade facade;
     private final SongControllerMapper mapper;
 
     @Operation(summary = "Get all songs", description = "Returns a paginated list of all songs in the database, with an option to limit results.")
@@ -48,7 +48,7 @@ class SongController {
 
     })
     @GetMapping
-    ResponseEntity<SongApiDto.GetAllResponse> getAllSongs(
+    ResponseEntity<SongApiDto.GetAllResponse> searchSongs(
             SongApiDto.SearchRequest searchRequestDto,
             @ParameterObject @PageableDefault(size = 20, sort = "editedOn", direction = Sort.Direction.DESC) Pageable pageable) {
         if(searchRequestDto.maxPrice() != null){
@@ -57,11 +57,11 @@ class SongController {
                         "Filtering by maxPrice requires declaring currency and license.");
             }
         }
-        SongDto.SearchCriteria searchCriteria = mapper.toDomain(searchRequestDto);
+        SongDto.SearchCriteria searchCriteria = mapper.toDomainSearchCriteria(searchRequestDto);
 
-        Slice<SongDto.Summary> allSongs = facade.findAllSongs(searchCriteria, pageable);
+        Slice<SongDto.Summary> allSongs = facade.searchSongs(searchCriteria, pageable);
 
-        return ResponseEntity.ok(mapper.toResponse(allSongs));
+        return ResponseEntity.ok(mapper.toGetAllResponse(allSongs));
     }
 
     @Operation(summary = "Get song by ID", description = "Retrieves detailed information about a specific song by its ID.")
@@ -72,8 +72,8 @@ class SongController {
     })
     @GetMapping("/{id}")
     ResponseEntity<SongApiDto.DetailsResponse> getSongById(@PathVariable Long id) {
-        SongDto.Details songDetails = facade.getSongDetailsById(id);
-        return ResponseEntity.ok(mapper.toResponse(songDetails));
+        SongDto.Details songDetails = facade.getSongDetails(id);
+        return ResponseEntity.ok(mapper.toGetAllResponse(songDetails));
     }
 
     @Operation(summary = "Create a new song", description = "Adds a new song to the system.")
@@ -83,22 +83,10 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
     })
     @PostMapping
-    ResponseEntity<SongApiDto.InfoResponse> postSong(@RequestBody @Valid SongApiDto.CreateRequest createSongRequest) {
-        SongDto.Create domainRequest = mapper.toDomain(createSongRequest);
+    ResponseEntity<SongApiDto.InfoResponse> createSong(@RequestBody @Valid SongApiDto.CreateRequest createSongRequest) {
+        SongDto.Create domainRequest = mapper.toDomainCreate(createSongRequest);
         SongDto.Info addedSong = facade.addSong(domainRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(addedSong));
-    }
-
-    @Operation(summary = "Delete song", description = "Removes a song from the database by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Song deleted successfully (No Content)."),
-            @ApiResponse(responseCode = "404", description = "Song not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
-    })
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteSongById(@PathVariable Long id) {
-        facade.deleteSongById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toInfoResponse(addedSong));
     }
 
     @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
@@ -110,11 +98,22 @@ class SongController {
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
     @PatchMapping("/{id}")
-     ResponseEntity<SongApiDto.InfoResponse> updateSong(@PathVariable Long id,
-                                                        @RequestBody SongApiDto.UpdateRequest request) {
-        SongDto.Update updateSongDto = mapper.toDomain(request);
-        SongDto.Info songDto = facade.updateSongById(id, updateSongDto);
-        return ResponseEntity.ok(mapper.toResponse(songDto));
+    ResponseEntity<SongApiDto.InfoResponse> updateSong(@PathVariable Long id,
+                                                       @RequestBody SongApiDto.UpdateRequest request) {
+        SongDto.Update updateSongDto = mapper.toDomainUpdate(request);
+        SongDto.Info songDto = facade.updateSong(id, updateSongDto);
+        return ResponseEntity.ok(mapper.toInfoResponse(songDto));
     }
 
+    @Operation(summary = "Delete song", description = "Removes a song from the database by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Song deleted successfully (No Content)."),
+            @ApiResponse(responseCode = "404", description = "Song not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
+    })
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteSong(@PathVariable Long id) {
+        facade.deactivateSong(id);
+        return ResponseEntity.noContent().build();
+    }
 }

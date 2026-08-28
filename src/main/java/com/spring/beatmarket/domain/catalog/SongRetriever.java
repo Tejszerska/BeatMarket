@@ -69,26 +69,20 @@ class SongRetriever {
         });
     }
 
-    SongDto.Details getSongDetailsById(Long id) {
-        Song song = findSongByIdEagerly(id);
+    SongDto.Details getDetails(Long id) {
+        Song song = getEagerly(id);
         List<SongPriceDto> pricing = licensingFacade.getPricingForSingleSong(id);
         return songMapper.toDetailsDto(song, pricing);
     }
 
-    Song findSongByIdEagerly(Long id) {
+    Song getEagerly(Long id) {
         return songRepository.findSongByIdEagerly(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Song", id));
     }
 
-    Song findSongByIdLazily(Long id) {
+    Song getLazily(Long id) {
         return songRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Song", id));
-    }
-
-    void existsByIdAndActive(Long id) {
-        if (!songRepository.existsByIdAndActiveTrue(id)) {
-            throw new ResourceNotFoundException("Song", id);
-        }
     }
 
     void validateGenreHasNoActiveSongs(final Long genreId) {

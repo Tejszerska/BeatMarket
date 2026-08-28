@@ -19,19 +19,11 @@ class AlbumAdder {
 
     LegacyAlbumDto addAlbum(final Long songId, final String title, final LocalDate releaseDate) {
         if(title == null || title.isBlank()) throw new TitleIsBlankException("Album needs a specified title!");
-        Song songById = songRetriever.findSongByIdEagerly(songId);
+        Song songById = songRetriever.getEagerly(songId);
         Album album = new Album();
         album.changeTitle(title);
         album.addSong(songById);
         album.changeReleaseDate(releaseDate);
-        return albumMapper.mapFromEntityToAlbumDto(albumRepository.save(album));
-    }
-
-    LegacyAlbumDto addDefaultAlbum (final Long songId){
-        Song songById = songRetriever.findSongByIdEagerly(songId);
-        Album album = new Album();
-        album.assignDefaultTitle();
-        album.addSong(songById);
         return albumMapper.mapFromEntityToAlbumDto(albumRepository.save(album));
     }
 }

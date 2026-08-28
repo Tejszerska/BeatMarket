@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
 import com.spring.beatmarket.domain.licensing.dto.SongPriceDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -42,6 +41,4 @@ interface SongMapper {
         }
         return new SongDto.Reference(song.getId(), song.getTitle());
     }
-
-    LegacySongDto toDto(Song song);
 }

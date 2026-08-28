@@ -8,7 +8,7 @@
 //import com.spring.beatmarket.domain.catalog.dto.LegacyGenreDto;
 //import com.spring.beatmarket.domain.catalog.dto.SaveGenreDto;
 //import com.spring.beatmarket.domain.catalog.dto.SongCreatedDto;
-//import com.spring.beatmarket.domain.catalog.dto.song.LegacySongDto;
+//import com.spring.beatmarket.domain.catalog.dto.LegacySongDto;
 //import com.spring.beatmarket.domain.catalog.dto.song.CreateSongDto;
 //import com.spring.beatmarket.domain.catalog.exception.AlbumNotFoundException;
 //import com.spring.beatmarket.domain.catalog.exception.ArtistNotFoundException;

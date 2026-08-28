@@ -11,7 +11,7 @@ class GenreDeleter {
     private final GenreRetriever genreRetriever;
     private final SongRetriever songRetriever;
 
-    void deleteById(Long id) {
+    void deactivate(Long id) {
         log.info("soft deleting genre by id: " + id);
         songRetriever.validateGenreHasNoActiveSongs(id);
         Genre genreById = genreRetriever.getActive(id);

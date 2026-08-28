@@ -20,8 +20,8 @@ class ArtistUpdater {
     private final AlbumRetriever albumRetriever;
     private final RoleValidator roleValidator;
 
-    ArtistDto.Info updateArtist(final Long artistId, final ArtistDto.Update updateFromRequest) {
-        Artist artistFromDB = artistRetriever.findByIdEagerly(artistId);
+    ArtistDto.Info update(final Long artistId, final ArtistDto.Update updateFromRequest) {
+        Artist artistFromDB = artistRetriever.findEagerly(artistId);
 
         if (updateFromRequest.name() != null) {
             updateFromRequest.name().ifPresentOrElse(

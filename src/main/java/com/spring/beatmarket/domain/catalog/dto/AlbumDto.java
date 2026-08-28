@@ -28,6 +28,7 @@ public interface AlbumDto {
     ) {}
 
     record Reference(Long id, String title) {}
+    record Info(Long id, String title) {}
 
     record Basic(Long id, String title, String coverUrl) {}
 }

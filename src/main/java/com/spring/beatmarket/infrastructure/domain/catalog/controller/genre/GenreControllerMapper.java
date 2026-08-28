@@ -9,9 +9,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 interface GenreControllerMapper {
 
-    GenreDto.Create toCreateDto(GenreApiDto.Request request);
+    GenreDto.Create toDomainCreate(GenreApiDto.Request request);
 
-    GenreDto.Update toUpdateDto(GenreApiDto.Request request);
+    GenreDto.Update toDomainUpdate(GenreApiDto.Request request);
 
     GenreApiDto.InfoResponse toInfoResponse(GenreDto.Info dto);
 
@@ -19,11 +19,11 @@ interface GenreControllerMapper {
 
     GenreApiDto.SummaryResponse toSummaryResponse(GenreDto.Summary dto);
 
-    GenreApiDto.TransferResponse toResponse (GenreDto.Transfer dto);
+    GenreApiDto.TransferResponse toTransferResponse(GenreDto.Transfer dto);
 
-    List<GenreApiDto.SummaryResponse> toSummaryResponseList(List<GenreDto.Summary> list);
+    List<GenreApiDto.SummaryResponse> toSummaryListResponse(List<GenreDto.Summary> list);
 
     default GenreApiDto.GetAllResponse toGetAllResponse(Slice<GenreDto.Summary> slice) {
-        return new GenreApiDto.GetAllResponse(this.toSummaryResponseList(slice.getContent()), slice.hasNext());
+        return new GenreApiDto.GetAllResponse(this.toSummaryListResponse(slice.getContent()), slice.hasNext());
     }
 }

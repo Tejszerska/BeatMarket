@@ -15,16 +15,16 @@ public interface ArtistControllerMapper {
 
     ArtistDto.Update toDomainUpdate(ArtistApiDto.UpdateRequest request);
 
-    ArtistApiDto.SummaryResponse toWebSummary(ArtistDto.Summary domain);
+    ArtistApiDto.SummaryResponse toSummaryResponse(ArtistDto.Summary domain);
 
-    ArtistApiDto.InfoResponse toWebInfo(ArtistDto.Info domain);
+    ArtistApiDto.InfoResponse toInfoResponse(ArtistDto.Info domain);
 
-    List<ArtistApiDto.SummaryResponse> toSummaryResponseList(List<ArtistDto.Summary> list);
+    List<ArtistApiDto.SummaryResponse> toSummaryListResponse(List<ArtistDto.Summary> list);
 
     ArtistApiDto.DetailsResponse toDetailsResponse(ArtistDto.Details dto);
 
     default ArtistApiDto.GetAllResponse toGetAllResponse(Slice<ArtistDto.Summary> slice) {
-        return new ArtistApiDto.GetAllResponse(this.toSummaryResponseList(slice.getContent()), slice.hasNext());
+        return new ArtistApiDto.GetAllResponse(this.toSummaryListResponse(slice.getContent()), slice.hasNext());
     }
 
 

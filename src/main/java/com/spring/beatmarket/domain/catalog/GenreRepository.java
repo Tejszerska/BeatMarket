@@ -12,12 +12,6 @@ interface GenreRepository extends Repository<Genre, Long> {
 
     Slice<Genre> findByActiveTrue(Pageable pageable);
 
-    Optional<Genre> findById(Long id);
-
-    Genre getReferenceById(Long id);
-
-    boolean existsById(Long id);
-
     boolean existsByIdAndActiveTrue(Long id);
 
     Optional<Genre> findByIdAndActiveTrue(Long id);

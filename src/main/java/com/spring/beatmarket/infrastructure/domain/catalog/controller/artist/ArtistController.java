@@ -1,6 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 
-import com.spring.beatmarket.domain.catalog.CatalogFacade;
+import com.spring.beatmarket.domain.catalog.ArtistFacade;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
 import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/artists")
 class ArtistController {
 
-    private final CatalogFacade facade;
+    private final ArtistFacade facade;
     private final ArtistControllerMapper mapper;
 
     @Operation(summary = "Get all artists", description = "Retrieves a chunked list of available artists.")
@@ -43,7 +43,7 @@ class ArtistController {
             @ApiResponse(responseCode = "200", description = "List of artists retrieved successfully.")
     })
     @GetMapping
-    ResponseEntity<ArtistApiDto.GetAllResponse> getAllArtists(
+    ResponseEntity<ArtistApiDto.GetAllResponse> searchArtists(
             @RequestParam(required = false) String name,
             @ParameterObject @PageableDefault(size = 20, sort = "editedOn", direction = Sort.Direction.ASC) Pageable pageable) {
         Slice<ArtistDto.Summary> artistsSlice = facade.findAllArtists(name, pageable);
@@ -73,20 +73,7 @@ class ArtistController {
     @PostMapping
     ResponseEntity<ArtistApiDto.InfoResponse> createArtist(@Valid @RequestBody ArtistApiDto.CreateRequest request) {
         ArtistDto.Info createdArtist = facade.addArtist(mapper.toDomainCreate(request));
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toWebInfo(createdArtist));
-    }
-
-    @Operation(summary = "Delete artist", description = "Removes an artist from the database by its ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Artist deleted successfully (No Content)."),
-            @ApiResponse(responseCode = "404", description = "Artist not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
-    })
-    @DeleteMapping("/{artistId}")
-    ResponseEntity<Void> deleteArtist(@PathVariable Long artistId) {
-        facade.deleteArtists(artistId);
-
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toInfoResponse(createdArtist));
     }
 
     @Operation(summary = "Update artist details", description = "Partially updates an existing artist's metadata and its relationships.")
@@ -103,7 +90,19 @@ class ArtistController {
             @Valid @RequestBody ArtistApiDto.UpdateRequest request) {
         ArtistDto.Update domainUpdate = mapper.toDomainUpdate(request);
         ArtistDto.Info updatedArtist = facade.updateArtist(id, domainUpdate);
-        return ResponseEntity.ok(mapper.toWebInfo(updatedArtist));
+        return ResponseEntity.ok(mapper.toInfoResponse(updatedArtist));
     }
 
+    @Operation(summary = "Delete artist", description = "Removes an artist from the database by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Artist deleted successfully (No Content)."),
+            @ApiResponse(responseCode = "404", description = "Artist not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+    })
+    @DeleteMapping("/{artistId}")
+    ResponseEntity<Void> deleteArtist(@PathVariable Long artistId) {
+        facade.deactivateArtist(artistId);
+
+        return ResponseEntity.noContent().build();
+    }
 }
