@@ -4,6 +4,7 @@ package com.spring.beatmarket.domain.catalog;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ class InMemoryArtistRepository  {
         if(artist.getId() == null){
             long index = this.index.getAndIncrement();
             db.put(index, artist);
-            artist.setId(index);
+            ReflectionTestUtils.setField(artist, "id", index);
             return artist;
         } else {
             db.put(artist.getId(), artist);

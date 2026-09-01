@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog.dto;
 
 import com.spring.beatmarket.domain.catalog.SongLanguage;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface SongDto {
+    @Builder
     record Create(String title,
                   LocalDate releaseDate,
                   Integer duration,
@@ -19,6 +21,7 @@ public interface SongDto {
                   Long albumId) {
     }
 
+    @Builder
     record Update(Optional<String> title,
                   Optional<LocalDate> releaseDate,
                   Optional<Integer> duration,

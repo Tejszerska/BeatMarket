@@ -295,44 +295,7 @@
 ////
 ////    //    public LegacySongDto findSongDtoById(Long id)
 ////
-////    @Test
-////    @DisplayName("Should find song 'Test' by id 0 ")
-////    void should_find_song_by_id() {
-////        // given
-////        LocalDate instant = LocalDate.now();
-////        CreateSongDto songRequestDto = CreateSongDto.builder()
-////                .name("Test")
-////                .duration(100L)
-////                .releaseDate(instant)
-////                .language(SongLanguage.EN)
-////                .build();
-////
-////        LegacySongDto songDtoGiven = beatmarketCrudFacade.addSong(songRequestDto);
-////
-////        // when
-////        LegacySongDto songDtoWhen = beatmarketCrudFacade.findSongDtoById(songDtoGiven.id());
-////
-////        // then
-////        assertThat(songDtoWhen.id()).isEqualTo(songDtoGiven.id());
-////        assertThat(songDtoWhen.id()).isEqualTo(0);
-////        assertThat(songDtoWhen.title()).isEqualTo("Test");
-////        assertThat(songDtoWhen)
-////                .usingRecursiveComparison()
-////                .ignoringFields("id")
-////                .isEqualTo(songDtoGiven);
-////    }
-////
-////    @Test
-////    @DisplayName("Should throw SongNotFoundException when it is not found")
-////    void should_throw_exception_when_song_not_found() {
-////        // given
-////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged())).isEmpty();
-////
-////        // when & then
-////        assertThatThrownBy(() -> beatmarketCrudFacade.findSongDtoById(10L))
-////                .isInstanceOf(SongNotFoundException.class)
-////                .hasMessage("Song with id 10 not found");
-////    }
+
 ////
 ////    //    public Slice<LegacyAlbumDto> findAllAlbums(Pageable pageable)
 ////    @Test
@@ -595,28 +558,7 @@
 //                .containsExactly(albumDto.id());
 //    }
 ////        @TODO Fix after implementing filtering for all songs
-////    //    public LegacySongDto addSong(final CreateSongDto dto)
-////
-////    @Test
-////    @DisplayName("Should add Song")
-////    void should_add_song() {
-////        // given
-////        CreateSongDto requestDto = CreateSongDto.builder()
-////                .name("test-song")
-////                .releaseDate(LocalDate.now())
-////                .language(SongLanguage.EN)
-////                .duration(100L)
-////                .build();
-////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged())).isEmpty();
-////
-////        // when
-////        LegacySongDto songDto = beatmarketCrudFacade.addSong(requestDto);
-////
-////        // then
-////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged()).getContent()).hasSize(1);
-////        assertThat(songDto.id()).isNotNull();
-////        assertThat(songDto.title()).isEqualTo(requestDto.name());
-////    }
+
 //
 //    //    public LegacyArtistDto addArtist(ArtistRequestDto dto)
 //
@@ -683,35 +625,7 @@
 //
 //    //    public void deleteSongById(Long id) {
 ////   @TODO Fix after implementing filtering for all songs
-////    @Test
-////    @DisplayName("Should delete song by id when song exists")
-////    public void should_delete_song_by_id_when_song_exists() {
-////        // given
-////        LegacySongDto songDto = createSong("song to delete");
-////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged()).getContent()).hasSize(1);
-////
-////        // when
-////        beatmarketCrudFacade.deleteSongById(songDto.id());
-////
-////        // then
-////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged()).getContent()).isEmpty();
-////        assertThatThrownBy(() -> beatmarketCrudFacade.findSongDtoById(songDto.id()))
-////                .isInstanceOf(SongNotFoundException.class)
-////                .hasMessage("Song with id " + songDto.id() + " not found");
-////    }
-////
-////    @Test
-////    @DisplayName("Should throw SongNotFoundException when trying to delete non-existing song")
-////    public void should_throw_exception_when_deleting_non_existing_song() {
-////        // given
-////        Long nonExistingId = 999L;
-////        assertThat(beatmarketCrudFacade.findAllSongs(Pageable.unpaged()).getContent()).isEmpty();
-////
-////        // when & then
-////        assertThatThrownBy(() -> beatmarketCrudFacade.deleteSongById(nonExistingId))
-////                .isInstanceOf(SongNotFoundException.class)
-////                .hasMessage("Song with id 999 not found");
-////    }
+
 //
 //
 //    //    public void deleteArtistByIdWithAlbumsAndSongs(Long artistId) {
@@ -836,21 +750,7 @@
 //
 ////    public LegacySongDto updateSongPartiallyById(Long id, LegacySongDto songFromRequest) {
 //
-////    @Test
-////    @DisplayName("Should update just Song's title")
-////    public void should_update_song_partially_just_the_title() {
-////        //given
-////        LegacySongDto original = createSong("old-title");
-////        LegacySongDto newSongTitle = LegacySongDto.builder().title("new-title").build();
-////        //when
-////        LegacySongDto updated = beatmarketCrudFacade.updateSongPartiallyById(original.id(), newSongTitle);
-////        //then
-////        assertThat(updated.id()).isEqualTo(original.id());
-////        assertThat(updated.title()).isEqualTo("new-title");
-////        LegacySongDto songFromDb = beatmarketCrudFacade.findSongDtoById(original.id());
-////        assertThat(songFromDb.title()).isEqualTo("new-title");
-////        assertThat(songFromDb.genre()).isEqualTo(original.genre());
-////    }
+
 //
 ////    public int deleteGenreById(final Long genreId) {
 //

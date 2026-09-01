@@ -34,7 +34,8 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
     List<Song> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
 
     @Modifying
-    @Query("UPDATE Song s SET s.genre.id = :newGenreId, s.version = s.version + 1, s.editedOn = :now WHERE s.genre.id = :oldGenreId AND s.active = true")    Integer bulkUpdateGenre(@Param("oldGenreId") Long oldGenreId,
+    @Query("UPDATE Song s SET s.genre.id = :newGenreId, s.version = s.version + 1, s.editedOn = :now WHERE s.genre.id = :oldGenreId AND s.active = true")
+    Integer bulkUpdateGenre(@Param("oldGenreId") Long oldGenreId,
                             @Param("newGenreId") Long newGenreId,
                             @Param("now") Instant now);
 

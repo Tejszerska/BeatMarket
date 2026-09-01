@@ -189,6 +189,7 @@ class Song extends BaseEntity {
     }
 
     void removeArtist(Artist artist) {
+        // @TODO nie trzeba sprawdzac czy main?
         if (artist != null && this.artists.contains(artist)) {
             this.artists.remove(artist);
 
@@ -198,12 +199,6 @@ class Song extends BaseEntity {
         }
     }
 
-    void changeArtistList(List<Artist> newArtists) {
-        this.artists.clear();
-        if (newArtists != null) {
-            this.artists.addAll(newArtists);
-        }
-    }
 
     void clearArtists() {
         this.artists.clear();
@@ -215,9 +210,5 @@ class Song extends BaseEntity {
 
     void changeFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
-    }
-
-    void assignDefaultTitle() {
-        this.title = "Default song:" + this.uuid.toString();
     }
 }

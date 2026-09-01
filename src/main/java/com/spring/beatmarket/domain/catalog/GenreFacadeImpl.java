@@ -20,15 +20,19 @@ class GenreFacadeImpl implements GenreFacade {
     public Slice<GenreDto.Summary> findAllGenres(Pageable pageable) {
         return genreRetriever.findAll(pageable);
     }
+
     public GenreDto.Details getGenreDetails(final Long genreId) {
         return genreRetriever.getDetails(genreId);
     }
+
     public GenreDto.Info addGenre(GenreDto.Create dto) {
         return genreAdder.add(dto);
     }
+
     public GenreDto.Info updateGenre(final Long id, final GenreDto.Update dto) {
         return genreUpdater.update(id, dto);
     }
+
     public GenreDto.Transfer transferGenre(final Long oldId, final Long newId) {
         if (oldId.equals(newId)) {
             throw new IllegalArgumentException("Source and target genre IDs cannot be the same.");
@@ -40,6 +44,7 @@ class GenreFacadeImpl implements GenreFacade {
 
         return new GenreDto.Transfer(updatedSongsCount, oldId, newId);
     }
+
     public void deactivateGenre(final Long genreId) {
         genreDeleter.deactivate(genreId);
     }

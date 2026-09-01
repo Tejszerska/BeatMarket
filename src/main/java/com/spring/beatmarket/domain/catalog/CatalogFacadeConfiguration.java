@@ -14,9 +14,9 @@
 //                                                     final AlbumMapper albumMapper,
 //                                                     final ArtistWithAlbumMapper artistWithAlbumMapper
 //                                                      ){
-//        LicensingFacade licensingFacade = null; //@TODO fix test configuration
+//
 //        GenreRetriever genreRetriever = new GenreRetriever(genreRepository, genreMapper);
-//        SongRetriever songRetriever = new SongRetriever(songRepository, songMapper, licensingFacade);
+//        SongRetriever songRetriever = new SongRetriever(songRepository, songMapper);
 //        SongUpdater songUpdater = new SongUpdater(songRetriever, songMapper);
 //        AlbumAdder albumAdder = new AlbumAdder(songRetriever, albumRepository, albumMapper);
 //        ArtistRetriever artistRetriever = new ArtistRetriever(artistRepository, artistMapper);

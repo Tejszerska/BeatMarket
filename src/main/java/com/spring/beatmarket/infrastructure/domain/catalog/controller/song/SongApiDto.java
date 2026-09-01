@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface SongApiDto {
+
     @Schema(name = "CreateSongRequest")
     record CreateRequest(
             @Schema(description = "Title of the song", example = "In the End")

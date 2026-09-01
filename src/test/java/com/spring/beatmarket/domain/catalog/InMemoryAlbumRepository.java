@@ -5,13 +5,16 @@ import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class InMemoryAlbumRepository implements AlbumRepository {
@@ -23,7 +26,7 @@ class InMemoryAlbumRepository implements AlbumRepository {
         if (album.getId() == null) {
             long index = this.index.getAndIncrement();
             db.put(index, album);
-            album.setId(index);
+            ReflectionTestUtils.setField(album, "id", index);
             return album;
 
         } else {
@@ -40,10 +43,8 @@ class InMemoryAlbumRepository implements AlbumRepository {
 
     @Override
     public Optional<AlbumInfo> findAlbumByIdReturnAlbumInfo(final Long id) {
-        Album album = db.get(id);
-        if (album == null) return Optional.empty();
-        AlbumInfoTestImpl albumInfoTest = new AlbumInfoTestImpl(db.get(id));
-        return Optional.of(albumInfoTest);
+
+        return Optional.empty();
     }
 
     @Override
@@ -79,5 +80,35 @@ class InMemoryAlbumRepository implements AlbumRepository {
         List<Album> currentSlice = albumList.subList(start, end);
         boolean hasNext = (start + pageSize) < albumList.size();
         return new SliceImpl<>(currentSlice, pageable, hasNext);
+    }
+
+    @Override
+    public Album getReferenceById(final Long id) {
+        return null;
+    }
+
+    @Override
+    public boolean existsById(final Long id) {
+        return false;
+    }
+
+    @Override
+    public Optional<Album> findByIdAndActiveTrue(final Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Album> findActiveWithArtistsByIds(final Collection<Long> ids) {
+        return List.of();
+    }
+
+    @Override
+    public List<Album> findByIdInAndActiveTrue(final Collection<Long> ids) {
+        return List.of();
+    }
+
+    @Override
+    public void deactivateAllByIds(final Set<Long> albumIds, final Instant now) {
+
     }
 }
