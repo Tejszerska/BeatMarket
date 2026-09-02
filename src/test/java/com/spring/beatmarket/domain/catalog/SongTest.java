@@ -593,7 +593,7 @@ class SongTest {
     }
 
     @Test
-    @DisplayName("Should clear all artists from song")
+    @DisplayName("Should clear all artists from song even when immutable list is used")
     void should_clear_artists() {
         //given
         Song song = createCompleteSong("Title");
