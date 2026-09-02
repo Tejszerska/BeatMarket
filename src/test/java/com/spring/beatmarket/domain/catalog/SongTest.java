@@ -361,7 +361,7 @@ class SongTest {
         //when & then
         assertThatThrownBy(() -> song.assignArtist(artistFeat, isMain))
                 .isInstanceOf(DataConflictException.class)
-                .hasMessage("Cannot add featured artist to Song by id='"+ song.getId() +"' without a main artist");
+                .hasMessage("Cannot add featured artist to Song by id='" + song.getId() + "' without a main artist");
         assertThat(song.getArtists()).hasSize(0);
     }
 
@@ -400,20 +400,211 @@ class SongTest {
         //when & then
         assertThatThrownBy(() -> song.assignArtist(artistFeat, isMain))
                 .isInstanceOf(DataConflictException.class)
-                .hasMessage("Song by id='"+ song.getId() +"' already has a main artist");
+                .hasMessage("Song by id='" + song.getId() + "' already has a main artist");
         assertThat(song.getArtists()).hasSize(1);
     }
 
     @Test
-    @DisplayName("Should change song's title")
-    void xxxxxxxxxx() {
+    @DisplayName("Should safely return without modifying state when assigning null artist")
+    void should_do_nothing_when_assigning_null_artist() {
         //given
+        Song song = createSongJustRequired();
+        Artist mainArtist = new Artist("Main");
+        song.assignArtist(mainArtist, true);
 
         //when
+        song.assignArtist(null, false);
 
         //then
+        assertThat(song.getArtists()).hasSize(1);
+        assertThat(song.getArtists().get(0)).isEqualTo(mainArtist);
     }
 
+    @Test
+    @DisplayName("Should prevent duplicates when assigning the same featured artist twice")
+    void should_prevent_duplicates_when_reassigning_artist() {
+        //given
+        Song song = createSongJustRequired();
+
+        Artist mainArtist = new Artist("Main");
+        song.assignArtist(mainArtist, true);
+
+        Artist featArtist = new Artist("Featured");
+        song.assignArtist(featArtist, false);
+
+        //when
+        song.assignArtist(featArtist, false);
+
+        //then
+        assertThat(song.getArtists()).hasSize(2);
+        assertThat(song.getArtists().get(1)).isEqualTo(featArtist);
+        assertThat(featArtist.getSongs()).containsOnlyOnce(song);
+    }
+
+    @Test
+    @DisplayName("Should remove artist from song bidirectionally when only main artists is assigned")
+    void should_remove_artist_when_only_main() {
+        //given
+        Song song = createSongJustRequired();
+
+        Artist mainArtist = new Artist("Main");
+        song.assignArtist(mainArtist, true);
+        assertThat(song.getArtists()).hasSize(1);
+
+        //when
+        song.removeArtist(mainArtist);
+
+        //then
+        assertThat(song.getArtists()).hasSize(0);
+        assertThat(mainArtist.getSongs()).doesNotContain(song);
+    }
+
+    @Test
+    @DisplayName("Should remove artist from song bidirectionally when artists is featured")
+    void should_remove_feat_artist_when_more_than_one() {
+        //given
+        Song song = createSongJustRequired();
+
+        Artist mainArtist = new Artist("Main");
+        song.assignArtist(mainArtist, true);
+
+        Artist featArtist = new Artist("Featured");
+        song.assignArtist(featArtist, false);
+        assertThat(song.getArtists()).hasSize(2);
+
+        //when
+        song.removeArtist(featArtist);
+
+        //then
+        assertThat(song.getArtists()).hasSize(1);
+        assertThat(featArtist.getSongs()).doesNotContain(song);
+    }
+
+    @Test
+    @DisplayName("Should throw DataConflictException when removing main artist with featured artists present")
+    void should_throw_exception_when_removing_main_artist_and_feat_present() {
+        //given
+        Song song = createSongJustRequired();
+        ReflectionTestUtils.setField(song, "id", 1L);
+
+        Artist mainArtist = new Artist("Main");
+        song.assignArtist(mainArtist, true);
+
+        Artist featArtist = new Artist("Featured");
+        song.assignArtist(featArtist, false);
+        assertThat(song.getArtists()).hasSize(2);
+
+        //when & then
+        assertThatThrownBy(() -> song.removeArtist(mainArtist))
+                .isInstanceOf(DataConflictException.class)
+                        .hasMessage("Cannot remove main artist when song id='1' contains featured artists.");
+        assertThat(song.getArtists()).hasSize(2);
+        assertThat(mainArtist.getSongs()).contains(song);
+    }
+
+    @Test
+    @DisplayName("Should safely return without modifying state when removing null artist")
+    void should_do_nothing_when_removing_null_artist() {
+        //given
+        Song song = createSongJustRequired();
+        Artist mainArtist = new Artist("Main");
+        song.assignArtist(mainArtist, true);
+
+        //when
+        song.removeArtist(null);
+
+        //then
+        assertThat(song.getArtists()).hasSize(1);
+        assertThat(song.getArtists().get(0)).isEqualTo(mainArtist);
+    }
+
+    @Test
+    @DisplayName("Should safely return without modifying state when removing unassigned artist")
+    void should_do_nothing_when_removing_unassigned_artist() {
+        //given
+        Song song = createSongJustRequired();
+        Artist mainArtist = new Artist("Main");
+        song.assignArtist(mainArtist, true);
+
+        Artist unassignedArtist = new Artist("Unassigned");
+
+        //when
+        song.removeArtist(unassignedArtist);
+
+        //then
+        assertThat(song.getArtists()).hasSize(1);
+        assertThat(song.getArtists().get(0)).isEqualTo(mainArtist);
+    }
+
+    @Test
+    @DisplayName("Should assign album to song")
+    void should_assign_album() {
+        //given
+        Song song = createSongJustRequired();
+        Album album = new Album("New Album", LocalDate.of(2026, 1, 1));
+
+        //when
+        song.assignToAlbum(album);
+
+        //then
+        assertThat(song.getAlbum()).isEqualTo(album);
+    }
+
+    @Test
+    @DisplayName("Should detach album from song")
+    void should_detach_album() {
+        //given
+        Song song = createCompleteSong("Title");
+        assertThat(song.getAlbum()).isNotNull();
+
+        //when
+        song.detachFromAlbum();
+
+        //then
+        assertThat(song.getAlbum()).isNull();
+    }
+
+    @Test
+    @DisplayName("Should assign genre to song")
+    void should_assign_genre() {
+        //given
+        Song song = createSongJustRequired();
+        Genre genre = new Genre("New Genre");
+
+        //when
+        song.assignToGenre(genre);
+
+        //then
+        assertThat(song.getGenre()).isEqualTo(genre);
+    }
+
+    @Test
+    @DisplayName("Should detach genre from song")
+    void should_detach_genre() {
+        //given
+        Song song = createCompleteSong("Title");
+        assertThat(song.getGenre()).isNotNull();
+
+        //when
+        song.detachFromGenre();
+
+        //then
+        assertThat(song.getGenre()).isNull();
+    }
+
+    @Test
+    @DisplayName("Should clear all artists from song")
+    void should_clear_artists() {
+        //given
+        Song song = createCompleteSong("Title");
+        assertThat(song.getArtists()).isNotEmpty();
+
+        //when
+        song.clearArtists();
+
+        //then
+        assertThat(song.getArtists()).isEmpty();
+    }
 
     private Song createCompleteSong(String title) {
         LocalDate date = LocalDate.of(2026, 1, 1);

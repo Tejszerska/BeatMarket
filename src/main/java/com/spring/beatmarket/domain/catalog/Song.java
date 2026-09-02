@@ -115,7 +115,7 @@ class Song extends BaseEntity {
         this.language = language;
         this.genre = genre;
         this.album = album;
-        this.artists = artists != null ? artists : new ArrayList<>();
+        this.artists = artists != null ? new ArrayList<>(artists) : new ArrayList<>();
         this.previewUrl = previewUrl;
         this.fileUrl = fileUrl;
     }
@@ -189,8 +189,11 @@ class Song extends BaseEntity {
     }
 
     void removeArtist(Artist artist) {
-        // @TODO nie trzeba sprawdzac czy main?
         if (artist != null && this.artists.contains(artist)) {
+
+            if (this.artists.size() > 1 && this.artists.get(0).equals(artist)) {
+                throw new DataConflictException(String.format("Cannot remove main artist when song id='%s' contains featured artists.", this.getId()));
+            }
             this.artists.remove(artist);
 
             if (artist.getSongs().contains(this)) {

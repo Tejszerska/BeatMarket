@@ -79,7 +79,7 @@ class Album extends BaseEntity {
         this.title = title;
         this.releaseDate = releaseDate;
         this.coverUrl = coverUrl;
-        this.artists = artists != null ? artists : new ArrayList<>();
+        this.artists = artists != null ? new ArrayList<>(artists) : new ArrayList<>();
         this.songs = songs != null ? songs : new HashSet<>();
     }
 
@@ -184,21 +184,4 @@ class Album extends BaseEntity {
         songsToRemove.forEach(this::removeSong);
     }
 
-    //     --------- legacy versions -----------
-//    void addSongToAlbum(final Song song) {
-//        songs.add(song);
-//    }
-//
-//    void removeArtist(Artist artist){
-//        artists.remove(artist);
-//        artist.removeAlbum(this);
-//    }
-//
-//    void addArtist(final Artist artist) {
-//        artists.add(artist);
-//    }
-//
-    void assignDefaultTitle() {
-        this.title = "Default album:" + this.uuid.toString();
-    }
 }

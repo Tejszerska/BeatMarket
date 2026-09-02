@@ -57,8 +57,8 @@ class Artist extends BaseEntity {
 
         this.name = name;
         this.imageUrl = imageUrl;
-        this.songs = songs != null ? songs : new HashSet<>();
-        this.albums = albums != null ? albums : new ArrayList<>();
+        this.songs = songs != null ? new HashSet<>(songs) : new HashSet<>();
+        this.albums = albums != null ? new ArrayList<>(albums) : new ArrayList<>();
     }
 
     void changeName(String newName) {
