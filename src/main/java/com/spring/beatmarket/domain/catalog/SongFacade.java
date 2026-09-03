@@ -15,6 +15,4 @@ public interface SongFacade {
     SongDto.Info updateSong(Long id, SongDto.Update songFromRequest);
 
     void deactivateSong(Long id);
-
-    Integer bulkUpdateSongsByGenreId(Long oldId, Long newId);
 }

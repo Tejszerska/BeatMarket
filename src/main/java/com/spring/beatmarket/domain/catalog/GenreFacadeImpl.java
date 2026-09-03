@@ -15,7 +15,7 @@ class GenreFacadeImpl implements GenreFacade {
     private final GenreRetriever genreRetriever;
     private final GenreDeleter genreDeleter;
     private final GenreUpdater genreUpdater;
-    private final SongFacade songFacade;
+    private final SongUpdater songUpdater;
 
     public Slice<GenreDto.Summary> findAllGenres(Pageable pageable) {
         return genreRetriever.findAll(pageable);
@@ -40,7 +40,7 @@ class GenreFacadeImpl implements GenreFacade {
         genreRetriever.validateExistsAndActive(oldId);
         genreRetriever.validateExistsAndActive(newId);
 
-        Integer updatedSongsCount = songFacade.bulkUpdateSongsByGenreId(oldId, newId);
+        Integer updatedSongsCount = songUpdater.bulkUpdateSongsByGenreId(oldId, newId);
 
         return new GenreDto.Transfer(updatedSongsCount, oldId, newId);
     }

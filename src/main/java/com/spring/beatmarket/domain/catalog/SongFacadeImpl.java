@@ -33,8 +33,4 @@ class SongFacadeImpl implements SongFacade {
     public void deactivateSong(Long id) {
         songDeleter.deactivate(id);
     }
-
-    public Integer bulkUpdateSongsByGenreId(final Long oldId, final Long newId) {
-       return songUpdater.bulkUpdateSongsByGenreId(oldId, newId);
-    }
 }
