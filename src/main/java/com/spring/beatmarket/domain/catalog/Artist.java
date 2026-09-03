@@ -107,13 +107,3 @@ class Artist extends BaseEntity {
     }
 
 }
-
-//    --------- legacy versions -----------
-//    void removeAlbum(Album album){
-//        albums.remove(album);
-//    }
-//
-//    void addAlbum(final Album album) {
-//        albums.add(album);
-//        album.addArtist(this);
-//    }
