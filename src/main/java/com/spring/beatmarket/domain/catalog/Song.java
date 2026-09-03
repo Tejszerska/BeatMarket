@@ -85,12 +85,6 @@ class Song extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String fileUrl;
 
-    Song(final String title, final LocalDate releaseDate, final Integer duration, final SongLanguage language,
-         final Genre genre, final Album album, final List<Artist> artists){
-        this(title, releaseDate, duration, language,
-                genre, album, artists, null, null);
-    }
-
     /**
      * Enforces strict business invariants for Song creation.
      * Blocks invalid states (e.g., negative duration, future release dates)

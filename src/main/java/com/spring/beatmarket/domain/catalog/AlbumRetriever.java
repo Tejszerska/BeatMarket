@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
-import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +25,23 @@ class AlbumRetriever {
                 .orElseThrow(() -> new ResourceNotFoundException("Album", id));
     }
 
-    Slice<LegacyAlbumDto> findAllAlbums(Pageable pageable) {
-        return albumRepository.findAllAlbums(pageable)
-                .map(albumMapper::mapFromEntityToAlbumDto);
+    Slice<AlbumDto.Summary> findAllAlbums(final Long artistId, final String title, final Pageable pageable) {
+        boolean hasArtist = artistId != null;
+        boolean hasTitle = title != null && !title.isBlank();
+
+        Slice<Album> all;
+
+        if (hasArtist && hasTitle) {
+            all = albumRepository.findByActiveTrueAndArtists_IdAndTitleContainingIgnoreCase(artistId, title, pageable);
+        } else if (hasArtist) {
+            all = albumRepository.findByActiveTrueAndArtists_Id(artistId, pageable);
+        } else if (hasTitle) {
+            all = albumRepository.findByActiveTrueAndTitleContainingIgnoreCase(title, pageable);
+        } else {
+            all = albumRepository.findByActiveTrue(pageable);
+        }
+
+        return all.map(albumMapper::toSummaryDto);
     }
 
 

@@ -38,9 +38,8 @@ public interface AlbumApiDto {
     record SummaryResponse(
             Long id,
             String title,
-            LocalDate releaseDate,
             String coverUrl,
-            ArtistApiDto.Reference artist
+            List<ArtistApiDto.Reference> artists
     ) {}
 
     @Schema(name = "GetAllAlbumsResponse")
@@ -49,13 +48,13 @@ public interface AlbumApiDto {
             boolean hasNext
     ) {}
 
-    @Schema(name = "AlbumReference") // Najlżejszy (tylko ID i tytuł)
+    @Schema(name = "AlbumReference")
     record Reference(
             Long id,
             String title
     ) {}
 
-    @Schema(name = "AlbumBasic") // Do zagnieżdżenia w szczegółach Artysty
+    @Schema(name = "AlbumBasic")
     record Basic(
             Long id,
             String title,

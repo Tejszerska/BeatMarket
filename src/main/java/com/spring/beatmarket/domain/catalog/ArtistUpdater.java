@@ -27,7 +27,7 @@ class ArtistUpdater {
             updateFromRequest.name().ifPresentOrElse(
                     artistFromDB::changeName,
                     () -> {
-                        throw new MissingRequiredFieldException("title");
+                        throw new MissingRequiredFieldException("name");
                     }
             );
         }

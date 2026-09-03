@@ -423,7 +423,7 @@ Retrieves a chunked list of available albums.
 **Parameters:**
 
 - `page` (integer, query parameter) _Page index; default value: 0_
-- `size` (integer, query parameter) _The size of the page to be returned; default value: 10_
+- `size` (integer, query parameter) _The size of the page to be returned; default value: 20_
 - `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
 - `title` (string, query parameter, optional) _Filter by partial or exact album title._
 - `artistId` (integer, query parameter, optional) _Filter albums by a specific artist._
@@ -436,7 +436,6 @@ Retrieves a chunked list of available albums.
     {
       "id": 7,
       "title": "Something",
-      "releaseDate": "2000-10-24",
       "coverUrl": "https://s3.aws.com/your-bucket/images/something-cover.jpg",
       "artist": {
         "id": 2,
@@ -446,7 +445,6 @@ Retrieves a chunked list of available albums.
     {
       "id": 12,
       "title": "Circus",
-      "releaseDate": "2014-11-17",
       "coverUrl": "https://s3.aws.com/your-bucket/images/interstellar-cover.jpg",
       "artist": {
         "id": 5,

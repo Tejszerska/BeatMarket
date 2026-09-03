@@ -6,7 +6,7 @@ import org.springframework.data.domain.Slice;
 
 public interface AlbumFacade {
 
-    Slice<AlbumDto.Summary> findAllAlbums(String title, Pageable pageable);
+    Slice<AlbumDto.Summary> findAllAlbums(final Long artistId, String title, Pageable pageable);
 
     AlbumDto.Details getAlbumDetails(final Long albumId);
 

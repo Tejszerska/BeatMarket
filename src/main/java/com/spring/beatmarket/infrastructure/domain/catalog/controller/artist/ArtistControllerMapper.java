@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring",
         uses = JsonNullableMapper .class)
 public interface ArtistControllerMapper {
+    ArtistApiDto.Reference toReferenceInResponse (ArtistApiDto.Reference artist);
 
     ArtistDto.Create toDomainCreate(ArtistApiDto.CreateRequest request);
 

@@ -1,4 +1,5 @@
 package com.spring.beatmarket.domain.catalog.dto;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,7 +25,8 @@ public interface AlbumDto {
     record Summary(
             Long id,
             String title,
-            String coverUrl
+            String coverUrl,
+            List<ArtistDto.Reference> artists
     ) {}
 
     record Reference(Long id, String title) {}

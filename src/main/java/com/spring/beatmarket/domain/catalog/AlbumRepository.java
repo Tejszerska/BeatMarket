@@ -67,4 +67,12 @@ interface AlbumRepository extends Repository<Album, Long> {
     @Query("UPDATE Album a SET a.active = false, a.version = a.version + 1, a.editedOn = :now WHERE a.id IN :albumIds")
     void deactivateAllByIds(@Param("albumIds")Set<Long> albumIds,
                             @Param("now") Instant now);
+
+    Slice<Album> findByActiveTrue(Pageable pageable);
+
+    Slice<Album> findByActiveTrueAndTitleContainingIgnoreCase( final String title, final Pageable pageable);
+
+    Slice<Album> findByActiveTrueAndArtists_Id(Long artistId, Pageable pageable);
+
+    Slice<Album> findByActiveTrueAndArtists_IdAndTitleContainingIgnoreCase(Long artistId, String title, Pageable pageable);
 }
