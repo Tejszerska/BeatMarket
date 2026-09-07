@@ -3,7 +3,6 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 import com.spring.beatmarket.domain.catalog.AlbumFacade;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.album.dto.response.CreateAlbumResponse;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.album.dto.response.GetAlbumDetailsResponse;
 import com.spring.beatmarket.infrastructure.error.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -50,10 +49,9 @@ class AlbumController {
     }
 
     @GetMapping("/{albumId}")
-    ResponseEntity<GetAlbumDetailsResponse> getAlbumById(@PathVariable Long albumId) {
-//        AlbumInfo albumInfo = facade.findAlbumByIdReturnAlbumInfo(albumId);
-//        return ResponseEntity.ok(albumControllerMapper.mapFromAlbumInfoToGetAlbumDetailsResponse(albumInfo));
-        return null;
+    ResponseEntity<AlbumApiDto.DetailsResponse> getAlbumById(@PathVariable Long albumId) {
+        AlbumDto.Details albumDetails = facade.getAlbumDetails(albumId);
+        return ResponseEntity.ok(mapper.toDetailsResponse(albumDetails));
     }
 
     @Operation(summary = "Create a new album", description = "Creates an album and assigns an initial song to it.")

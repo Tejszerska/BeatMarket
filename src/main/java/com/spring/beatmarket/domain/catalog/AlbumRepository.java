@@ -61,18 +61,24 @@ interface AlbumRepository extends Repository<Album, Long> {
     @Query("SELECT DISTINCT a FROM Album a LEFT JOIN FETCH a.artists WHERE a.id IN :ids AND a.active = true")
     List<Album> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
 
-    List<Album> findByIdInAndActiveTrue (Collection<Long> ids);
+    List<Album> findByIdInAndActiveTrue(Collection<Long> ids);
 
     @Modifying
     @Query("UPDATE Album a SET a.active = false, a.version = a.version + 1, a.editedOn = :now WHERE a.id IN :albumIds")
-    void deactivateAllByIds(@Param("albumIds")Set<Long> albumIds,
+    void deactivateAllByIds(@Param("albumIds") Set<Long> albumIds,
                             @Param("now") Instant now);
 
     Slice<Album> findByActiveTrue(Pageable pageable);
 
-    Slice<Album> findByActiveTrueAndTitleContainingIgnoreCase( final String title, final Pageable pageable);
+    Slice<Album> findByActiveTrueAndTitleContainingIgnoreCase(final String title, final Pageable pageable);
 
     Slice<Album> findByActiveTrueAndArtists_Id(Long artistId, Pageable pageable);
 
     Slice<Album> findByActiveTrueAndArtists_IdAndTitleContainingIgnoreCase(Long artistId, String title, Pageable pageable);
+
+    @Query("SELECT a FROM Album a " +
+            "LEFT JOIN FETCH a.artists " +
+            "LEFT JOIN FETCH a.songs " +
+            "WHERE a.id = :id AND a.active = true")
+    Optional<Album> findAlbumByIdEagerly(@Param("id") Long id);
 }

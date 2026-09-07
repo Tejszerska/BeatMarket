@@ -73,7 +73,7 @@ class SongController {
     @GetMapping("/{id}")
     ResponseEntity<SongApiDto.DetailsResponse> getSongById(@PathVariable Long id) {
         SongDto.Details songDetails = facade.getSongDetails(id);
-        return ResponseEntity.ok(mapper.toGetAllResponse(songDetails));
+        return ResponseEntity.ok(mapper.toDetailsResponse(songDetails));
     }
 
     @Operation(summary = "Create a new song", description = "Adds a new song to the system.")

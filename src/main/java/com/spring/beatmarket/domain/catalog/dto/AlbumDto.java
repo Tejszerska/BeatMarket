@@ -2,6 +2,7 @@ package com.spring.beatmarket.domain.catalog.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface AlbumDto {
 
@@ -19,7 +20,9 @@ public interface AlbumDto {
             Long id,
             String title,
             LocalDate releaseDate,
-            String coverUrl
+            String coverUrl,
+            List<ArtistDto.Reference> artists,
+            Set<SongDto.Reference> songs
     ) {}
 
     record Summary(

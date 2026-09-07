@@ -74,4 +74,14 @@ class AlbumRetriever {
         return albumRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Album", id));
     }
+
+    AlbumDto.Details getDetails(final Long albumId) {
+        Album album = getEagerly(albumId);
+        return albumMapper.toDetailsDto(album);
+    }
+
+    private Album getEagerly(final Long albumId) {
+        return albumRepository.findAlbumByIdEagerly(albumId)
+                .orElseThrow(() -> new ResourceNotFoundException("Album", albumId));
+    }
 }

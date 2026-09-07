@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface AlbumApiDto {
     @Schema(name = "CreateAlbumRequest")
@@ -24,17 +25,17 @@ public interface AlbumApiDto {
             List<Long> artistIds
     ) {}
 
-    @Schema(name = "AlbumDetailsResponse") // Dla GET /albums/{id}
+    @Schema(name = "AlbumDetailsResponse")
     record DetailsResponse(
             Long id,
             String title,
             LocalDate releaseDate,
             String coverUrl,
-            ArtistApiDto.Reference artist,
-            List<SongApiDto.Reference> songs
+            List<ArtistApiDto.Reference> artists,
+            Set<SongApiDto.Reference> songs
     ) {}
 
-    @Schema(name = "AlbumSummaryResponse") // Dla GET /albums
+    @Schema(name = "AlbumSummaryResponse")
     record SummaryResponse(
             Long id,
             String title,

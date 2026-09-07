@@ -17,7 +17,8 @@ class AlbumFacadeImpl implements AlbumFacade {
         return albumRetriever.findAllAlbums(artistId, title, pageable);
     }
     public AlbumDto.Details getAlbumDetails(final Long albumId) {
-        return null;
+
+       return albumRetriever.getDetails(albumId);
     }
 
     public AlbumDto.Info addAlbum(final AlbumDto.Create createDto) {

@@ -11,7 +11,7 @@ import java.util.List;
         uses = JsonNullableMapper.class)
 public interface SongControllerMapper {
 
-    SongApiDto.DetailsResponse toGetAllResponse(SongDto.Details songDetailsDto);
+    SongApiDto.DetailsResponse toDetailsResponse(SongDto.Details songDetailsDto);
 
     SongApiDto.InfoResponse toInfoResponse(SongDto.Info dto);
 

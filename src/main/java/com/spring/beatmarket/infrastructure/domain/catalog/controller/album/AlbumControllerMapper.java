@@ -6,11 +6,15 @@ import org.springframework.data.domain.Slice;
 
 @Mapper(componentModel = "spring")
 public interface AlbumControllerMapper {
-    AlbumApiDto.SummaryResponse toSummaryResponse (AlbumDto.Summary dto);
+    AlbumApiDto.SummaryResponse toSummaryResponse(AlbumDto.Summary dto);
 
-    default AlbumApiDto.GetAllResponse toGetAllResponse(Slice<AlbumDto.Summary> slice){
+    AlbumApiDto.DetailsResponse toDetailsResponse(AlbumDto.Details albumDetails);
+
+    default AlbumApiDto.GetAllResponse toGetAllResponse(Slice<AlbumDto.Summary> slice) {
         return new AlbumApiDto.GetAllResponse(
                 slice.getContent().stream().map(this::toSummaryResponse).toList(),
                 slice.hasNext());
     }
+
+
 }
