@@ -2,8 +2,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
 import com.spring.beatmarket.domain.catalog.AlbumFacade;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.album.dto.response.CreateAlbumResponse;
-import com.spring.beatmarket.infrastructure.error.ErrorResponseDto;
+import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,12 +58,12 @@ class AlbumController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Album created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class)))
     })
     @PostMapping
-    ResponseEntity<CreateAlbumResponse> postAlbum(@RequestBody AlbumApiDto.CreateRequest createAlbumRequest) {
-//        LegacyAlbumDto legacyAlbumDto = facade.addAlbum(albumRequestDto);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(albumControllerMapper.mapFromAlbumDtoToCreateAlbumResponse(legacyAlbumDto));
-        return null;
+    ResponseEntity<AlbumApiDto.InfoResponse> createAlbum(@RequestBody AlbumApiDto.CreateRequest createAlbumRequest) {
+        AlbumDto.Create domainRequest = mapper.toDomainCreate(createAlbumRequest);
+        AlbumDto.Info addedAlbum = facade.addAlbum(domainRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toInfoResponse(addedAlbum));
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -50,7 +51,7 @@ class AlbumRetriever {
                 .orElseThrow(() -> new ResourceNotFoundException("Album", id));
     }
 
-    List<Album> getActiveWithArtist(final List<Long> ids) {
+    List<Album> getActiveWithArtist(final Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }

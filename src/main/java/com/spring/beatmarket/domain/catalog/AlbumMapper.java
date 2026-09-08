@@ -44,4 +44,6 @@ interface AlbumMapper {
                 .map(song -> new SongDto.Reference(song.getId(), song.getTitle()))
                 .collect(Collectors.toSet());
     }
+
+    AlbumDto.Info toInfoDto(Album album);
 }

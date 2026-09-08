@@ -15,8 +15,9 @@ public interface AlbumApiDto {
     record CreateRequest(
             @NotBlank String title,
             @NotNull LocalDate releaseDate,
-            List<Long> songIds,
-            List<Long> artistIds
+            Set<Long> songIds,
+            Long mainArtistId,
+            Set<Long> featuredArtistsIds
     ) {}
 
     @Schema(name = "UpdateAlbumRequest")
@@ -60,5 +61,15 @@ public interface AlbumApiDto {
             Long id,
             String title,
             String coverUrl
+    ) {}
+
+    @Schema(name = "AlbumInfo")
+    record InfoResponse(
+            Long id,
+            String title,
+            LocalDate releaseDate,
+            String coverUrl,
+            List<ArtistApiDto.Reference> artists,
+            Set<SongApiDto.Reference> songs
     ) {}
 }

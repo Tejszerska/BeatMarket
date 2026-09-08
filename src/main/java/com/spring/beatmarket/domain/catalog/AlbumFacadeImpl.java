@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 class AlbumFacadeImpl implements AlbumFacade {
     private final AlbumRetriever albumRetriever;
+    private final AlbumAdder albumAdder;
 
     public Slice<AlbumDto.Summary> findAllAlbums(final Long artistId, final String title, final Pageable pageable) {
         return albumRetriever.findAllAlbums(artistId, title, pageable);
@@ -22,7 +23,7 @@ class AlbumFacadeImpl implements AlbumFacade {
     }
 
     public AlbumDto.Info addAlbum(final AlbumDto.Create createDto) {
-        return null;
+        return albumAdder.add(createDto);
     }
 
     public AlbumDto.Info updateAlbum(final Long albumId, final AlbumDto.Update dto) {

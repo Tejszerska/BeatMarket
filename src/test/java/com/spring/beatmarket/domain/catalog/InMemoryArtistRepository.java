@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ class InMemoryArtistRepository implements ArtistRepository {
     }
 
     @Override
-    public List<Artist> findByIdInAndActiveTrue(final List<Long> ids) {
+    public List<Artist> findByIdInAndActiveTrue(final Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return List.of();
         }

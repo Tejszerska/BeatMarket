@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -107,7 +108,7 @@ class SongUpdater {
 
             List<Long> targetMainList = targetMainId != null ? List.of(targetMainId) : null;
 
-            List<Long> allTargetIds = roleValidator.combineAndValidateIds(
+            Set<Long> allTargetIds = roleValidator.combineAndValidateIds(
                     targetMainList, targetFeatIds, "Song", "Artist"
             );
 
@@ -118,7 +119,7 @@ class SongUpdater {
             }
 
             if (!allTargetIds.isEmpty()) {
-                List<Artist> newArtists = artistRetriever.getActive(allTargetIds);
+                List<Artist> newArtists = artistRetriever.getActives(allTargetIds);
                 for (Artist artist : newArtists) {
                     boolean isMain = targetMainId != null && targetMainId.equals(artist.getId());
                     songFromDB.assignArtist(artist, isMain);

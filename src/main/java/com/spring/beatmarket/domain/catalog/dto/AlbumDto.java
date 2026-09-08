@@ -8,7 +8,10 @@ public interface AlbumDto {
 
     record Create(
             String title,
-            LocalDate releaseDate
+            LocalDate releaseDate,
+            Set<Long> songIds,
+            Long mainArtistId,
+            Set<Long> featuredArtistsIds
     ) {}
 
     record Update(
@@ -33,7 +36,17 @@ public interface AlbumDto {
     ) {}
 
     record Reference(Long id, String title) {}
-    record Info(Long id, String title) {}
 
     record Basic(Long id, String title, String coverUrl) {}
+
+
+    record Info(
+            Long id,
+            String title,
+            LocalDate releaseDate,
+            String coverUrl,
+            List<ArtistDto.Reference> artists,
+            Set<SongDto.Reference> songs
+    ) {}
+
 }

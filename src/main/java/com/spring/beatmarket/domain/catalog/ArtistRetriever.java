@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ class ArtistRetriever {
     }
 
 
-    List<Artist> getActive(List<Long> ids) {
+    List<Artist> getActives(Set<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
@@ -50,6 +51,11 @@ class ArtistRetriever {
         }
 
         return foundArtists;
+    }
+
+    Artist getActive(Long id) {
+        return artistRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Artist", id));
     }
 
     Artist findEagerly(final Long artistId) {

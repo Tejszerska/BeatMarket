@@ -59,6 +59,9 @@ class Album extends BaseEntity {
     @OneToMany(mappedBy = "album")
     private Set<Song> songs = new HashSet<>();
 
+    Album(final String title, final LocalDate releaseDate, final List<Artist> artists, Set<Song> songs) {
+        this(title, releaseDate, null, artists, songs);
+    }
     Album(final String title, final LocalDate releaseDate) {
         this(title, releaseDate, null, new ArrayList<>(), new HashSet<>());
     }

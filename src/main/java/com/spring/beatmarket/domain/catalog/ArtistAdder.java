@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ class ArtistAdder {
 
         Artist savedArtist = artistRepository.save(newArtist);
 
-        List<Long> allSongIds = roleValidator.combineAndValidateIds(createDto.mainSongIds(), createDto.featSongIds(), "Artist", "Song");
+        Set<Long> allSongIds = roleValidator.combineAndValidateIds(createDto.mainSongIds(), createDto.featSongIds(), "Artist", "Song");
         if (!allSongIds.isEmpty()) {
             List<Song> songs = songRetriever.getActiveWithArtist(allSongIds);
             for (Song song : songs) {
@@ -34,7 +35,7 @@ class ArtistAdder {
                 song.assignArtist(savedArtist, isMain);
             }
         }
-        List<Long> allAlbumIds = roleValidator.combineAndValidateIds(createDto.mainAlbumIds(), createDto.featAlbumIds(), "Artist", "Album");
+        Set<Long> allAlbumIds = roleValidator.combineAndValidateIds(createDto.mainAlbumIds(), createDto.featAlbumIds(), "Artist", "Album");
         if (!allAlbumIds.isEmpty()) {
             List<Album> albums = albumRetriever.getActiveWithArtist(allAlbumIds);
 

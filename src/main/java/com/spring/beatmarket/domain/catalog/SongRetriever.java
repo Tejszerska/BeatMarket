@@ -14,11 +14,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -91,7 +93,7 @@ class SongRetriever {
        }
     }
 
-    List<Song> getActiveWithArtist(final List<Long> ids) {
+    List<Song> getActiveWithArtist(final Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
@@ -104,6 +106,28 @@ class SongRetriever {
                     .filter(id -> !foundIds.contains(id))
                     .findFirst()
                     .orElse(0L);
+            throw new ResourceNotFoundException("Song", missingId);
+        }
+        return foundSongs;
+    }
+
+    Set<Song> getActive(final Set<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        Set<Song> foundSongs = songRepository.findByIdIsInAndActiveTrue(ids);
+
+        if (foundSongs.size() != ids.size()) {
+            Set<Long> foundIds = foundSongs.stream()
+                    .map(Song::getId)
+                    .collect(Collectors.toSet());
+
+            Long missingId = ids.stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .findFirst()
+                    .orElse(0L);
+
             throw new ResourceNotFoundException("Song", missingId);
         }
         return foundSongs;

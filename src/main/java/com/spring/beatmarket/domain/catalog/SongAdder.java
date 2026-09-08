@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -14,8 +12,7 @@ class SongAdder {
     private final SongRepository songRepository;
     private final GenreRetriever genreRetriever;
     private final AlbumRetriever albumRetriever;
-    private final ArtistRetriever artistRetriever;
-    private final RoleValidator roleValidator;
+    private final ArtistRoleAssigner artistRoleAssigner;
     private final SongMapper songMapper;
 
     SongDto.Info add(final SongDto.Create dto) {
@@ -34,20 +31,8 @@ class SongAdder {
                 .album(album)
                 .build();
 
-        List<Long> mainList = dto.mainArtistId() != null ? List.of(dto.mainArtistId()) : null;
+        artistRoleAssigner.assign(dto.mainArtistId(), dto.featArtistIds(), "Song", song::assignArtist);
 
-        List<Long> allArtistIds = roleValidator.combineAndValidateIds(
-                mainList, dto.featArtistIds(), "Song", "Artist"
-        );
-
-        if (!allArtistIds.isEmpty()) {
-            List<Artist> artists = artistRetriever.getActive(allArtistIds);
-
-            for (Artist artist : artists) {
-                boolean isMain = dto.mainArtistId() != null && dto.mainArtistId().equals(artist.getId());
-                song.assignArtist(artist, isMain);
-            }
-        }
 
         Song saved = songRepository.save(song);
         return songMapper.toInfoDto(saved);

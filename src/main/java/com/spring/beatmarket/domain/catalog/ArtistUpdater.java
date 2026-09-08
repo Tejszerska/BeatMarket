@@ -52,7 +52,7 @@ class ArtistUpdater {
                     currentFeatSongIds : updateFromRequest.featSongIds().orElse(Collections.emptyList());
 
 
-            List<Long> allTargetSongIds = roleValidator.combineAndValidateIds(
+            Set<Long> allTargetSongIds = roleValidator.combineAndValidateIds(
                     targetMainSongIds, targetFeatSongIds, "Artist", "Song"
             );
 
@@ -92,7 +92,7 @@ class ArtistUpdater {
             List<Long> targetFeatAlbumsIds = updateFromRequest.featAlbumIds() == null ?
                     currentFeatAlbumsIds : updateFromRequest.featAlbumIds().orElse(Collections.emptyList());
 
-            List<Long> allTargetIds = roleValidator.combineAndValidateIds(targetMainAlbumsIds, targetFeatAlbumsIds, "Artist", "Album");
+            Set<Long> allTargetIds = roleValidator.combineAndValidateIds(targetMainAlbumsIds, targetFeatAlbumsIds, "Artist", "Album");
 
             List<Album> newAlbums = albumRetriever.getActiveWithArtist(allTargetIds);
             List<Album> oldAlbumsCopy = new ArrayList<>(allCurrentAlbums);

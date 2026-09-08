@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ interface ArtistRepository extends Repository<Artist, Long> {
 
     Artist getReferenceById(Long id);
 
-    List<Artist> findByIdInAndActiveTrue(List<Long> ids);
+    List<Artist> findByIdInAndActiveTrue(Collection<Long> ids);
 
 
     @Query("SELECT a FROM Artist a " +

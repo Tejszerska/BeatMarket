@@ -10,6 +10,8 @@ public interface AlbumControllerMapper {
 
     AlbumApiDto.DetailsResponse toDetailsResponse(AlbumDto.Details albumDetails);
 
+    AlbumDto.Create toDomainCreate (AlbumApiDto.CreateRequest createRequest);
+    
     default AlbumApiDto.GetAllResponse toGetAllResponse(Slice<AlbumDto.Summary> slice) {
         return new AlbumApiDto.GetAllResponse(
                 slice.getContent().stream().map(this::toSummaryResponse).toList(),
@@ -17,4 +19,5 @@ public interface AlbumControllerMapper {
     }
 
 
+    AlbumApiDto.InfoResponse toInfoResponse(AlbumDto.Info addedAlbum);
 }

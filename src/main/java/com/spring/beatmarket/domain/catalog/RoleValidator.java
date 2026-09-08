@@ -3,8 +3,8 @@ package com.spring.beatmarket.domain.catalog;
 import com.spring.beatmarket.domain.catalog.exception.RoleConflictException;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,9 +21,9 @@ class RoleValidator {
      * @param targetName  The name of the entity being assigned to (e.g., "Song", "Album").
      * @return Combined list of all valid IDs.
      */
-    List<Long> combineAndValidateIds(List<Long> mainIds, List<Long> featIds, String subjectName, String targetName) {
-        List<Long> safeMain = mainIds != null ? mainIds : Collections.emptyList();
-        List<Long> safeFeat = featIds != null ? featIds : Collections.emptyList();
+    Set<Long> combineAndValidateIds(Collection<Long> mainIds, Collection<Long> featIds, String subjectName, String targetName) {
+        Collection<Long> safeMain = mainIds != null ? mainIds : Collections.emptyList();
+        Collection<Long> safeFeat = featIds != null ? featIds : Collections.emptyList();
 
         Set<Long> conflictingIds = safeMain.stream()
                 .filter(safeFeat::contains)
@@ -33,6 +33,6 @@ class RoleValidator {
             throw new RoleConflictException(subjectName, targetName, conflictingIds);
         }
 
-        return Stream.concat(safeMain.stream(), safeFeat.stream()).toList();
+        return Stream.concat(safeMain.stream(), safeFeat.stream()).collect(Collectors.toSet());
     }
 }

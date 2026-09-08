@@ -30,7 +30,7 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
 
     boolean existsByGenreId(Long genreId);
 
-    @Query("SELECT DISTINCT s FROM Song s LEFT JOIN FETCH s.artists WHERE s.id IN :ids AND s.active = true")
+    @Query("SELECT s FROM Song s LEFT JOIN FETCH s.artists WHERE s.id IN :ids AND s.active = true")
     List<Song> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
 
     @Modifying
@@ -43,4 +43,7 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
     @Query("UPDATE Song s SET s.active = false, s.version = s.version + 1, s.editedOn = :now WHERE s.id IN :songIds")
     void deactivateAllByIds(@Param("songIds") Set<Long> songIds,
                             @Param("now") Instant now);
+
+
+    Set<Song> findByIdIsInAndActiveTrue(Collection<Long> ids);
 }
