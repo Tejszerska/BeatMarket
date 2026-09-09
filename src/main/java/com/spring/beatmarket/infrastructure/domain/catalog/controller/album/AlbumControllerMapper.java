@@ -1,10 +1,12 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.infrastructure.domain.shared.JsonNullableMapper;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Slice;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        uses = JsonNullableMapper .class)
 public interface AlbumControllerMapper {
     AlbumApiDto.SummaryResponse toSummaryResponse(AlbumDto.Summary dto);
 
@@ -20,4 +22,6 @@ public interface AlbumControllerMapper {
 
 
     AlbumApiDto.InfoResponse toInfoResponse(AlbumDto.Info addedAlbum);
+
+    AlbumDto.Update toDomainUpdate(AlbumApiDto.UpdateRequest request);
 }

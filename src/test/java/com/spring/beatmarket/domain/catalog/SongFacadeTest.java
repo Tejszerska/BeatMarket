@@ -20,19 +20,21 @@ class SongFacadeTest {
 
     private final GenreRetriever genreRetriever = mock(GenreRetriever.class);
     private final AlbumRetriever albumRetriever = mock(AlbumRetriever.class);
-    private final ArtistRetriever artistRetriever = mock(ArtistRetriever.class);
     private final LicensingFacade licensingFacade = mock(LicensingFacade.class);
 
-    private final SongMapper songMapper = new SongMapperImpl(new AlbumMapperImpl(), new ArtistMapperImpl());
+    private final ArtistRetriever artistRetriever = mock(ArtistRetriever.class);
     private final RoleValidator roleValidator = new RoleValidator();
+    private final ArtistRoleManager artistRoleManager = new ArtistRoleManager(roleValidator, artistRetriever);
+
+    private final SongMapper songMapper = new SongMapperImpl();
+
 
     private final SongFacade songFacade = SongFacadeTestConfiguration.createSongFacade(
             songRepository,
             genreRetriever,
             albumRetriever,
-            artistRetriever,
             licensingFacade,
-            roleValidator,
+            artistRoleManager,
             songMapper
     );
 

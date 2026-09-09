@@ -1,8 +1,8 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.shared.domain.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,12 +56,14 @@ class Album extends BaseEntity {
     @OrderColumn(name = "artist_order")
     private List<Artist> artists = new ArrayList<>();
 
-    @OneToMany(mappedBy = "album")
+    @OneToMany(mappedBy = "album",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Song> songs = new HashSet<>();
 
     Album(final String title, final LocalDate releaseDate, final List<Artist> artists, Set<Song> songs) {
         this(title, releaseDate, null, artists, songs);
     }
+
     Album(final String title, final LocalDate releaseDate) {
         this(title, releaseDate, null, new ArrayList<>(), new HashSet<>());
     }
@@ -114,17 +116,11 @@ class Album extends BaseEntity {
 
         boolean wasRemoved = this.artists.remove(artist);
 
-        if (wasRemoved)  artist.removeAlbum(this);
+        if (wasRemoved) artist.removeAlbum(this);
 
         if (isMain) {
-            if (!this.artists.isEmpty()) {
-                throw new DataConflictException(String.format("Album by id='%s' already has a main artist", this.getId()));
-            }
             this.artists.add(0, artist);
         } else {
-            if (this.artists.isEmpty()) {
-                throw new DataConflictException(String.format("Cannot add featured artist to Album by id='%s' without a main artist", this.getId()));
-            }
             this.artists.add(artist);
         }
 

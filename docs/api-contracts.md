@@ -792,7 +792,8 @@ Adds a new album to the system.
   "title": "Cee Dee",
   "releaseDate": "2010-10-10",
   "songIds": [1, 2],
-  "artistIds": [1]
+  "mainArtistId": 1,
+  "featArtistsIds": [3, 4]
 }
 ```
 
@@ -803,6 +804,7 @@ Adds a new album to the system.
   "id": 10,
   "title": "Dee Dee",
   "releaseDate": "2010-10-10",
+  "coverUrl": null,
   "songs": [
     {
       "id": 2,

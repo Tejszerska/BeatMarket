@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 class AlbumFacadeImpl implements AlbumFacade {
     private final AlbumRetriever albumRetriever;
     private final AlbumAdder albumAdder;
+    private final AlbumUpdater albumUpdater;
 
     public Slice<AlbumDto.Summary> findAllAlbums(final Long artistId, final String title, final Pageable pageable) {
         return albumRetriever.findAllAlbums(artistId, title, pageable);
@@ -26,8 +27,8 @@ class AlbumFacadeImpl implements AlbumFacade {
         return albumAdder.add(createDto);
     }
 
-    public AlbumDto.Info updateAlbum(final Long albumId, final AlbumDto.Update dto) {
-        return null;
+    public AlbumDto.Info updateAlbum(final Long id, final AlbumDto.Update dto) {
+        return albumUpdater.update(id, dto);
     }
 
     public void deactivateAlbum(final Long albumId) {

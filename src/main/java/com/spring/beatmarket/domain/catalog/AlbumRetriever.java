@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
-import com.spring.beatmarket.domain.catalog.dto.AlbumInfo;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +19,6 @@ import java.util.List;
 class AlbumRetriever {
     private final AlbumRepository albumRepository;
     private final AlbumMapper albumMapper;
-
-    AlbumInfo findAlbumByReturnAlbumInfo(final Long id) {
-        return albumRepository.findAlbumByIdReturnAlbumInfo(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Album", id));
-    }
 
     Slice<AlbumDto.Summary> findAllAlbums(final Long artistId, final String title, final Pageable pageable) {
         boolean hasArtist = artistId != null;
@@ -81,7 +75,7 @@ class AlbumRetriever {
         return albumMapper.toDetailsDto(album);
     }
 
-    private Album getEagerly(final Long albumId) {
+    Album getEagerly(final Long albumId) {
         return albumRepository.findAlbumByIdEagerly(albumId)
                 .orElseThrow(() -> new ResourceNotFoundException("Album", albumId));
     }

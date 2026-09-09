@@ -7,10 +7,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -19,19 +15,17 @@ class SongUpdater {
     private final SongRetriever songRetriever;
     private final AlbumRetriever albumRetriever;
     private final GenreRetriever genreRetriever;
-    private final ArtistRetriever artistRetriever;
-
     private final SongRepository songRepository;
 
-    private final RoleValidator roleValidator;
     private final SongMapper songMapper;
+    private final ArtistRoleManager artistRoleManager;
 
 
-    SongDto.Info update(final Long id, final SongDto.Update songFromRequest) {
+    SongDto.Info update(final Long id, final SongDto.Update dto) {
         Song songFromDB = songRetriever.getEagerly(id);
 
-        if (songFromRequest.title() != null) {
-            songFromRequest.title().ifPresentOrElse(
+        if (dto.title() != null) {
+            dto.title().ifPresentOrElse(
                     songFromDB::changeTitle,
                     () -> {
                         throw new MissingRequiredFieldException("title");
@@ -39,8 +33,8 @@ class SongUpdater {
             );
         }
 
-        if (songFromRequest.releaseDate() != null) {
-            songFromRequest.releaseDate().ifPresentOrElse(
+        if (dto.releaseDate() != null) {
+            dto.releaseDate().ifPresentOrElse(
                     songFromDB::changeReleaseDate,
                     () -> {
                         throw new MissingRequiredFieldException("releaseDate");
@@ -48,8 +42,8 @@ class SongUpdater {
             );
         }
 
-        if (songFromRequest.duration() != null) {
-            songFromRequest.duration().ifPresentOrElse(
+        if (dto.duration() != null) {
+            dto.duration().ifPresentOrElse(
                     songFromDB::changeDuration,
                     () -> {
                         throw new MissingRequiredFieldException("duration");
@@ -57,8 +51,8 @@ class SongUpdater {
             );
         }
 
-        if (songFromRequest.language() != null) {
-            songFromRequest.language().ifPresentOrElse(
+        if (dto.language() != null) {
+            dto.language().ifPresentOrElse(
                     songFromDB::changeLanguage,
                     () -> {
                         throw new MissingRequiredFieldException("language");
@@ -67,8 +61,8 @@ class SongUpdater {
         }
 
 
-        if (songFromRequest.genreId() != null) {
-            songFromRequest.genreId().ifPresentOrElse(
+        if (dto.genreId() != null) {
+            dto.genreId().ifPresentOrElse(
                     newGenreId ->
                     {
                         Genre genreProxy = genreRetriever.getActive(newGenreId);
@@ -79,8 +73,8 @@ class SongUpdater {
             );
         }
 
-        if (songFromRequest.albumId() != null) {
-            songFromRequest.albumId().ifPresentOrElse(
+        if (dto.albumId() != null) {
+            dto.albumId().ifPresentOrElse(
                     newAlbumId ->
                     {
                         Album albumProxy = albumRetriever.getActive(newAlbumId);
@@ -92,46 +86,16 @@ class SongUpdater {
         }
 
 
-        if (songFromRequest.mainArtistId() != null || songFromRequest.featArtistIds() != null) {
-            List<Artist> allCurrentArtists = new ArrayList<>(songFromDB.getArtists());
-
-            Long currentMainId = allCurrentArtists.isEmpty() ? null : allCurrentArtists.get(0).getId();
-            List<Long> currentFeatIds = allCurrentArtists.stream().skip(1).map(Artist::getId).toList();
-
-            Long targetMainId = songFromRequest.mainArtistId() == null
-                    ? currentMainId
-                    : songFromRequest.mainArtistId().orElse(null);
-
-            List<Long> targetFeatIds = songFromRequest.featArtistIds() == null
-                    ? currentFeatIds
-                    : songFromRequest.featArtistIds().orElse(Collections.emptyList());
-
-            List<Long> targetMainList = targetMainId != null ? List.of(targetMainId) : null;
-
-            Set<Long> allTargetIds = roleValidator.combineAndValidateIds(
-                    targetMainList, targetFeatIds, "Song", "Artist"
-            );
-
-            for (Artist oldArtist : allCurrentArtists) {
-                if (!allTargetIds.contains(oldArtist.getId())) {
-                    songFromDB.removeArtist(oldArtist);
-                }
-            }
-
-            if (!allTargetIds.isEmpty()) {
-                List<Artist> newArtists = artistRetriever.getActives(allTargetIds);
-                for (Artist artist : newArtists) {
-                    boolean isMain = targetMainId != null && targetMainId.equals(artist.getId());
-                    songFromDB.assignArtist(artist, isMain);
-                }
-            }
+        if (dto.mainArtistId() != null || dto.featArtistIds() != null) {
+            artistRoleManager.sync(dto.mainArtistId(), dto.featArtistIds(), "Song",
+                    songFromDB.getArtists(), songFromDB::removeArtist ,songFromDB::assignArtist);
         }
 
         return songMapper.toInfoDto(songFromDB);
     }
 
     Integer bulkUpdateSongsByGenreId(final Long oldId, final Long newId) {
-       return songRepository.bulkUpdateGenre(oldId, newId, Instant.now());
+        return songRepository.bulkUpdateGenre(oldId, newId, Instant.now());
     }
 }
 

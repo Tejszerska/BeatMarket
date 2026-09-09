@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,13 +37,6 @@ class InMemorySongRepository implements SongRepository {
     public Optional<Song> findSongByIdEagerly(final Long id) {
         return findByIdAndActiveTrue(id);
     }
-
-    @Override
-    public boolean existsByIdAndActiveTrue(final Long id) {
-        Song song = db.get(id);
-        return song != null && song.isActive();
-    }
-
 
     @Override
     public Song save(final Song song) {
@@ -105,6 +99,11 @@ class InMemorySongRepository implements SongRepository {
                     ReflectionTestUtils.setField(song, "active", false);
                     updateVersionAndEditedOn(now, song);
                 });
+    }
+
+    @Override
+    public Set<Song> findByIdIsInAndActiveTrue(final Collection<Long> ids) {
+        return new HashSet<>( findActiveWithArtistsByIds(ids));
     }
 
     private static void updateVersionAndEditedOn(final Instant now, final Song song) {

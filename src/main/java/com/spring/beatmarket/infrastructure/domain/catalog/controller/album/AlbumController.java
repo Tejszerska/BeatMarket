@@ -2,6 +2,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
 import com.spring.beatmarket.domain.catalog.AlbumFacade;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
 import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,5 +67,21 @@ class AlbumController {
         AlbumDto.Create domainRequest = mapper.toDomainCreate(createAlbumRequest);
         AlbumDto.Info addedAlbum = facade.addAlbum(domainRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toInfoResponse(addedAlbum));
+    }
+
+    @Operation(summary = "Partially update album", description = "Updates specific fields of an existing album (e.g., changing only the title).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Album updated successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid input data.",
+                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Album not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+    })
+    @PatchMapping("/{id}")
+    ResponseEntity<AlbumApiDto.InfoResponse> updateSong(@PathVariable Long id,
+                                                       @RequestBody AlbumApiDto.UpdateRequest request) {
+        AlbumDto.Update updateAlbumDto = mapper.toDomainUpdate(request);
+        AlbumDto.Info albumDto = facade.updateAlbum(id, updateAlbumDto);
+        return ResponseEntity.ok(mapper.toInfoResponse(albumDto));
     }
 }

@@ -71,7 +71,6 @@ class ArtistUpdater {
             }
         }
 
-//        spr czy wysłano w request
         if (updateFromRequest.mainAlbumIds() != null || updateFromRequest.featAlbumIds() != null) {
 
             List<Album> allCurrentAlbums = artistFromDB.getAlbums();

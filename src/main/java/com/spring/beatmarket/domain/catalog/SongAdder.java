@@ -12,7 +12,7 @@ class SongAdder {
     private final SongRepository songRepository;
     private final GenreRetriever genreRetriever;
     private final AlbumRetriever albumRetriever;
-    private final ArtistRoleAssigner artistRoleAssigner;
+    private final ArtistRoleManager artistRoleManager;
     private final SongMapper songMapper;
 
     SongDto.Info add(final SongDto.Create dto) {
@@ -31,7 +31,7 @@ class SongAdder {
                 .album(album)
                 .build();
 
-        artistRoleAssigner.assign(dto.mainArtistId(), dto.featArtistIds(), "Song", song::assignArtist);
+        artistRoleManager.assign(dto.mainArtistId(), dto.featArtistIds(), "Song", song::assignArtist);
 
 
         Song saved = songRepository.save(song);

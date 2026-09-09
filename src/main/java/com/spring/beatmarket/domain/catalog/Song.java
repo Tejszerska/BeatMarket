@@ -164,21 +164,13 @@ class Song extends BaseEntity {
         if (artist == null) return;
 
         boolean wasRemoved = this.artists.remove(artist);
-
         if(wasRemoved) artist.getSongs().remove(this);
 
         if(isMain){
-            if(!this.artists.isEmpty()){
-                throw new DataConflictException(String.format("Song by id='%s' already has a main artist", this.getId()));
-            }
             this.artists.add(0, artist);
         } else {
-            if(this.artists.isEmpty()){
-                throw new DataConflictException(String.format("Cannot add featured artist to Song by id='%s' without a main artist", this.getId()));
-            }
             this.artists.add(artist);
         }
-
         artist.getSongs().add(this);
     }
 

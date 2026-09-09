@@ -14,7 +14,6 @@ import java.util.Set;
 
 @org.springframework.stereotype.Repository
 interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecutor<Song> {
-
     Optional<Song> findByIdAndActiveTrue(Long id);
 
     @Query("SELECT s FROM Song s " +
@@ -23,8 +22,6 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
             "LEFT JOIN FETCH s.album " +
             "WHERE s.id = :id AND s.active = true")
     Optional<Song> findSongByIdEagerly(Long id);
-
-    boolean existsByIdAndActiveTrue(Long id);
 
     Song save(Song song);
 
@@ -43,7 +40,6 @@ interface SongRepository extends Repository<Song, Long>, JpaSpecificationExecuto
     @Query("UPDATE Song s SET s.active = false, s.version = s.version + 1, s.editedOn = :now WHERE s.id IN :songIds")
     void deactivateAllByIds(@Param("songIds") Set<Long> songIds,
                             @Param("now") Instant now);
-
 
     Set<Song> findByIdIsInAndActiveTrue(Collection<Long> ids);
 }

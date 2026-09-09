@@ -7,15 +7,13 @@ class SongFacadeTestConfiguration {
             SongRepository songRepository,
             GenreRetriever genreRetriever,
             AlbumRetriever albumRetriever,
-            ArtistRetriever artistRetriever,
             LicensingFacade licensingFacade,
-            RoleValidator roleValidator,
-            ArtistRoleAssigner artistRoleAssigner,
+            ArtistRoleManager artistRoleManager,
             SongMapper songMapper) {
 
         SongRetriever songRetriever = new SongRetriever(songRepository, songMapper, licensingFacade);
-        SongAdder songAdder = new SongAdder(songRepository, genreRetriever, albumRetriever, artistRoleAssigner, songMapper);
-        SongUpdater songUpdater = new SongUpdater(songRetriever, albumRetriever, genreRetriever, artistRetriever, songRepository, roleValidator, songMapper);
+        SongAdder songAdder = new SongAdder(songRepository, genreRetriever, albumRetriever, artistRoleManager, songMapper);
+        SongUpdater songUpdater = new SongUpdater(songRetriever, albumRetriever, genreRetriever, songRepository, songMapper, artistRoleManager);
         SongDeleter songDeleter = new SongDeleter(songRepository, songRetriever, licensingFacade);
         return new SongFacadeImpl(songAdder, songRetriever, songDeleter, songUpdater);
     }
