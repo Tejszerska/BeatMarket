@@ -12,7 +12,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 class AlbumDeleter {
     private final AlbumRepository albumRepository;
-    private final AlbumRetriever albumRetriever;
 
     void deleteAllAlbumsByIds(final Set<Long> albumIds) {
         if (albumIds == null || albumIds.isEmpty()) return;
@@ -20,9 +19,10 @@ class AlbumDeleter {
         albumRepository.deactivateAllByIds(albumIds, Instant.now());
     }
 
-    void deleteById(final Long id) {
-
-        log.warn("UNIMPLEMENTED");
+    void deactivate(final Long id) {
+        if (id == null) return;
+        log.info("soft deleting album by id: " + id);
+        albumRepository.deactivateId(id, Instant.now());
 
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,10 +79,23 @@ class AlbumController {
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
     @PatchMapping("/{id}")
-    ResponseEntity<AlbumApiDto.InfoResponse> updateSong(@PathVariable Long id,
+    ResponseEntity<AlbumApiDto.InfoResponse> updateAlbum(@PathVariable Long id,
                                                        @RequestBody AlbumApiDto.UpdateRequest request) {
         AlbumDto.Update updateAlbumDto = mapper.toDomainUpdate(request);
         AlbumDto.Info albumDto = facade.updateAlbum(id, updateAlbumDto);
         return ResponseEntity.ok(mapper.toInfoResponse(albumDto));
+    }
+
+
+    @Operation(summary = "Delete album", description = "Removes a album from the database by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Album deleted successfully (No Content)."),
+            @ApiResponse(responseCode = "404", description = "Album not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
+    })
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteAlbum(@PathVariable Long id) {
+        facade.deactivateAlbum(id);
+        return ResponseEntity.noContent().build();
     }
 }

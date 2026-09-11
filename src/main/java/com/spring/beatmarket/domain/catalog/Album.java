@@ -60,10 +60,6 @@ class Album extends BaseEntity {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Song> songs = new HashSet<>();
 
-    Album(final String title, final LocalDate releaseDate, final List<Artist> artists, Set<Song> songs) {
-        this(title, releaseDate, null, artists, songs);
-    }
-
     Album(final String title, final LocalDate releaseDate) {
         this(title, releaseDate, null, new ArrayList<>(), new HashSet<>());
     }
@@ -138,16 +134,9 @@ class Album extends BaseEntity {
         }
     }
 
-    void changeArtistsList(List<Artist> newArtists) {
-        this.artists.clear();
-        if (newArtists != null) {
-            this.artists.addAll(newArtists);
-        }
-    }
-
     void clearArtists() {
-        List<Artist> artistsToRemove = new ArrayList<>(this.artists);
-        artistsToRemove.forEach(this::removeArtist);
+        this.artists.forEach(artist -> artist.removeAlbum(this));
+        this.artists = new ArrayList<>();
     }
 
     /**
@@ -168,13 +157,6 @@ class Album extends BaseEntity {
             if (song.getAlbum() == this) {
                 song.detachFromAlbum();
             }
-        }
-    }
-
-    void changeSongsList(Set<Song> newSongs) {
-        this.songs.clear();
-        if (newSongs != null) {
-            newSongs.forEach(this::addSong);
         }
     }
 

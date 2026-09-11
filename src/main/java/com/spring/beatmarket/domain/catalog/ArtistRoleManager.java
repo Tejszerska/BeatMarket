@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ class ArtistRoleManager {
                      final Optional<List<Long>> featArtistIds,
                      final String subjectEntityName,
                      final List<Artist> currentArtists,
-                     final Consumer<Artist> removalAction,
+                     final Runnable clearAction,
                      final BiConsumer<Artist, Boolean> assignmentAction) {
 
         List<Artist> safeCurrentArtists = currentArtists != null ? new ArrayList<>(currentArtists) : new ArrayList<>();
@@ -56,11 +55,7 @@ class ArtistRoleManager {
                 targetMainList, targetFeatIds, subjectEntityName, "Artist"
         );
 
-        for (Artist oldArtist : safeCurrentArtists) {
-            if (!allTargetIds.contains(oldArtist.getId())) {
-                removalAction.accept(oldArtist);
-            }
-        }
+        clearAction.run();
 
         applyAssignments(assignmentAction, targetMainId, allTargetIds);
     }

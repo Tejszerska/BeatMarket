@@ -88,7 +88,7 @@ class SongUpdater {
 
         if (dto.mainArtistId() != null || dto.featArtistIds() != null) {
             artistRoleManager.sync(dto.mainArtistId(), dto.featArtistIds(), "Song",
-                    songFromDB.getArtists(), songFromDB::removeArtist ,songFromDB::assignArtist);
+                    songFromDB.getArtists(), songFromDB::clearArtists ,songFromDB::assignArtist);
         }
 
         return songMapper.toInfoDto(songFromDB);

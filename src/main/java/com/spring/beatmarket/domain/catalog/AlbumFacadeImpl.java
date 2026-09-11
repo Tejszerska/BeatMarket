@@ -14,13 +14,15 @@ class AlbumFacadeImpl implements AlbumFacade {
     private final AlbumRetriever albumRetriever;
     private final AlbumAdder albumAdder;
     private final AlbumUpdater albumUpdater;
+    private final AlbumDeleter albumDeleter;
 
     public Slice<AlbumDto.Summary> findAllAlbums(final Long artistId, final String title, final Pageable pageable) {
         return albumRetriever.findAllAlbums(artistId, title, pageable);
     }
+
     public AlbumDto.Details getAlbumDetails(final Long albumId) {
 
-       return albumRetriever.getDetails(albumId);
+        return albumRetriever.getDetails(albumId);
     }
 
     public AlbumDto.Info addAlbum(final AlbumDto.Create createDto) {
@@ -31,7 +33,7 @@ class AlbumFacadeImpl implements AlbumFacade {
         return albumUpdater.update(id, dto);
     }
 
-    public void deactivateAlbum(final Long albumId) {
-
+    public void deactivateAlbum(final Long id) {
+        albumDeleter.deactivate(id);
     }
 }

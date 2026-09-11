@@ -41,7 +41,7 @@ class AlbumUpdater {
 
         if (dto.mainArtistId() != null || dto.featArtistsIds() != null) {
             artistRoleManager.sync(dto.mainArtistId(), dto.featArtistsIds(),
-                    "Album", album.getArtists(), album::removeArtist, album::assignArtist);
+                    "Album", album.getArtists(), album::clearArtists, album::assignArtist);
         }
 
         if (dto.songIds() != null) {
