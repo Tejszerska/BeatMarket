@@ -105,6 +105,7 @@ class Album extends BaseEntity {
     /**
      * Manages the owning side of the ManyToMany relationship with Artist.
      * Safely updates both entities to keep the Persistence Context synchronized.
+     * Business validation (e.g., enforcing main vs. featured artist constraints) is delegated to the ArtistRoleManager
      */
 
     void assignArtist(Artist artist, boolean isMain) {
@@ -134,9 +135,15 @@ class Album extends BaseEntity {
         }
     }
 
+    /**
+     * Re-creating the collection prevents a Constraint Violation exception
+     * when Hibernate attempts to reorder artists (e.g., switching main and featured roles).
+     */
     void clearArtists() {
-        this.artists.forEach(artist -> artist.removeAlbum(this));
-        this.artists = new ArrayList<>();
+        if (!this.artists.isEmpty()) {
+            this.artists.forEach(artist -> artist.removeAlbum(this));
+            this.artists = new ArrayList<>();
+        }
     }
 
     /**

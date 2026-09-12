@@ -1,10 +1,12 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.exception.RoleConflictException;
+import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
+import com.spring.beatmarket.domain.catalog.exception.MainRoleRemovalException;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,9 +32,14 @@ class RoleValidator {
                 .collect(Collectors.toSet());
 
         if (!conflictingIds.isEmpty()) {
-            throw new RoleConflictException(subjectName, targetName, conflictingIds);
+            throw new DuplicateRoleException(subjectName, targetName, conflictingIds);
         }
-
         return Stream.concat(safeMain.stream(), safeFeat.stream()).collect(Collectors.toSet());
+    }
+
+    void validateNotMainArtist (List<Artist> artistList, Artist artist, Long subjectId, String subjectName){
+        if (artistList.size() > 1 && artistList.get(0).equals(artist)) {
+            throw new MainRoleRemovalException(subjectName, artist.getId(), subjectId);
+        }
     }
 }

@@ -349,20 +349,22 @@ class SongTest {
     }
 
     @Test
-    @DisplayName("Should throw DataConflictException when assigning feat artist to a song that has no main")
-    void should_throw_exception_when_wrongly_assigning_feat_artist() {
+    @DisplayName("Should accept feat artist and put it on main spot, when no other artists are present")
+    void should_accept_feat_but_make_it_main_when_its_only_artist() {
         //given
         Song song = createSongJustRequired();
         ReflectionTestUtils.setField(song, "id", 1L);
 
-        Artist artistFeat = new Artist("Featured");
+        String name = "Featured";
+        Artist artistFeat = new Artist(name);
         boolean isMain = false;
 
-        //when & then
-        assertThatThrownBy(() -> song.assignArtist(artistFeat, isMain))
-                .isInstanceOf(DataConflictException.class)
-                .hasMessage("Cannot add featured artist to Song by id='" + song.getId() + "' without a main artist");
-        assertThat(song.getArtists()).hasSize(0);
+        //when
+        song.assignArtist(artistFeat, isMain);
+
+        // then
+        assertThat(song.getArtists().get(0).getName()).isEqualTo(name);
+        assertThat(song.getArtists()).hasSize(1);
     }
 
     @Test
@@ -385,23 +387,27 @@ class SongTest {
     }
 
     @Test
-    @DisplayName("Should throw DataConflictException when assigning main artist to a song that already has one")
-    void should_throw_exception_when_wrongly_assigning_main_artist() {
+    @DisplayName("Should assign main artist to a song that already has one by overriding ")
+    void should_accept_another_main_artist_and_bump_previous_down() {
         //given
         Song song = createSongJustRequired();
         ReflectionTestUtils.setField(song, "id", 1L);
 
-        Artist artist = new Artist("Main");
-        song.assignArtist(artist, true);
+        String name1 = "Main";
+        Artist artist1 = new Artist(name1);
+        song.assignArtist(artist1, true);
 
-        Artist artistFeat = new Artist("Featured");
+        String name2 = "Second Main";
+        Artist artists2 = new Artist(name2);
         boolean isMain = true;
 
-        //when & then
-        assertThatThrownBy(() -> song.assignArtist(artistFeat, isMain))
-                .isInstanceOf(DataConflictException.class)
-                .hasMessage("Song by id='" + song.getId() + "' already has a main artist");
-        assertThat(song.getArtists()).hasSize(1);
+        //when
+        song.assignArtist(artists2, isMain);
+
+        // then
+        assertThat(song.getArtists().get(0).getName()).isEqualTo(name2);
+        assertThat(song.getArtists().get(1).getName()).isEqualTo(name1);
+        assertThat(song.getArtists()).hasSize(2);
     }
 
     @Test

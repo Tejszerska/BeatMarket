@@ -1,6 +1,5 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.shared.domain.BaseEntity;
 import jakarta.persistence.Column;
@@ -158,6 +157,7 @@ class Song extends BaseEntity {
     /**
      * Manages bidirectional synchronization with Artist.
      * The 'contains' check prevents infinite recursion during the assignment process.
+     * Business validation (e.g., enforcing main vs. featured artist constraints) is delegated to the ArtistRoleManager
      */
 
     void assignArtist(Artist artist, boolean isMain){
@@ -176,10 +176,6 @@ class Song extends BaseEntity {
 
     void removeArtist(Artist artist) {
         if (artist != null && this.artists.contains(artist)) {
-
-            if (this.artists.size() > 1 && this.artists.get(0).equals(artist)) {
-                throw new DataConflictException(String.format("Cannot remove main artist when song id='%s' contains featured artists.", this.getId()));
-            }
             this.artists.remove(artist);
 
             if (artist.getSongs().contains(this)) {
@@ -188,9 +184,16 @@ class Song extends BaseEntity {
         }
     }
 
+    /**
+     * Re-creating the collection prevents a Constraint Violation exception
+     * when Hibernate attempts to reorder artists (e.g., switching main and featured roles).
+     */
 
     void clearArtists() {
-        this.artists.clear();
+        if (!this.artists.isEmpty()) {
+            this.artists.forEach(artist -> artist.removeSong(this));
+            this.artists = new ArrayList<>();
+        }
     }
 
     void changePreviewUrl(String previewUrl) {
