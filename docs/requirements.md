@@ -10,7 +10,7 @@
 #### Catalog Module
 - [ ] Unauthenticated users can search the system using filtering options for the artist, genre, album, language, release date, price and duration, alongside specific sorting capabilities.
 - [ ] These public queries return a lightweight data transfer object containing basic metadata and an AWS S3 URL linking to a 30-second watermarked audio sample.
-- [ ] The language filtering mechanism supports a dedicated value to strictly identify instrumental tracks.
+- [x] The language filtering mechanism supports a dedicated value to strictly identify instrumental tracks.
 - [ ] Unauthenticated users can also retrieve general lists of available genres, artists, and albums.
 - [ ] Authenticated customers querying a specific song identifier receive a highly detailed response that includes all metadata, associated license tiers, and their respective pricing structures.
 - [ ] To manage this data, the admin holds exclusive access to the creation, modification, and deletion endpoints for the entire catalog.

@@ -14,17 +14,17 @@
 - Dopasować endpointy `catalog` do API contracts
   **Artists (Artyści)**
 * [x] GET /api/catalog/artists
-* [ ] GET /api/catalog/artists/{id}
+* [x] GET /api/catalog/artists/{id}
 * [x] POST /api/catalog/artists
-* [ ] PUT /api/catalog/artists/{id}
-* [ ] DELETE /api/catalog/artists/{id}
+* [x] PUT /api/catalog/artists/{id}
+* [x] DELETE /api/catalog/artists/{id}
 
 **Albums (Albumy)**
-* [ ] GET /api/catalog/albums
-* [ ] GET /api/catalog/albums/{id}
-* [ ] POST /api/catalog/albums
-* [ ] PUT /api/catalog/albums/{id}
-* [ ] DELETE /api/catalog/albums/{id}
+* [x] GET /api/catalog/albums
+* [x] GET /api/catalog/albums/{id}
+* [x] POST /api/catalog/albums
+* [x] PUT /api/catalog/albums/{id}
+* [x] DELETE /api/catalog/albums/{id}
 
 **Songs (Utwory)**
 * [x] GET /api/catalog/songs
@@ -72,7 +72,7 @@
 
 - [x] Skonfigurować role w Spring Security (ROLE_CUSTOMER po rejestracji, ROLE_ADMIN do zarządzania zasobami).
 
-- [ ] ujednolicić błędy - MissingRequiredFieldException dla wszystkich pól required ( Rich Domain Model refactor w encjach na wzór Song)
+- [x] ujednolicić błędy - MissingRequiredFieldException dla wszystkich pól required ( Rich Domain Model refactor w encjach na wzór Song)
 
 - [ ] obsłużyć kluczowe błedy
 

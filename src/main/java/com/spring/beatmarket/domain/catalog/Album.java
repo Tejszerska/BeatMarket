@@ -60,10 +60,6 @@ class Album extends BaseEntity {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Song> songs = new HashSet<>();
 
-    Album(final String title, final LocalDate releaseDate) {
-        this(title, releaseDate, null, new ArrayList<>(), new HashSet<>());
-    }
-
     /**
      * Ensures structural integrity by enforcing non-null constraints and
      * eagerly initializing relationships to avoid NullPointerExceptions.

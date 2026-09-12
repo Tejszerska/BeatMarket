@@ -27,7 +27,7 @@ interface AlbumRepository extends Repository<Album, Long> {
 
     Slice<Album> findByActiveTrueAndArtists_IdAndTitleContainingIgnoreCase(Long artistId, String title, Pageable pageable);
 
-    @Query("SELECT DISTINCT a FROM Album a LEFT JOIN FETCH a.artists WHERE a.id IN :ids AND a.active = true")
+    @Query("SELECT a FROM Album a LEFT JOIN FETCH a.artists WHERE a.id IN :ids AND a.active = true")
     List<Album> findActiveWithArtistsByIds(@Param("ids") Collection<Long> ids);
 
     @Query("SELECT a FROM Album a " +
@@ -37,12 +37,10 @@ interface AlbumRepository extends Repository<Album, Long> {
     Optional<Album> findAlbumByIdEagerly(@Param("id") Long id);
 
     @Modifying
-    @Query("UPDATE Album a SET a.active = false, a.version = a.version + 1, a.editedOn = :now WHERE a.id = :id")
-    void deactivateId(@Param("id") Long id,
-                      @Param("now") Instant now);
-
-    @Modifying
     @Query("UPDATE Album a SET a.active = false, a.version = a.version + 1, a.editedOn = :now WHERE a.id IN :albumIds")
     void deactivateAllByIds(@Param("albumIds") Set<Long> albumIds,
                             @Param("now") Instant now);
+
+    @Query("SELECT a FROM Album a WHERE a.id = :id AND a.active = true")
+    Optional<Album> findAlbumByIdLazily(@Param("id")Long id);
 }
