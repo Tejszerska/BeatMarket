@@ -1,12 +1,9 @@
 package com.spring.beatmarket.infrastructure.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.spring.beatmarket.domain.catalog.dto.RoleConflictErrorResponse;
 import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
-import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
-import com.spring.beatmarket.domain.catalog.exception.TitleIsBlankException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -67,19 +64,6 @@ class GlobalExceptionHandler {
         ValidationErrorResponseDto response = new ValidationErrorResponseDto("Validation failed", errors);
 
         log.warn("Validation failed: {}", errors);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(response);
-    }
-
-    @ExceptionHandler({
-            TitleIsBlankException.class,
-            NameIsBlankException.class
-    })
-    public ResponseEntity<SingleStringErrorResponseDto> handleBlankException(IllegalArgumentException exception){
-        SingleStringErrorResponseDto response = new SingleStringErrorResponseDto(exception.getMessage());
-
-        log.warn("Resource can't be blank: {}", exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);

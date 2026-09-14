@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.domain.catalog.exception.NameIsBlankException;
+import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ class GenreFacadeTest {
 
         // when & then
         assertThatThrownBy(() -> genreFacade.addGenre(invalidDto))
-                .isInstanceOf(NameIsBlankException.class)
+                .isInstanceOf(MissingRequiredFieldException.class)
                 .hasMessage("Genre needs a specified name!");
     }
 

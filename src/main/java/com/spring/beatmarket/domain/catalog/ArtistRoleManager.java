@@ -1,5 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.exception.MainRoleAbsentException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -46,10 +47,16 @@ class ArtistRoleManager {
                 .map(Artist::getId)
                 .toList();
 
+
+
         Long targetMainId = mainArtistId == null ? currentMainId : mainArtistId.orElse(null);
         List<Long> targetFeatIds = featArtistIds == null ? currentFeatIds : featArtistIds.orElse(Collections.emptyList());
 
         List<Long> targetMainList = targetMainId != null ? List.of(targetMainId) : null;
+
+        if(currentMainId == null && targetMainId == null && !targetFeatIds.isEmpty()){
+         throw new MainRoleAbsentException(subjectEntityName);
+        }
 
         Set<Long> allTargetIds = roleValidator.combineAndValidateIds(
                 targetMainList, targetFeatIds, subjectEntityName, "Artist"

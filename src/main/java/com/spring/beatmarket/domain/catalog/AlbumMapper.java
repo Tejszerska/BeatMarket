@@ -2,7 +2,6 @@ package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
-import com.spring.beatmarket.domain.catalog.dto.LegacyAlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -17,8 +16,6 @@ import java.util.stream.Collectors;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface AlbumMapper {
-
-    LegacyAlbumDto mapFromEntityToAlbumDto(Album album);
 
     AlbumDto.Summary toSummaryDto(Album album);
 

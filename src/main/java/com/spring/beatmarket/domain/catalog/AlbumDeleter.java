@@ -12,6 +12,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 class AlbumDeleter {
     private final AlbumRepository albumRepository;
+    private final AlbumRetriever albumRetriever;
 
     void deleteAllAlbumsByIds(final Set<Long> albumIds) {
         if (albumIds == null || albumIds.isEmpty()) return;
@@ -21,8 +22,8 @@ class AlbumDeleter {
 
     void deactivate(final Long id) {
         if (id == null) return;
+        Album album = albumRetriever.getLazily(id);
         log.info("soft deleting album by id: " + id);
-        albumRepository.deactivateId(id, Instant.now());
-
+        album.deactivate();
     }
 }

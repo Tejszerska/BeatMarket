@@ -31,12 +31,7 @@ class AlbumUpdater {
         }
 
         if (dto.releaseDate() != null) {
-            dto.releaseDate().ifPresentOrElse(
-                    album::changeReleaseDate,
-                    () -> {
-                        throw new MissingRequiredFieldException("releaseDate");
-                    }
-            );
+            album.changeReleaseDate(dto.releaseDate().orElse(null));
         }
 
         if (dto.mainArtistId() != null || dto.featArtistsIds() != null) {

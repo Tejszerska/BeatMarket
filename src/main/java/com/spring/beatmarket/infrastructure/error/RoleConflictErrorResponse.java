@@ -1,4 +1,4 @@
-package com.spring.beatmarket.domain.catalog.dto;
+package com.spring.beatmarket.infrastructure.error;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

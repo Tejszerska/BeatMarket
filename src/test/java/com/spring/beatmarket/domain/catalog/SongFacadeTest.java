@@ -133,7 +133,8 @@ class SongFacadeTest {
     void should_detach_album_when_album_id_is_empty_optional() {
         // given
         Long albumId = 5L;
-        Album mockAlbum = new Album("Existing Album", LocalDate.of(2026, 1, 1));
+
+        Album mockAlbum = Album.builder().title("Album").build();
         org.mockito.Mockito.when(albumRetriever.getActive(albumId)).thenReturn(mockAlbum);
 
         SongDto.Info song = addSong("Song to detach album");

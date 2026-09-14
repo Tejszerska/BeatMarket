@@ -79,4 +79,9 @@ class AlbumRetriever {
         return albumRepository.findAlbumByIdEagerly(albumId)
                 .orElseThrow(() -> new ResourceNotFoundException("Album", albumId));
     }
+
+    Album getLazily(final Long id) {
+        return albumRepository.findAlbumByIdLazily(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Album", id));
+    }
 }

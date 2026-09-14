@@ -27,7 +27,7 @@ class ArtistTest {
                 .language(SongLanguage.EN)
                 .build();
 
-        Album album = new Album("Test Album", LocalDate.now());
+        Album album = Album.builder().title("Album").build();
 
         Set<Song> songs = Set.of(song);
         List<Album> albums = List.of(album);
@@ -134,7 +134,7 @@ class ArtistTest {
     void should_add_and_remove_album() {
         // given
         Artist artist = new Artist("Artist Name");
-        Album album = new Album("Album", LocalDate.now());
+        Album album = Album.builder().title("Album").build();
 
         // when
         artist.addAlbum(album);

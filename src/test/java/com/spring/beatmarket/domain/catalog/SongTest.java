@@ -27,7 +27,7 @@ class SongTest {
         LocalDate date = LocalDate.of(2026, 1, 1);
 
         Genre genre = new Genre("Genre");
-        Album album = new Album("Album", date);
+        Album album = Album.builder().title("Album").build();
         List<Artist> artists = List.of(new Artist("Main Artist"), new Artist("Featured Artist 1"), new Artist("Featured Artist 1"));
 
         Song song = Song.builder()
@@ -547,7 +547,7 @@ class SongTest {
     void should_assign_album() {
         //given
         Song song = createSongJustRequired();
-        Album album = new Album("New Album", LocalDate.of(2026, 1, 1));
+        Album album = Album.builder().title("Album").build();
 
         //when
         song.assignToAlbum(album);
@@ -616,7 +616,7 @@ class SongTest {
         LocalDate date = LocalDate.of(2026, 1, 1);
 
         Genre genre = new Genre("Genre");
-        Album album = new Album("Album", date);
+        Album album = Album.builder().title("Album").build();
         List<Artist> artists = List.of(new Artist("Main Artist"), new Artist("Featured Artist 1"), new Artist("Featured Artist 1"));
 
         return Song.builder()
