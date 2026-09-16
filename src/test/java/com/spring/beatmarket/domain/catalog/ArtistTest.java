@@ -49,6 +49,26 @@ class ArtistTest {
     }
 
     @Test
+    @DisplayName("Should create artist with initialized collections when relations (List<Album>, Set<Song>) sey to null ")
+    void should_create_artist_when_null_relations() {
+
+        // given & when
+        Artist artist = Artist.builder()
+                .name("Artist Name")
+                .imageUrl("http://example.com/image.jpg")
+                .songs(null)
+                .albums(null)
+                .build();
+
+        // then
+        assertThat(artist.getId()).isNull();
+        assertThat(artist.getName()).isEqualTo("Artist Name");
+        assertThat(artist.getImageUrl()).isEqualTo("http://example.com/image.jpg");
+        assertThat(artist.getSongs()).isNotNull();
+        assertThat(artist.getAlbums()).isNotNull();
+    }
+
+    @Test
     @DisplayName("Should create artist using basic constructor with required name only")
     void should_create_artist_when_only_required_fields() {
         // when

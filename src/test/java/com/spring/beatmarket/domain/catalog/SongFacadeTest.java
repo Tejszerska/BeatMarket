@@ -6,13 +6,12 @@ import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.licensing.LicensingFacade;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SongFacadeTest {
 
@@ -27,7 +26,6 @@ class SongFacadeTest {
     private final ArtistRoleManager artistRoleManager = new ArtistRoleManager(roleValidator, artistRetriever);
 
     private final SongMapper songMapper = new SongMapperImpl();
-
 
     private final SongFacade songFacade = SongFacadeTestConfiguration.createSongFacade(
             songRepository,
@@ -69,12 +67,7 @@ class SongFacadeTest {
     @DisplayName("Should add Song")
     void should_add_song() {
         // given
-        SongDto.Create createDto = SongDto.Create.builder()
-                .title("Test")
-                .releaseDate(LocalDate.now())
-                .duration(210)
-                .language(SongLanguage.EN)
-                .build();
+        SongDto.Create createDto = TestObjectsFactory.createSongDto("Test");
 
         SongDto.Info songDtoGiven = songFacade.addSong(createDto);
 
@@ -91,11 +84,7 @@ class SongFacadeTest {
     @DisplayName("Should bubble up entity validation exception when creating invalid song")
     void should_bubble_up_validation_exception_when_adding_invalid_song() {
         // given
-        SongDto.Create invalidDto = SongDto.Create.builder()
-                .releaseDate(LocalDate.now())
-                .duration(210)
-                .language(SongLanguage.EN)
-                .build();
+        SongDto.Create invalidDto = TestObjectsFactory.createSongDto(null);
 
         // when & then
         assertThatThrownBy(() -> songFacade.addSong(invalidDto))
@@ -134,8 +123,8 @@ class SongFacadeTest {
         // given
         Long albumId = 5L;
 
-        Album mockAlbum = Album.builder().title("Album").build();
-        org.mockito.Mockito.when(albumRetriever.getActive(albumId)).thenReturn(mockAlbum);
+        Album mockAlbum = TestObjectsFactory.createAlbumWithId(albumId, "Album");
+        when(albumRetriever.getActive(albumId)).thenReturn(mockAlbum);
 
         SongDto.Info song = addSong("Song to detach album");
 
@@ -234,13 +223,7 @@ class SongFacadeTest {
     }
 
     private SongDto.Info addSong(String title) {
-        SongDto.Create createDto = SongDto.Create.builder()
-                .title(title)
-                .releaseDate(LocalDate.now())
-                .duration(210)
-                .language(SongLanguage.EN)
-                .build();
-
+        SongDto.Create createDto = TestObjectsFactory.createSongDto(title);
         return songFacade.addSong(createDto);
     }
 }

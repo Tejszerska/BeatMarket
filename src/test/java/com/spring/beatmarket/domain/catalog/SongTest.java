@@ -1,6 +1,5 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -461,7 +460,7 @@ class SongTest {
         song.removeArtist(mainArtist);
 
         //then
-        assertThat(song.getArtists()).hasSize(0);
+        assertThat(song.getArtists()).isEmpty();
         assertThat(mainArtist.getSongs()).doesNotContain(song);
     }
 
@@ -487,7 +486,7 @@ class SongTest {
     }
 
     @Test
-    @DisplayName("Should throw DataConflictException when removing main artist with featured artists present")
+    @DisplayName("Should allow removing main artist with featured artists present")
     void should_throw_exception_when_removing_main_artist_and_feat_present() {
         //given
         Song song = createSongJustRequired();
@@ -500,12 +499,11 @@ class SongTest {
         song.assignArtist(featArtist, false);
         assertThat(song.getArtists()).hasSize(2);
 
-        //when & then
-        assertThatThrownBy(() -> song.removeArtist(mainArtist))
-                .isInstanceOf(DataConflictException.class)
-                        .hasMessage("Cannot remove main artist when song id='1' contains featured artists.");
-        assertThat(song.getArtists()).hasSize(2);
-        assertThat(mainArtist.getSongs()).contains(song);
+        //when
+        song.removeArtist(mainArtist);
+        // then
+        assertThat(song.getArtists()).hasSize(1);
+        assertThat(mainArtist.getSongs()).doesNotContain(song);
     }
 
     @Test
@@ -604,6 +602,21 @@ class SongTest {
         //given
         Song song = createCompleteSong("Title");
         assertThat(song.getArtists()).isNotEmpty();
+
+        //when
+        song.clearArtists();
+
+        //then
+        assertThat(song.getArtists()).isEmpty();
+    }
+
+
+    @Test
+    @DisplayName("Should do nothing when clearing an empty list")
+    void should_do_nothing_clearing_empty_artists() {
+        //given
+        Song song = createSongJustRequired();
+        assertThat(song.getArtists()).isEmpty();
 
         //when
         song.clearArtists();

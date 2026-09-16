@@ -14,7 +14,7 @@ class AlbumDeleter {
     private final AlbumRepository albumRepository;
     private final AlbumRetriever albumRetriever;
 
-    void deleteAllAlbumsByIds(final Set<Long> albumIds) {
+    void bulkDeactivate(final Set<Long> albumIds) {
         if (albumIds == null || albumIds.isEmpty()) return;
         log.info("soft deleting albums by ids: " + albumIds);
         albumRepository.deactivateAllByIds(albumIds, Instant.now());

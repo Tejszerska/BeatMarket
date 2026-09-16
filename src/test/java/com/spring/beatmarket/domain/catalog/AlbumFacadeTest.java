@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -172,17 +171,15 @@ class AlbumFacadeTest {
     void should_add_album_with_song_artists() {
         // given
         Set<Long> songIds = Set.of(1L, 2L);
-        Song song1 = Song.builder().title("S1").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        Song song2 = Song.builder().title("S2").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
+        Song song1 = TestObjectsFactory.createSongWithId(1L, "S1");
+        Song song2 = TestObjectsFactory.createSongWithId(2L, "S2");
         Mockito.when(songRetriever.getActive(songIds)).thenReturn(Set.of(song1, song2));
 
         Long mainArtistId = 1L;
         List<Long> featArtistsIds = List.of(2L);
 
-        Artist mainArtist = Artist.builder().name("A Main").build();
-        ReflectionTestUtils.setField(mainArtist, "id", 1L);
-        Artist featArtist = Artist.builder().name("A Feat").build();
-        ReflectionTestUtils.setField(featArtist, "id", 2L);
+        Artist mainArtist = TestObjectsFactory.createArtistWithId(1L, "A Main");
+        Artist featArtist = TestObjectsFactory.createArtistWithId(2L, "A Feat");
 
         Mockito.when(artistRetriever.getActives(Set.of(1L, 2L))).thenReturn(List.of(mainArtist, featArtist));
 
@@ -205,7 +202,6 @@ class AlbumFacadeTest {
         assertThat(albumDtoWhen.songs()).hasSize(2);
         assertThat(albumDtoWhen.artists()).hasSize(2);
     }
-
 
     @Test
     @DisplayName("Should bubble up entity validation exception when creating invalid album")
@@ -253,10 +249,8 @@ class AlbumFacadeTest {
         assertThat(originalAlbum.songs()).isEmpty();
 
         Set<Long> songIds = Set.of(1L, 2L);
-        Song song1 = Song.builder().title("S1").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        ReflectionTestUtils.setField(song1, "id", 1L);
-        Song song2 = Song.builder().title("S2").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        ReflectionTestUtils.setField(song2, "id", 2L);
+        Song song1 = TestObjectsFactory.createSongWithId(1L, "S1");
+        Song song2 = TestObjectsFactory.createSongWithId(2L, "S2");
 
         Mockito.when(songRetriever.getActive(songIds)).thenReturn(Set.of(song1, song2));
 
@@ -282,13 +276,9 @@ class AlbumFacadeTest {
         AlbumDto.Info originalAlbum = addAlbum("Title");
         assertThat(originalAlbum.artists()).isEmpty();
 
-        Artist featArtist1 = Artist.builder().name("A1").build();
-        ReflectionTestUtils.setField(featArtist1, "id", 1L);
-        Artist featArtist2 = Artist.builder().name("A2").build();
-        ReflectionTestUtils.setField(featArtist2, "id", 2L);
-
-        Artist mainArtist = Artist.builder().name("A3").build();
-        ReflectionTestUtils.setField(mainArtist, "id", 3L);
+        Artist featArtist1 = TestObjectsFactory.createArtistWithId(1L, "A1");
+        Artist featArtist2 = TestObjectsFactory.createArtistWithId(2L, "A2");
+        Artist mainArtist = TestObjectsFactory.createArtistWithId(3L, "A3");
 
         Set<Long> combinedIds = Set.of(1L, 2L, 3L);
         List<Artist> combinedArtists = new ArrayList<>();
@@ -312,8 +302,7 @@ class AlbumFacadeTest {
         assertThat(updatedAlbum.artists().get(0).id()).isEqualTo(3L);
         assertThat(updatedAlbum.artists())
                 .extracting(ArtistDto.Reference::id)
-                .containsExactlyInAnyOrder(1L, 2L, 3L)
-        ;
+                .containsExactlyInAnyOrder(1L, 2L, 3L);
     }
 
     @Test
@@ -323,11 +312,8 @@ class AlbumFacadeTest {
         AlbumDto.Info originalAlbum = addAlbum("Title");
         assertThat(originalAlbum.artists()).isEmpty();
 
-        Artist featArtist1 = Artist.builder().name("A1").build();
-        ReflectionTestUtils.setField(featArtist1, "id", 1L);
-        Artist featArtist2 = Artist.builder().name("A2").build();
-        ReflectionTestUtils.setField(featArtist2, "id", 2L);
-
+        Artist featArtist1 = TestObjectsFactory.createArtistWithId(1L, "A1");
+        Artist featArtist2 = TestObjectsFactory.createArtistWithId(2L, "A2");
 
         Set<Long> combinedIds = Set.of(1L, 2L);
         List<Artist> combinedArtists = new ArrayList<>();
@@ -349,12 +335,9 @@ class AlbumFacadeTest {
     @DisplayName("Should update album's songs to empty collection when updating null")
     void should_update_songs_to_empty_when_null() {
         // given
-
         Set<Long> songIds = Set.of(1L, 2L);
-        Song song1 = Song.builder().title("S1").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        ReflectionTestUtils.setField(song1, "id", 1L);
-        Song song2 = Song.builder().title("S2").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        ReflectionTestUtils.setField(song2, "id", 2L);
+        Song song1 = TestObjectsFactory.createSongWithId(1L, "S1");
+        Song song2 = TestObjectsFactory.createSongWithId(2L, "S2");
 
         Mockito.when(songRetriever.getActive(songIds)).thenReturn(Set.of(song1, song2));
 
@@ -374,7 +357,8 @@ class AlbumFacadeTest {
 
         // then
         assertThat(updatedAlbum.id()).isEqualTo(originalAlbum.id());
-        assertThat(updatedAlbum.songs()).isEmpty();    }
+        assertThat(updatedAlbum.songs()).isEmpty();
+    }
 
     @Test
     @DisplayName("Should throw MissingRequiredFieldException when explicitly updating required field with empty optional")
@@ -415,10 +399,8 @@ class AlbumFacadeTest {
     void should_update_songs_when_there_where_some() {
         // given
         Set<Long> originalSongIds = Set.of(1L, 2L);
-        Song song1 = Song.builder().title("S1").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        ReflectionTestUtils.setField(song1, "id", 1L);
-        Song song2 = Song.builder().title("S2").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        ReflectionTestUtils.setField(song2, "id", 2L);
+        Song song1 = TestObjectsFactory.createSongWithId(1L, "S1");
+        Song song2 = TestObjectsFactory.createSongWithId(2L, "S2");
 
         Mockito.when(songRetriever.getActive(originalSongIds)).thenReturn(Set.of(song1, song2));
 
@@ -429,10 +411,8 @@ class AlbumFacadeTest {
 
         AlbumDto.Info originalAlbum = albumFacade.addAlbum(album);
 
-
         Set<Long> updatedSongIds = Set.of(2L, 3L);
-        Song song3 = Song.builder().title("S3").releaseDate(LocalDate.now()).duration(100).language(SongLanguage.EN).build();
-        ReflectionTestUtils.setField(song3, "id", 3L);
+        Song song3 = TestObjectsFactory.createSongWithId(3L, "S3");
 
         Mockito.when(songRetriever.getActive(updatedSongIds)).thenReturn(Set.of(song2, song3));
 
@@ -539,37 +519,27 @@ class AlbumFacadeTest {
 
         albumFacade.addAlbum(createDto1);
 
-        Artist mainArtist = Artist.builder().name("A Main").build();
-        Long mainArtistId = 1L;
-        ReflectionTestUtils.setField(mainArtist, "id", 1L);
+        Artist mainArtist = TestObjectsFactory.createArtistWithId(1L, "A Main");
+        Artist featArtist = TestObjectsFactory.createArtistWithId(2L, "A Feat");
 
-
-        Artist featArtist = Artist.builder().name("A Feat").build();
-        Long featArtistId = 2L;
-        ReflectionTestUtils.setField(featArtist, "id", 2L);
+        Mockito.when(artistRetriever.getActives(Set.of(1L, 2L))).thenReturn(List.of(mainArtist, featArtist));
 
         AlbumDto.Create createDto2 = AlbumDto.Create.builder()
                 .title("Title 2")
-                .mainArtistId(mainArtistId)
-                .featArtistsIds(List.of(featArtistId))
+                .mainArtistId(1L)
+                .featArtistsIds(List.of(2L))
                 .build();
-
-        Mockito.when(artistRetriever.getActives(Set.of(mainArtistId, featArtistId))).thenReturn(List.of(mainArtist, featArtist));
         albumFacade.addAlbum(createDto2);
 
         AlbumDto.Create createDto3 = AlbumDto.Create.builder()
                 .title("Won't be filtered by t...")
-                .mainArtistId(mainArtistId)
+                .mainArtistId(1L)
                 .build();
 
-        Mockito.when(artistRetriever.getActives(Set.of(mainArtistId))).thenReturn(List.of(mainArtist));
+        Mockito.when(artistRetriever.getActives(Set.of(1L))).thenReturn(List.of(mainArtist));
         albumFacade.addAlbum(createDto3);
 
-        AlbumDto.Create createDto4 = AlbumDto.Create.builder()
-                .title("Title 4")
-                .build();
-
-        AlbumDto.Info info4 = albumFacade.addAlbum(createDto4);
+        AlbumDto.Info info4 = addAlbum("Title 4");
         albumFacade.deactivateAlbum(info4.id());
     }
 }

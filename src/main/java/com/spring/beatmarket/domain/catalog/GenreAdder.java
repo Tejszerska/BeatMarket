@@ -14,7 +14,7 @@ class GenreAdder {
     private final GenreMapper genreMapper;
 
     GenreDto.Info add(final GenreDto.Create dto) {
-        if(dto.name() == null || dto.name().isBlank()) throw new MissingRequiredFieldException("Genre needs a specified name!");
+        if(dto.name() == null || dto.name().isBlank()) throw new MissingRequiredFieldException("name");
         Genre genre = new Genre(dto.name());
         return genreMapper.toInfoDto(
                            genreRepository.save(genre)

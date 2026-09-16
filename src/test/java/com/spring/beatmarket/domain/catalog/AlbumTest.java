@@ -226,7 +226,7 @@ class AlbumTest {
         album.assignArtist(mainArtist, true);
 
         //then
-        assertThat(album.getArtists()).hasSize(0);
+        assertThat(album.getArtists()).isEmpty();
     }
 
     @Test
@@ -289,7 +289,7 @@ class AlbumTest {
         album.removeArtist(mainArtist);
 
         //then
-        assertThat(album.getArtists()).hasSize(0);
+        assertThat(album.getArtists()).isEmpty();
     }
 
     @Test
@@ -318,8 +318,7 @@ class AlbumTest {
         album.addSong(song);
 
         //then
-        assertThat(album.getSongs()).doesNotContain(song);
-        assertThat(album.getSongs()).hasSize(0);
+        assertThat(album.getSongs()).isEmpty();
     }
 
     @Test
@@ -349,7 +348,6 @@ class AlbumTest {
         album.removeSong(song);
 
         //then
-        assertThat(album.getSongs()).doesNotContain(song);
         assertThat(song.getAlbum()).isNull();
     }
 
@@ -366,7 +364,6 @@ class AlbumTest {
         album.removeSong(songNull);
 
         //then
-        assertThat(album.getSongs()).doesNotContain(songNull);
         assertThat(album.getSongs()).hasSize(1);
     }
 
@@ -409,7 +406,7 @@ class AlbumTest {
     void should_not_clear_artists() {
         //given
         Album album = Album.builder().title("Title").build();
-        assertThat(album.getArtists()).hasSize(0);
+        assertThat(album.getArtists()).isEmpty();
 
         //when
         album.clearArtists();

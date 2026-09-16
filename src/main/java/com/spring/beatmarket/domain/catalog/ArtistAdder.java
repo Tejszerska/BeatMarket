@@ -31,7 +31,7 @@ class ArtistAdder {
         if (!allSongIds.isEmpty()) {
             List<Song> songs = songRetriever.getActiveWithArtist(allSongIds);
             for (Song song : songs) {
-                boolean isMain = createDto.mainSongIds() != null && createDto.mainSongIds().contains(song.getId());
+                boolean isMain = roleValidator.validateHasMainArtist(createDto.mainSongIds(), song.getId(), song.getArtists(), "Song");
                 song.assignArtist(savedArtist, isMain);
             }
         }
@@ -40,7 +40,7 @@ class ArtistAdder {
             List<Album> albums = albumRetriever.getActiveWithArtist(allAlbumIds);
 
             for (Album album : albums) {
-                boolean isMain = createDto.mainAlbumIds() != null && createDto.mainAlbumIds().contains(album.getId());
+                boolean isMain = roleValidator.validateHasMainArtist(createDto.mainAlbumIds(), album.getId(), album.getArtists(), "Album");
                 album.assignArtist(savedArtist, isMain);
             }
         }

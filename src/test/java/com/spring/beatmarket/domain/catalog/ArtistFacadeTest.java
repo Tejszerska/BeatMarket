@@ -1,12 +1,16 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.domain.catalog.exception.MainRoleAbsentException;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -67,9 +71,7 @@ class ArtistFacadeTest {
     @DisplayName("Should add Artist")
     void should_add_artist() {
         // given
-        ArtistDto.Create createDto = ArtistDto.Create.builder()
-                .name("New Artist")
-                .build();
+        ArtistDto.Create createDto = TestObjectsFactory.createArtistDto("New Artist");
 
         ArtistDto.Info artistDtoGiven = artistFacade.addArtist(createDto);
 
@@ -80,14 +82,67 @@ class ArtistFacadeTest {
         assertThat(artistDtoWhen.id()).isEqualTo(artistDtoGiven.id());
         assertThat(artistDtoWhen.name()).isEqualTo(createDto.name());
     }
+    @Test
+    @DisplayName("Should add Artist with Albums and Songs as main and feat")
+    void should_add_artist_with_all() {
+        // given
+        Artist otherArtist= TestObjectsFactory.createArtistWithId(10L, "Other Artist");
+
+        Set<Long> songIds = Set.of(1L, 2L);
+        Song song1 = TestObjectsFactory.createSongWithId(1L, "S1");
+        Song song2 = TestObjectsFactory.createSongWithId(2L, "S2");
+        song2.assignArtist(otherArtist, true);
+        Mockito.when(songRetriever.getActiveWithArtist(songIds)).thenReturn(List.of(song1, song2));
+
+        Set<Long> albumIds = Set.of(101L, 102L);
+        Album album1 = TestObjectsFactory.createAlbumWithId(101L, "Al1");
+        Album album2 = TestObjectsFactory.createAlbumWithId(102L, "Al2");
+        album2.assignArtist(otherArtist, true);
+        Mockito.when(albumRetriever.getActiveWithArtist(albumIds)).thenReturn(List.of(album1, album2));
+
+        ArtistDto.Create createDto = ArtistDto.Create.builder()
+                .name("Artist")
+                .mainSongIds(List.of(1L))
+                .featSongIds(List.of(2L))
+                .mainAlbumIds(List.of(101L))
+                .featAlbumIds(List.of(102L))
+                .build();
+
+        // when
+        ArtistDto.Info artistDtoInfo = artistFacade.addArtist(createDto);
+
+        // then
+        assertThat(artistDtoInfo.name()).isEqualTo(createDto.name());
+        assertThat(artistDtoInfo.songs()).hasSize(2);
+        assertThat(artistDtoInfo.albums()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when adding artist as a featured in Album that has no main")
+    void should_throw_exception_when_artist_featured_Album_has_no_main() {
+        // given
+        Set<Long> albumIds = Set.of(101L, 102L);
+        Album album1 = TestObjectsFactory.createAlbumWithId(101L, "Al1");
+        Album album2 = TestObjectsFactory.createAlbumWithId(102L, "Al2");
+        Mockito.when(albumRetriever.getActiveWithArtist(albumIds)).thenReturn(List.of(album1, album2));
+
+        ArtistDto.Create createDto = ArtistDto.Create.builder()
+                .name("Artist")
+                .mainAlbumIds(List.of(101L))
+                .featAlbumIds(List.of(102L))
+                .build();
+
+        // when & then
+        assertThatThrownBy(() ->artistFacade.addArtist(createDto))
+                .isInstanceOf(MainRoleAbsentException.class)
+                .hasMessage("Cannot update Albums featured artists when main artist isn't specified.");
+    }
 
     @Test
     @DisplayName("Should bubble up entity validation exception when creating invalid artist")
     void should_bubble_up_validation_exception_when_adding_invalid_artist() {
         // given
-        ArtistDto.Create invalidDto = ArtistDto.Create.builder()
-                .name("   ")
-                .build();
+        ArtistDto.Create invalidDto = TestObjectsFactory.createArtistDto("   ");
 
         // when & then
         assertThatThrownBy(() -> artistFacade.addArtist(invalidDto))
@@ -148,12 +203,11 @@ class ArtistFacadeTest {
     }
 
     @Test
-    @DisplayName("Should deactivate artist by id and cascade deletions to related entities")
+    @DisplayName("Should deactivate artist by id and verify deleters are called")
     public void should_delete_artist_by_id_when_artist_exists() {
         // given
         ArtistDto.Info addedArtist = addArtist("artist to deactivate");
         Long idForDeactivating = addedArtist.id();
-        assertThat(artistFacade.getArtistDetails(idForDeactivating)).isNotNull();
 
         // when
         artistFacade.deactivateArtist(idForDeactivating);
@@ -162,10 +216,8 @@ class ArtistFacadeTest {
         assertThatThrownBy(() -> artistFacade.getArtistDetails(idForDeactivating))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Artist");
-
-        // Weryfikacja interakcji z klasami usuwającymi powiązania
         verify(songDeleter).bulkDeactivate(anySet());
-        verify(albumDeleter).deleteAllAlbumsByIds(anySet());
+        verify(albumDeleter).bulkDeactivate(anySet());
     }
 
     @Test
@@ -181,10 +233,7 @@ class ArtistFacadeTest {
     }
 
     private ArtistDto.Info addArtist(String name) {
-        ArtistDto.Create createDto = ArtistDto.Create.builder()
-                .name(name)
-                .build();
-
+        ArtistDto.Create createDto = TestObjectsFactory.createArtistDto(name);
         return artistFacade.addArtist(createDto);
     }
 }

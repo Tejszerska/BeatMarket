@@ -60,7 +60,7 @@ class GenreFacadeTest {
         // when & then
         assertThatThrownBy(() -> genreFacade.addGenre(invalidDto))
                 .isInstanceOf(MissingRequiredFieldException.class)
-                .hasMessage("Genre needs a specified name!");
+                .hasMessage("Required field 'name' cannot be blank or null.");
     }
 
     @Test

@@ -40,7 +40,7 @@ class ArtistDeleter {
                 albumsToDeleteIds.add(album.getId());
             }
         }
-        albumDeleter.deleteAllAlbumsByIds(albumsToDeleteIds);
+        albumDeleter.bulkDeactivate(albumsToDeleteIds);
 
         artist.deactivate();
     }

@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
+import com.spring.beatmarket.domain.catalog.exception.MainRoleAbsentException;
 import com.spring.beatmarket.domain.catalog.exception.MainRoleRemovalException;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +38,16 @@ class RoleValidator {
         return Stream.concat(safeMain.stream(), safeFeat.stream()).collect(Collectors.toSet());
     }
 
-    void validateNotMainArtist (List<Artist> artistList, Artist artist, Long subjectId, String subjectName){
+    void validateIsMainArtist(List<Artist> artistList, Artist artist, Long subjectId, String subjectName){
         if (artistList.size() > 1 && artistList.get(0).equals(artist)) {
             throw new MainRoleRemovalException(subjectName, artist.getId(), subjectId);
         }
+    }
+    boolean validateHasMainArtist(List<Long> ids, Long checkedId, List<Artist> artists, String subjectName){
+        boolean isMain = ids != null && ids.contains(checkedId);
+        if (!isMain && artists.isEmpty()) {
+            throw new MainRoleAbsentException(subjectName);
+        }
+        return isMain;
     }
 }

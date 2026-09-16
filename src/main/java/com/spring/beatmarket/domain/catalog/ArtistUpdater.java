@@ -62,7 +62,7 @@ class ArtistUpdater {
             for (Song song : currentSongsCopy) {
                 if (!allTargetSongIds.contains(song.getId())) {
                     List<Artist> currentSongArtists = song.getArtists();
-                    roleValidator.validateNotMainArtist(currentSongArtists, artistFromDB, song.getId(), "Song");
+                    roleValidator.validateIsMainArtist(currentSongArtists, artistFromDB, song.getId(), "Song");
                     song.removeArtist(artistFromDB);
                 }
             }
@@ -101,7 +101,7 @@ class ArtistUpdater {
             for (Album oldAlbum : oldAlbumsCopy) {
                 if (!allTargetIds.contains(oldAlbum.getId())) {
                     List<Artist> artists = oldAlbum.getArtists();
-                    roleValidator.validateNotMainArtist(artists, artistFromDB, oldAlbum.getId(), "Album");
+                    roleValidator.validateIsMainArtist(artists, artistFromDB, oldAlbum.getId(), "Album");
 
                     oldAlbum.removeArtist(artistFromDB);
                 }
