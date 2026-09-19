@@ -57,8 +57,8 @@ class AlbumRetrieverTest {
     @DisplayName("Should throw ResourceNotFoundException with exact missing ID when repository returns fewer elements")
     void should_throw_exception_with_missing_id() {
         // given
-        Album foundAlbum = Album.builder().title("Found").build();
-        when(albumRepository.findActiveWithArtistsByIds(Set.of(2L)))
+        Album foundAlbum = TestObjectsFactory.createAlbumWithId(2L, "Album");
+        when(albumRepository.findActiveWithArtistsByIds(Set.of(1L, 2L)))
                 .thenReturn(List.of(foundAlbum));
 
         // when & then

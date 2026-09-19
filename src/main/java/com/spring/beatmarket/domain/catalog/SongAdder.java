@@ -33,7 +33,6 @@ class SongAdder {
 
         artistRoleManager.assign(dto.mainArtistId(), dto.featArtistIds(), "Song", song::assignArtist);
 
-
         Song saved = songRepository.save(song);
         return songMapper.toInfoDto(saved);
     }

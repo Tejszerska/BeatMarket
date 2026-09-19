@@ -45,6 +45,7 @@ class AlbumUpdater {
                         Set<Song> targetSongs = newSongIds.isEmpty() ?
                                 Collections.emptySet() : songRetriever.getActive(newSongIds);
 
+                        // Copying Collection to avoid ConcurrentModificationException while removing items
                         Set<Song> currentSongs = new HashSet<>(album.getSongs());
 
                         for (Song currentSong : currentSongs) {

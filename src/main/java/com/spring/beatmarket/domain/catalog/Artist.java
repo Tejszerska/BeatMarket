@@ -14,9 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -39,19 +37,20 @@ class Artist extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
+    // Using Set instead of List to prevent Hibernate MultipleBagFetchException
+    // when multiple collections are fetched simultaneously.
     @ManyToMany(mappedBy = "artists")
     private Set<Song> songs = new HashSet<>();
 
-    // TODO: Refactor List to Set to match domain logic (prevent duplicates)
     @ManyToMany(mappedBy = "artists")
-    private List<Album> albums = new ArrayList<>();
+    private Set<Album> albums = new HashSet<>();
 
     Artist(final String name) {
-        this(name, null, new HashSet<>(), new ArrayList<>());
+        this(name, null, new HashSet<>(), new HashSet<>());
     }
 
     @Builder
-    Artist(final String name, final String imageUrl, final Set<Song> songs, final List<Album> albums) {
+    Artist(final String name, final String imageUrl, final Set<Song> songs, final Set<Album> albums) {
         if (name == null || name.isBlank()) {
             throw new MissingRequiredFieldException("name");
         }
@@ -59,7 +58,7 @@ class Artist extends BaseEntity {
         this.name = name;
         this.imageUrl = imageUrl;
         this.songs = songs != null ? new HashSet<>(songs) : new HashSet<>();
-        this.albums = albums != null ? new ArrayList<>(albums) : new ArrayList<>();
+        this.albums = albums != null ? new HashSet<>(albums) : new HashSet<>();
     }
 
     void changeName(String newName) {
@@ -74,9 +73,8 @@ class Artist extends BaseEntity {
     }
 
     /**
-     * Passive side of the ManyToMany relationship with Album.
-     * Persistence is managed by the Album entity. Use Album.assignArtist()
-     * to properly establish database relationships.
+     * Warning: Updates in-memory collection only.
+     * To persist the relationship in the database, you must use {@link Album#assignArtist(Artist, boolean)}.
      */
     void addAlbum(Album album) {
         if (album != null){
@@ -91,9 +89,8 @@ class Artist extends BaseEntity {
     }
 
     /**
-     * Passive side of the ManyToMany relationship with Song.
-     * Persistence is managed by the Song entity. Use Song.assignArtist()
-     * to properly establish database relationships.
+     * Warning: Updates in-memory collection only.
+     * To persist the relationship in the database, you must use {@link Song#assignArtist(Artist, boolean)}.
      */
     void addSong(Song song) {
         if (song != null) {

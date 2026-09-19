@@ -19,21 +19,34 @@ class ArtistRoleManager {
     private final RoleValidator roleValidator;
     private final ArtistRetriever artistRetriever;
 
+
+    /**
+     * Delegates role assignment to a specific entity (Song/Album) using a BiConsumer action.
+     * This decouples the role manager from knowing the exact domain entity being modified.
+     */
     void assign(Long mainArtistId,
-                Collection<Long> featIds,
+                Collection<Long> featArtistIds,
                 String subjectEntityName,
                 BiConsumer<Artist,Boolean> assignmentAction) {
 
         List<Long> mainList = mainArtistId != null ? List.of(mainArtistId) : null;
 
         Set<Long> allArtistIds = roleValidator.combineAndValidateIds(
-                mainList, featIds, "Artist", subjectEntityName
+                mainList, featArtistIds, "Artist", subjectEntityName
         );
 
         applyAssignments(assignmentAction, mainArtistId, allArtistIds);
     }
 
-    public void sync(final Optional<Long> mainArtistId,
+    /**
+     * Handles PATCH-style updates where parameters wrapped in Optional dictate the intent:
+     * - null: retain current state
+     * - Optional.empty() or empty collection: clear existing relations
+     * <p>
+     * Enforces the business rule that a subject entity cannot have featured artists
+     * without a designated main artist.
+     */
+    void sync(final Optional<Long> mainArtistId,
                      final Optional<List<Long>> featArtistIds,
                      final String subjectEntityName,
                      final List<Artist> currentArtists,
@@ -66,11 +79,11 @@ class ArtistRoleManager {
         applyAssignments(assignmentAction, targetMainId, allTargetIds);
     }
 
-    private void applyAssignments(final BiConsumer<Artist, Boolean> assignmentAction, final Long targetMainId, final Set<Long> allTargetIds) {
-        if (!allTargetIds.isEmpty()) {
-            List<Artist> newArtists = artistRetriever.getActives(allTargetIds);
+    private void applyAssignments(final BiConsumer<Artist, Boolean> assignmentAction, final Long mainArtistId, final Set<Long> allArtistsIds) {
+        if (!allArtistsIds.isEmpty()) {
+            List<Artist> newArtists = artistRetriever.getActives(allArtistsIds);
             for (Artist artist : newArtists) {
-                boolean isMain = Objects.equals(targetMainId, artist.getId());
+                boolean isMain = Objects.equals(mainArtistId, artist.getId());
                 assignmentAction.accept(artist, isMain);
             }
         }

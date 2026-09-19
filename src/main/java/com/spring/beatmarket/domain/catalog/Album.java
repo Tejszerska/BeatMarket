@@ -60,10 +60,6 @@ class Album extends BaseEntity {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Song> songs = new HashSet<>();
 
-    /**
-     * Ensures structural integrity by enforcing non-null constraints and
-     * eagerly initializing relationships to avoid NullPointerExceptions.
-     */
     @Builder
     Album(final String title, final LocalDate releaseDate, final String coverUrl, final List<Artist> artists, final Set<Song> songs) {
         if (title == null || title.isBlank()) {
@@ -97,13 +93,8 @@ class Album extends BaseEntity {
     void changeCoverUrl(String newCoverUrl) {
         this.coverUrl = newCoverUrl;
     }
-
-    /**
-     * Manages the owning side of the ManyToMany relationship with Artist.
-     * Safely updates both entities to keep the Persistence Context synchronized.
-     * Business validation (e.g., enforcing main vs. featured artist constraints) is delegated to the ArtistRoleManager
-     */
-
+    // Business validation (e.g., enforcing main vs. featured artist constraints)
+    // is delegated to the ArtistRoleManager. This method solely handles persistence sync.
     void assignArtist(Artist artist, boolean isMain) {
         if (artist == null) return;
 
@@ -112,14 +103,13 @@ class Album extends BaseEntity {
         if (wasRemoved) artist.removeAlbum(this);
 
         if (isMain) {
+            // Domain rule: The Main Artist is always strictly maintained at index 0
             this.artists.add(0, artist);
         } else {
             this.artists.add(artist);
         }
 
-        if (!artist.getAlbums().contains(this)) {
-            artist.getAlbums().add(this);
-        }
+        artist.getAlbums().add(this);
     }
 
     void removeArtist(Artist artist) {
@@ -131,10 +121,9 @@ class Album extends BaseEntity {
         }
     }
 
-    /**
-     * Re-creating the collection prevents a Constraint Violation exception
-     * when Hibernate attempts to reorder artists (e.g., switching main and featured roles).
-     */
+
+    // Re-creating the collection prevents a Constraint Violation exception
+    // when Hibernate attempts to reorder artists (e.g., switching main and featured roles).
     void clearArtists() {
         if (!this.artists.isEmpty()) {
             this.artists.forEach(artist -> artist.removeAlbum(this));
@@ -142,9 +131,6 @@ class Album extends BaseEntity {
         }
     }
 
-    /**
-     * Manages the inverse side of the OneToMany relationship with Song.
-     */
     void addSong(Song song) {
         if (song != null && !this.songs.contains(song)) {
             this.songs.add(song);

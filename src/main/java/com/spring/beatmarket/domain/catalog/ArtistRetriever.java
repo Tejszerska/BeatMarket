@@ -53,6 +53,9 @@ class ArtistRetriever {
         return foundArtists;
     }
 
+
+    // Two-step querying prevents Cartesian product in the database
+    // when fetching multiple collections (songs and albums) simultaneously.
     Artist findEagerly(final Long artistId) {
         Artist artist = artistRepository.findByIdWithSongs(artistId)
                 .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));

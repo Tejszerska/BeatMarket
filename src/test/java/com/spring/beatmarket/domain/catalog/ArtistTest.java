@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +29,7 @@ class ArtistTest {
         Album album = Album.builder().title("Album").build();
 
         Set<Song> songs = Set.of(song);
-        List<Album> albums = List.of(album);
+        Set<Album> albums = Set.of(album);
 
         // when
         Artist artist = Artist.builder()

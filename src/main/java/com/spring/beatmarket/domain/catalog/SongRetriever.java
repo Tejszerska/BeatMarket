@@ -30,6 +30,10 @@ class SongRetriever {
     private final SongMapper songMapper;
     private final LicensingFacade licensingFacade;
 
+
+    // Two-step retrieval: Pricing data resides in the isolated Licensing module.
+    // We must first fetch matching song IDs from Licensing to apply the maxPrice filter
+    // before querying the Catalog database.
     Slice<SongDto.Summary> findAll(SongDto.SearchCriteria searchCriteria, Pageable pageable) {
 
         Set<Long> matchingIdsFromLicensing = null;
@@ -43,7 +47,6 @@ class SongRetriever {
                     searchCriteria.maxPrice()
             );
         }
-
         spec = spec
                 .and(SongSpecifications.hasGenre(searchCriteria.genre()))
                 .and(SongSpecifications.hasArtist(searchCriteria.artist()))
@@ -53,7 +56,6 @@ class SongRetriever {
                 .and(SongSpecifications.hasMaxDuration(searchCriteria.maxDuration()))
                 .and(SongSpecifications.hasReleaseDate(searchCriteria.releaseDate()))
                 .and(SongSpecifications.hasIdsIn(matchingIdsFromLicensing));
-
 
         Slice<Song> songsSlice = songRepository.findAll(spec, pageable);
 

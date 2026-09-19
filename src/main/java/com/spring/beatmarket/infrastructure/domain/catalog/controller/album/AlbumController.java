@@ -51,6 +51,12 @@ class AlbumController {
         return ResponseEntity.ok(mapper.toGetAllResponse(albumsSlice));
     }
 
+    @Operation(summary = "Get album by ID", description = "Retrieves detailed information about a specific album by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Album found and returned successfully."),
+            @ApiResponse(responseCode = "404", description = "Album with the provided ID does not exist.",
+                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+    })
     @GetMapping("/{albumId}")
     ResponseEntity<AlbumApiDto.DetailsResponse> getAlbumById(@PathVariable Long albumId) {
         AlbumDto.Details albumDetails = facade.getAlbumDetails(albumId);

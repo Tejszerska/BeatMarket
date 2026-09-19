@@ -32,7 +32,7 @@ class ArtistDeleter {
         }
         songDeleter.bulkDeactivate(songToDeleteIds);
 
-        List<Album> albums = artist.getAlbums();
+        Set<Album> albums = artist.getAlbums();
         Set<Long> albumsToDeleteIds = new HashSet<>();
         for (Album album : albums) {
             int order = album.getArtists().indexOf(artist);

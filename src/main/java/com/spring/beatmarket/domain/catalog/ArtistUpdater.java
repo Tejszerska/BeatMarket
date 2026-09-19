@@ -75,7 +75,7 @@ class ArtistUpdater {
 
         if (updateFromRequest.mainAlbumIds() != null || updateFromRequest.featAlbumIds() != null) {
 
-            List<Album> allCurrentAlbums = artistFromDB.getAlbums();
+            Set<Album> allCurrentAlbums = artistFromDB.getAlbums();
 
             List<Long> currentMainAlbumsIds = allCurrentAlbums.stream()
                     .filter(album -> album.getArtists().indexOf(artistFromDB) == 0)

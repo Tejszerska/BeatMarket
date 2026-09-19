@@ -84,11 +84,6 @@ class Song extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String fileUrl;
 
-    /**
-     * Enforces strict business invariants for Song creation.
-     * Blocks invalid states (e.g., negative duration, future release dates)
-     * to act as the primary process guardian.
-     */
     @Builder
     Song(final String title, final LocalDate releaseDate, final Integer duration, final SongLanguage language,
          final Genre genre, final Album album, final List<Artist> artists,
@@ -134,7 +129,8 @@ class Song extends BaseEntity {
      */
     void changeReleaseDate(LocalDate releaseDate) {
         if (releaseDate == null) throw new MissingRequiredFieldException("releaseDate");
-        if (releaseDate.isAfter(LocalDate.now())) throw new IllegalArgumentException("Release date can't be in the future");
+        if (releaseDate.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Release date can't be in the future");
         this.releaseDate = releaseDate;
     }
 
@@ -154,19 +150,16 @@ class Song extends BaseEntity {
         this.genre = null;
     }
 
-    /**
-     * Manages bidirectional synchronization with Artist.
-     * The 'contains' check prevents infinite recursion during the assignment process.
-     * Business validation (e.g., enforcing main vs. featured artist constraints) is delegated to the ArtistRoleManager
-     */
-
-    void assignArtist(Artist artist, boolean isMain){
+    // Business validation (e.g., enforcing main vs. featured artist constraints)
+    // is delegated to the ArtistRoleManager. This method solely handles persistence sync.
+    void assignArtist(Artist artist, boolean isMain) {
         if (artist == null) return;
 
         boolean wasRemoved = this.artists.remove(artist);
-        if(wasRemoved) artist.getSongs().remove(this);
+        if (wasRemoved) artist.getSongs().remove(this);
 
-        if(isMain){
+        if (isMain) {
+            // Domain rule: The Main Artist is always strictly maintained at index 0
             this.artists.add(0, artist);
         } else {
             this.artists.add(artist);
@@ -184,11 +177,8 @@ class Song extends BaseEntity {
         }
     }
 
-    /**
-     * Re-creating the collection prevents a Constraint Violation exception
-     * when Hibernate attempts to reorder artists (e.g., switching main and featured roles).
-     */
-
+    // Re-creating the collection prevents a Constraint Violation exception
+    // when Hibernate attempts to reorder artists (e.g., switching main and featured roles).
     void clearArtists() {
         if (!this.artists.isEmpty()) {
             this.artists.forEach(artist -> artist.removeSong(this));
