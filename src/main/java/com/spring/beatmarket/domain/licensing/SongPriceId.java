@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+//@TODO spr czy dobrze zaimplementowałam
 @NoArgsConstructor
 @AllArgsConstructor
 class SongPriceId implements Serializable {

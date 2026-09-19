@@ -12,7 +12,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-
+/**
+ * Testing only complicated internal logic and edge cases to avoid "mock hell".
+ * Methods reachable from {@link AlbumFacadeTest} are tested there.
+ */
 class AlbumDeleterTest {
 
     private final AlbumRepository albumRepository = mock(AlbumRepository.class);

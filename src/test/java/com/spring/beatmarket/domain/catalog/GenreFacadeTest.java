@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -32,6 +35,20 @@ class GenreFacadeTest {
         GenreUpdater genreUpdater = new GenreUpdater(genreRepository, genreRetriever, genreMapper);
 
         return new GenreFacadeImpl(genreAdder, genreRetriever, genreDeleter, genreUpdater, songUpdater);
+    }
+
+    @Test
+    @DisplayName("Should return slice with Genres")
+    void should_return_slice() {
+        // given
+        genreFacade.addGenre(new GenreDto.Create("Rock"));
+        genreFacade.addGenre(new GenreDto.Create("Pop"));
+        genreFacade.addGenre(new GenreDto.Create("Rap"));
+        Pageable pageable = PageRequest.of(0, 5);
+        // when
+        Slice<GenreDto.Summary> allGenres = genreFacade.findAllGenres(pageable);
+        // then
+        assertThat(allGenres).hasSize(3);
     }
 
     @Test

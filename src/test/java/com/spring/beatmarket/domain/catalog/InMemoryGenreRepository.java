@@ -2,8 +2,11 @@ package com.spring.beatmarket.domain.catalog;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,7 +29,20 @@ class InMemoryGenreRepository implements GenreRepository {
 
     @Override
     public Slice<Genre> findByActiveTrue(final Pageable pageable) {
-        throw new UnsupportedOperationException("This isn't covered in unit testing");
+        List<Genre> fullActiveList = db.values().stream().filter(Genre::isActive).toList();
+        int fullListSize = fullActiveList.size();
+
+        int pageStart = (int) pageable.getOffset();
+        int pageEnd = Math.min((pageStart + pageable.getPageSize()), fullListSize);
+
+        if (pageStart >= fullListSize) {
+            return new SliceImpl<>(Collections.emptyList(), pageable, false);
+        }
+        List<Genre> listSliced = fullActiveList.subList(pageStart, pageEnd);
+
+        boolean hasNext = pageEnd < fullListSize;
+
+        return new SliceImpl<>(listSliced, pageable, hasNext);
     }
 
     @Override

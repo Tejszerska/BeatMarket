@@ -1,12 +1,18 @@
 package com.spring.beatmarket.domain.catalog;
 
+import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.licensing.LicensingFacade;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -78,6 +84,42 @@ class SongFacadeTest {
         assertThat(songDtoWhen.id()).isEqualTo(songDtoGiven.id());
         assertThat(songDtoWhen.id()).isEqualTo(1);
         assertThat(songDtoWhen.title()).isEqualTo(songDtoGiven.title());
+    }
+
+    @Test
+    @DisplayName("Should add Song with all fields set")
+    void should_add_song_with_genre_and_album() {
+        // given
+        SongDto.Create createDto = SongDto.Create.builder()
+                .title("Test")
+                .releaseDate(LocalDate.now())
+                .duration(210)
+                .language(SongLanguage.EN)
+                .genreId(1L)
+                .albumId(10L)
+                .mainArtistId(100L)
+                .featArtistIds(List.of(101L))
+                .build();
+
+        Genre genre = TestObjectsFactory.createGenreWithId(1L, "Pop");
+        Album album = TestObjectsFactory.createAlbumWithId(10L, "Album");
+        Artist mainArtist = TestObjectsFactory.createArtistWithId(100L, "Main Artist");
+        Artist featArtist = TestObjectsFactory.createArtistWithId(101L, "Feat Artist");
+
+        Mockito.when(genreRetriever.getActive(1L)).thenReturn(genre);
+        Mockito.when(albumRetriever.getActiveWithArtist(10L)).thenReturn(album);
+        Mockito.when(artistRetriever.getActives(Set.of(100L, 101L)))
+                .thenReturn(List.of(mainArtist, featArtist));
+
+
+        // when
+        SongDto.Info addedSong = songFacade.addSong(createDto);
+
+        // then
+        assertThat(addedSong.id()).isEqualTo(1L);
+        assertThat(addedSong.genre().id()).isEqualTo(1L);
+        assertThat(addedSong.album().id()).isEqualTo(10L);
+        assertThat(addedSong.artists()).extracting(ArtistDto.Reference::id).containsExactly(100L, 101L);
     }
 
     @Test

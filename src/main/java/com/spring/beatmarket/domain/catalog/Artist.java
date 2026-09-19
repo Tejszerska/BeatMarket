@@ -42,6 +42,7 @@ class Artist extends BaseEntity {
     @ManyToMany(mappedBy = "artists")
     private Set<Song> songs = new HashSet<>();
 
+    // TODO: Refactor List to Set to match domain logic (prevent duplicates)
     @ManyToMany(mappedBy = "artists")
     private List<Album> albums = new ArrayList<>();
 

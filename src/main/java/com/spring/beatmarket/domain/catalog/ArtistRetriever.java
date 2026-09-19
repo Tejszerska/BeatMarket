@@ -22,7 +22,7 @@ class ArtistRetriever {
 
     Slice<ArtistDto.Summary> findAll(String name, Pageable pageable) {
         Slice<Artist> all;
-        if(name == null || name.isBlank()) {
+        if (name == null || name.isBlank()) {
             all = artistRepository.findByActiveTrue(pageable);
         } else {
             all = artistRepository.findByActiveTrueAndNameContainsIgnoreCase(name, pageable);
@@ -53,11 +53,6 @@ class ArtistRetriever {
         return foundArtists;
     }
 
-    Artist getActive(Long id) {
-        return artistRepository.findByIdAndActiveTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Artist", id));
-    }
-
     Artist findEagerly(final Long artistId) {
         Artist artist = artistRepository.findByIdWithSongs(artistId)
                 .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
@@ -69,7 +64,6 @@ class ArtistRetriever {
     }
 
     ArtistDto.Details getDetails(final Long artistId) {
-        Artist artist = findEagerly(artistId);
-        return artistMapper.toDetailsDto(artist);
+        return artistMapper.toDetailsDto(findEagerly(artistId));
     }
 }

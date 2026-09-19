@@ -2,6 +2,7 @@ package com.spring.beatmarket.domain.catalog;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collection;
@@ -31,12 +32,21 @@ class InMemoryArtistRepository implements ArtistRepository {
 
     @Override
     public Slice<Artist> findByActiveTrue(final Pageable pageable) {
-        throw new UnsupportedOperationException("This isn't covered in unit testing");
+        List<Artist> artistsList = db.values().stream()
+                .filter(Artist::isActive)
+                .toList();
+
+        return getArtistSlice(pageable, artistsList);
     }
 
     @Override
     public Slice<Artist> findByActiveTrueAndNameContainsIgnoreCase(final String name, final Pageable pageable) {
-        throw new UnsupportedOperationException("This isn't covered in unit testing");
+        List<Artist> artistsList = db.values().stream()
+                .filter(Artist::isActive)
+                .filter(artist -> artist.getName().toLowerCase().contains(name.toLowerCase()))
+                .toList();
+
+        return getArtistSlice(pageable, artistsList);
     }
 
     @Override
@@ -88,4 +98,20 @@ class InMemoryArtistRepository implements ArtistRepository {
     public Optional<Artist> findByIdWithAlbums(final Long id) {
         return findByIdAndActiveTrue(id);
     }
+
+private SliceImpl<Artist> getArtistSlice(Pageable pageable, List<Artist> artistList){
+    int completeListSize = artistList.size();
+    int pageStart = (int) pageable.getOffset();
+    int pageEnd = Math.min((pageStart + pageable.getPageSize()), completeListSize);
+
+    if(pageStart >= completeListSize){
+        return new SliceImpl<>(List.of(), pageable, false);
+    }
+
+    List<Artist> currentSlice = artistList.subList(pageStart, pageEnd);
+
+    boolean hasNext = pageEnd < completeListSize;
+
+    return new SliceImpl<>(currentSlice, pageable, hasNext);
+}
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -47,14 +48,12 @@ class ArtistRoleManager {
                 .map(Artist::getId)
                 .toList();
 
-
-
         Long targetMainId = mainArtistId == null ? currentMainId : mainArtistId.orElse(null);
         List<Long> targetFeatIds = featArtistIds == null ? currentFeatIds : featArtistIds.orElse(Collections.emptyList());
 
         List<Long> targetMainList = targetMainId != null ? List.of(targetMainId) : null;
 
-        if(currentMainId == null && targetMainId == null && !targetFeatIds.isEmpty()){
+        if(targetMainId == null && !targetFeatIds.isEmpty()){
          throw new MainRoleAbsentException(subjectEntityName);
         }
 
@@ -71,7 +70,7 @@ class ArtistRoleManager {
         if (!allTargetIds.isEmpty()) {
             List<Artist> newArtists = artistRetriever.getActives(allTargetIds);
             for (Artist artist : newArtists) {
-                boolean isMain = targetMainId != null && targetMainId.equals(artist.getId());
+                boolean isMain = Objects.equals(targetMainId, artist.getId());
                 assignmentAction.accept(artist, isMain);
             }
         }

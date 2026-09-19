@@ -10,7 +10,10 @@ import java.util.Set;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+/**
+ * Testing only complicated internal logic and edge cases to avoid "mock hell".
+ * Methods reachable from {@link ArtistFacadeTest} are tested there.
+ */
 class ArtistDeleterTest {
 
     private final ArtistRetriever artistRetriever = mock(ArtistRetriever.class);

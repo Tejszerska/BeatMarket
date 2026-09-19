@@ -29,6 +29,12 @@ class TestObjectsFactory {
         return artist;
     }
 
+    public static Genre createGenreWithId(Long id, String name) {
+        Genre genre = Genre.builder().name(name).build();
+        ReflectionTestUtils.setField(genre, "id", id);
+        return genre;
+    }
+
     public static Song createSongWithId(Long id, String title) {
         Song song = Song.builder()
                 .title(title)

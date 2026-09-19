@@ -16,7 +16,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+/**
+ * Testing only complicated internal logic and edge cases to avoid "mock hell".
+ * Methods reachable from {@link AlbumFacadeTest} are tested there.
+ */
 class AlbumRetrieverTest {
 
     private final AlbumRepository albumRepository = mock(AlbumRepository.class);
@@ -55,13 +58,13 @@ class AlbumRetrieverTest {
     void should_throw_exception_with_missing_id() {
         // given
         Album foundAlbum = Album.builder().title("Found").build();
-        when(albumRepository.findActiveWithArtistsByIds(Set.of(1L, 2L)))
+        when(albumRepository.findActiveWithArtistsByIds(Set.of(2L)))
                 .thenReturn(List.of(foundAlbum));
 
         // when & then
         assertThatThrownBy(() -> albumRetriever.getActiveWithArtist(Set.of(1L, 2L)))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Album with id 2 not found or is inactive");
+                .hasMessage("Album with id 1 not found or is inactive");
     }
 
     @Test

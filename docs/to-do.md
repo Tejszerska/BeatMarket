@@ -1,51 +1,3 @@
-1. Dokumentacja i Konfiguracja
-- [x] Skończyć dokumentację (rozpisanie kontraktów API Request/Response dla płatności).
-
-- [x] Włączyć zapisywanie logów konsoli do pliku w opcjach startowych IDE, aby nie tracić błędów po restarcie.
-
-
-2. Architektura i Kod Java
-
-- [x] Poprawić RegisterController – przenieść ciężką logikę biznesową do odpowiedniego serwisu.
-
-- [x] Poprawić RegisterController - wywoływanie statusów 4xx .
-
----
-- Dopasować endpointy `catalog` do API contracts
-  **Artists (Artyści)**
-* [x] GET /api/catalog/artists
-* [x] GET /api/catalog/artists/{id}
-* [x] POST /api/catalog/artists
-* [x] PUT /api/catalog/artists/{id}
-* [x] DELETE /api/catalog/artists/{id}
-
-**Albums (Albumy)**
-* [x] GET /api/catalog/albums
-* [x] GET /api/catalog/albums/{id}
-* [x] POST /api/catalog/albums
-* [x] PUT /api/catalog/albums/{id}
-* [x] DELETE /api/catalog/albums/{id}
-
-**Songs (Utwory)**
-* [x] GET /api/catalog/songs
-* [x] GET /api/catalog/songs/{id}
-* [x] POST /api/catalog/songs
-* [x] PATCH /api/catalog/songs/{id}
-* [x] DELETE /api/catalog/songs/{id}
-
-**Genres (Gatunki)**
-* [x] GET /api/catalog/genres
-* [x] GET /api/catalog/genres/{id}
-* [x] POST /api/catalog/genres
-* [x] PATCH  /api/catalog/genres/{id}
-* [x] DELETE /api/catalog/genres/{id}
-
----
-
-
-- [x] Biblioteka JsonNullable (Standard w OpenAPI) - będę jej używać do odcinania relacji przy PATCH np. /api/catalog/songs/{songId}
-  Umożliwi rozdzielenie pól o wartości null (usuwanie relacji) oraz pól nie przysłanych (niezmienianie wartości niewpisanych pól)
-
 - [ ] Poprawić Security Filter Chain - rozważyc grupowanie metod
 
 ```
@@ -59,21 +11,6 @@
   ).hasRole("ADMIN") // Zastosuje się do URL-i podanych w kontekście, lub można doprecyzować ścieżkę
 ```
 
-- [x] Poprawić sens biznesowy relacji dotychczasowych tabel:
-```
-- Song <-> Artist @ManyToMany (wł. Song) umożliwi "featy"
-- Song -> Album @ManyToOne (wł. Song) błąd mapowania po stronie Album użyć mappedBy = "album", usuwając @JoinColumn
-- Album <-> Artysta @ManyToMany zostaje, bo album ma głównego wykonawce
-```
-
-- [x] Dodać wartość NONE do enuma SongLanguage (obsługa utworów instrumentalnych) (jednak INSTRUMENTAL już było wpisane)
-
-- [x] Utworzyć nowego enuma LicenseTier z wartościami STANDARD, COMMERCIAL, BROADCAST.
-
-- [x] Skonfigurować role w Spring Security (ROLE_CUSTOMER po rejestracji, ROLE_ADMIN do zarządzania zasobami).
-
-- [x] ujednolicić błędy - MissingRequiredFieldException dla wszystkich pól required ( Rich Domain Model refactor w encjach na wzór Song)
-
 - [ ] obsłużyć kluczowe błedy
 
 ```
@@ -85,25 +22,9 @@
 
 - [ ] walidacja biznesowa w song (RDM) "Czy piosenka może zmienić język, jeśli została już zablokowana przez proces licencyjny?", "Czy można nałożyć zniżkę na utwór, który ma status archiwalny?", "Czy data premiery nie jest przypadkiem z przyszłości?".
 
-- rozwać i zakodować CascadeType w encjach catalog
+- rozważyć i zakodować CascadeType w encjach catalog
 
-3. Baza Danych (Skrypty Flyway)
-
-- [x] Aktualizacja song: Dodać kolumny preview_url (do próbki) oraz file_url (do pełnego utworu) pod przyszłą integrację z AWS, .
-
-- [x] Aktualizacja album: Dodać kolumnę cover_url
-
-- [x] Aktualizacja artist: Dodać kolumnę image_url
-
-- [x] Nowa tabela song_prices: Tabela relacyjna zawierająca kolumny z ceną, walutą, progiem licencyjnym (tier) oraz kluczem obcym do utworu.
-
-- [x] Nowa tabela payments: Powinna zawierać id użytkownika, status płatności, kwotę oraz obowiązkowo stripe_session_id.
-
-- [x] Nowa tabela licenses: Powinna zawierać m.in. wygenerowany certyfikat/klucz, identyfikator użytkownika, identyfikator płatności i ramy czasowe ważności.
-
-
-4. Integracje (Kolejny krok prac)
-
+- [ ] spr SongPriceId.class - czy dobrze zaimplementowałam?
 
 - [ ] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych (moduł catalog) ---- rozważyć w jaki sposób zabezpieczyć te pola w samej encji Song,
   aby uniemożliwić ich przypadkową zmianę z zewnątrz (np. poprzez usunięcie standardowych setterów i wprowadzenie dedykowanych metod assignFile(...)?)
