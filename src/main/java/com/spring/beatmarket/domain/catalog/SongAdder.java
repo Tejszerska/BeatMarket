@@ -20,7 +20,7 @@ class SongAdder {
                 ? genreRetriever.getActive(dto.genreId()) : null;
 
         Album album = dto.albumId() != null
-                ? albumRetriever.getActiveWithArtist(dto.albumId()) : null;
+                ? albumRetriever.getActive(dto.albumId()) : null;
 
         Song song = Song.builder()
                 .title(dto.title())

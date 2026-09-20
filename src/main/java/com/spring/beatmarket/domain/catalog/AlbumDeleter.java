@@ -22,7 +22,7 @@ class AlbumDeleter {
 
     void deactivate(final Long id) {
         if (id == null) return;
-        Album album = albumRetriever.getLazily(id);
+        Album album = albumRetriever.getActive(id);
         log.info("soft deleting album by id: " + id);
         album.deactivate();
     }

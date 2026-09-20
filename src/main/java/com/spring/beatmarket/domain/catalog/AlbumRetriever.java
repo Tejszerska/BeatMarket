@@ -40,11 +40,6 @@ class AlbumRetriever {
     }
 
 
-    Album getActiveWithArtist(final Long id) {
-        return albumRepository.findByIdAndActiveTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Album", id));
-    }
-
     List<Album> getActiveWithArtist(final Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
@@ -80,8 +75,4 @@ class AlbumRetriever {
                 .orElseThrow(() -> new ResourceNotFoundException("Album", albumId));
     }
 
-    Album getLazily(final Long id) {
-        return albumRepository.findAlbumByIdLazily(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Album", id));
-    }
 }

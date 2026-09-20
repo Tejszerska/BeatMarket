@@ -18,17 +18,9 @@ interface ArtistRepository extends Repository<Artist, Long> {
 
     Slice<Artist> findByActiveTrueAndNameContainsIgnoreCase(String name, Pageable pageable);
 
-
     Optional<Artist> findByIdAndActiveTrue(Long artistId);
 
-    int deleteArtistById(Long id);
-
-    boolean existsById(Long id);
-
-    Artist getReferenceById(Long id);
-
     List<Artist> findByIdInAndActiveTrue(Collection<Long> ids);
-
 
     @Query("SELECT a FROM Artist a " +
             "LEFT JOIN FETCH a.songs " +
