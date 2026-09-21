@@ -290,7 +290,7 @@ class AlbumRepositoryTest {
         );
 
 
-        Song activeSong = songRepository.save(Song.builder()
+        songRepository.save(Song.builder()
                 .title("Song1")
                 .releaseDate(LocalDate.now())
                 .duration(200)
@@ -339,7 +339,7 @@ class AlbumRepositoryTest {
         );
         savedAlbum.deactivate();
 
-        Song activeSong = songRepository.save(Song.builder()
+        songRepository.save(Song.builder()
                 .title("Song1")
                 .releaseDate(LocalDate.now())
                 .duration(200)
