@@ -1,59 +1,31 @@
 package com.spring.beatmarket.domain.catalog;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Testcontainers
-class GenreRepositoryTest {
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+class GenreRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
     private GenreRepository genreRepository;
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    @BeforeEach
-    void setUp() {
-        entityManager.getEntityManager()
-                .createQuery("DELETE FROM Genre")
-                .executeUpdate();
-    }
 
     @Test
     @DisplayName("Should save Genre and retrieve it")
     void should_save_and_retrieve_genre() {
         // given
-        Genre genre = new Genre("Pop");
+        Genre savedGenre = persister.createAndSaveGenre("Pop");
+        flushAndClear();
 
         // when
-        Genre savedGenre = genreRepository.save(genre);
-
-        entityManager.flush();
-        entityManager.clear();
+        Optional<Genre> retrieved = genreRepository.findByIdAndActiveTrue(savedGenre.getId());
 
         // then
-        Optional<Genre> retrieved = genreRepository.findByIdAndActiveTrue(savedGenre.getId());
         assertThat(retrieved).isPresent();
         assertThat(retrieved.get().getName()).isEqualTo("Pop");
     }
@@ -75,11 +47,9 @@ class GenreRepositoryTest {
     @DisplayName("Should confirm existing Genre when it is active")
     void should_confirm() {
         // given
-        Genre genre = new Genre("Pop");
-        Genre savedGenre = genreRepository.save(genre);
-        entityManager.flush();
-        entityManager.clear();
-        assertThat(savedGenre.isActive()).isTrue();
+        Genre savedGenre = persister.createAndSaveGenre("Pop");
+        flushAndClear();
+
         // when
         boolean existing = genreRepository.existsByIdAndActiveTrue(savedGenre.getId());
 
@@ -91,14 +61,10 @@ class GenreRepositoryTest {
     @DisplayName("Should not confirm existing Genre when it isn't active")
     void should_not_confirm() {
         // given
-        Genre genre = new Genre("Pop");
-        Genre savedGenre = genreRepository.save(genre);
+        Genre savedGenre = persister.createAndSaveGenre("Pop");
         savedGenre.deactivate();
+        flushAndClear();
 
-        entityManager.flush();
-        entityManager.clear();
-
-        assertThat(savedGenre.isActive()).isFalse();
         // when
         boolean existing = genreRepository.existsByIdAndActiveTrue(savedGenre.getId());
 
@@ -110,17 +76,13 @@ class GenreRepositoryTest {
     @DisplayName("Should return Slice with 3 genres")
     void should_return_slice() {
         // given
-        Genre savedGenre1 = genreRepository.save(new Genre("Pop"));
-        Genre savedGenre2 = genreRepository.save(new Genre("Rap"));
-        Genre savedGenre3 = genreRepository.save(new Genre("Rock"));
-        Genre savedGenre4 = genreRepository.save(new Genre("Rop"));
+        Genre savedGenre1 = persister.createAndSaveGenre("Pop");
+        Genre savedGenre2 = persister.createAndSaveGenre("Rap");
+        Genre savedGenre3 = persister.createAndSaveGenre("Rock");
+        Genre savedGenre4 = persister.createAndSaveGenre("Rop");
         savedGenre4.deactivate();
 
-        entityManager.flush();
-        entityManager.clear();
-
-        assertThat(savedGenre1.isActive()).isTrue();
-        assertThat(savedGenre4.isActive()).isFalse();
+        flushAndClear();
 
         Pageable pageable = Pageable.ofSize(5);
 

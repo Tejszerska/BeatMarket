@@ -1,22 +1,13 @@
 package com.spring.beatmarket.domain.catalog;
 
 import org.hibernate.Hibernate;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -24,51 +15,22 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Testcontainers
-class AlbumRepositoryTest {
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    @BeforeEach
-    void setUp() {
-        entityManager.getEntityManager()
-                .createQuery("DELETE FROM Song")
-                .executeUpdate();
-
-        entityManager.getEntityManager()
-                .createQuery("DELETE FROM Album")
-                .executeUpdate();
-    }
+class AlbumRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
     private AlbumRepository albumRepository;
-
-    @Autowired
-    private ArtistRepository artistRepository;
-
-    @Autowired
-    private SongRepository songRepository;
 
     @Test
     @DisplayName("Should save Album and retrieve it")
     void should_save_and_retrieve_album() {
         // given
-        Album album = Album.builder().title("Album").build();
-        // when
-        Album savedAlbum = albumRepository.save(album);
+        Album savedAlbum = persister.createAndSaveAlbum("Album");
+        flushAndClear();
 
-        entityManager.flush();
-        entityManager.clear();
+        // when
+        Optional<Album> retrieved = albumRepository.findByIdAndActiveTrue(savedAlbum.getId());
 
         // then
-        Optional<Album> retrieved = albumRepository.findByIdAndActiveTrue(savedAlbum.getId());
         assertThat(retrieved).isPresent();
         assertThat(retrieved.get().getTitle()).isEqualTo("Album");
     }
@@ -77,12 +39,9 @@ class AlbumRepositoryTest {
     @DisplayName("Should return empty Optional when Album is inactive")
     void should_return_empty_optional_when_inactive() {
         // given
-        Album album = Album.builder().title("Album").build();
-
-        Album savedAlbum = albumRepository.save(album);
+        Album savedAlbum = persister.createAndSaveAlbum("Album");
         savedAlbum.deactivate();
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         // when
         Optional<Album> retrieved = albumRepository.findByIdAndActiveTrue(savedAlbum.getId());
@@ -95,23 +54,15 @@ class AlbumRepositoryTest {
     @DisplayName("Should return Slice with 3 albums when no filtering")
     void should_return_slice_with_3() {
         //given
-        Album album1 = Album.builder().title("Title1").build();
-        albumRepository.save(album1);
+        Album album1 = persister.createAndSaveAlbum("Title1");
+        Artist artist = persister.createAndSaveArtist("Artist");
+        Album album2 = persister.createAndSaveAlbumWithArtists("Title2", List.of(artist));
+        Album album3 = persister.createAndSaveAlbum("Different");
 
-        Artist artist = Artist.builder().name("Artist").build();
-        artistRepository.save(artist);
-        Album album2 = Album.builder().title("Title2").artists(List.of(artist)).build();
-        albumRepository.save(album2);
-
-        Album album3 = Album.builder().title("Different").build();
-        albumRepository.save(album3);
-
-        Album album4 = Album.builder().title("Title4").build();
+        Album album4 = persister.createAndSaveAlbum("Title4");
         album4.deactivate();
-        albumRepository.save(album4);
 
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
         Pageable pageable = Pageable.ofSize(5);
 
         //when
@@ -127,24 +78,15 @@ class AlbumRepositoryTest {
     @DisplayName("Should return Slice with 2 albums when filtering by title")
     void should_return_slice_with_2_by_title() {
         //given
-        Album album1 = Album.builder().title("Title1").build();
-        albumRepository.save(album1);
+        Album album1 = persister.createAndSaveAlbum("Title1");
+        Artist artist = persister.createAndSaveArtist("Artist");
+        Album album2 = persister.createAndSaveAlbumWithArtists("Title2", List.of(artist));
+        Album album3 = persister.createAndSaveAlbum("Different");
 
-        Artist artist = Artist.builder().name("Artist").build();
-        artistRepository.save(artist);
-
-        Album album2 = Album.builder().title("Title2").artists(List.of(artist)).build();
-        albumRepository.save(album2);
-
-        Album album3 = Album.builder().title("Different").build();
-        albumRepository.save(album3);
-
-        Album album4 = Album.builder().title("Title4").build();
+        Album album4 = persister.createAndSaveAlbum("Title4");
         album4.deactivate();
-        albumRepository.save(album4);
 
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
         Pageable pageable = Pageable.ofSize(5);
 
         //when
@@ -159,28 +101,15 @@ class AlbumRepositoryTest {
     @DisplayName("Should return Slice with 2 albums when filtering by artist")
     void should_return_slice_with_2_by_artist_id() {
         //given
-        Album album1 = Album.builder().title("Title1").build();
-        albumRepository.save(album1);
+        Album album1 = persister.createAndSaveAlbum("Title1");
+        Artist savedArtist = persister.createAndSaveArtist("Artist");
+        Album album2 = persister.createAndSaveAlbumWithArtists("Title2", List.of(savedArtist));
+        Album album3 = persister.createAndSaveAlbumWithArtists("Different", List.of(savedArtist));
 
-        Artist artist = Artist.builder().name("Artist").build();
-        Artist savedArtist = artistRepository.save(artist);
-
-        Album album2 = Album.builder()
-                .title("Title2")
-                .artists(List.of(artist)).build();
-        albumRepository.save(album2);
-
-        Album album3 = Album.builder()
-                .title("Different")
-                .artists(List.of(artist)).build();
-        albumRepository.save(album3);
-
-        Album album4 = Album.builder().title("Title4").build();
+        Album album4 = persister.createAndSaveAlbum("Title4");
         album4.deactivate();
-        albumRepository.save(album4);
 
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
         Pageable pageable = Pageable.ofSize(5);
 
         //when
@@ -195,28 +124,15 @@ class AlbumRepositoryTest {
     @DisplayName("Should return Slice with 1 album when filtering by artist id and title")
     void should_return_slice_with_1() {
         //given
-        Album album1 = Album.builder().title("Title1").build();
-        albumRepository.save(album1);
+        Album album1 = persister.createAndSaveAlbum("Title1");
+        Artist savedArtist = persister.createAndSaveArtist("Artist");
+        Album album2 = persister.createAndSaveAlbumWithArtists("Title2", List.of(savedArtist));
+        Album album3 = persister.createAndSaveAlbumWithArtists("Different", List.of(savedArtist));
 
-        Artist artist = Artist.builder().name("Artist").build();
-        Artist savedArtist = artistRepository.save(artist);
-
-        Album album2 = Album.builder()
-                .title("Title2")
-                .artists(List.of(artist)).build();
-        albumRepository.save(album2);
-
-        Album album3 = Album.builder()
-                .title("Different")
-                .artists(List.of(artist)).build();
-        albumRepository.save(album3);
-
-        Album album4 = Album.builder().title("Title4").build();
+        Album album4 = persister.createAndSaveAlbum("Title4");
         album4.deactivate();
-        albumRepository.save(album4);
 
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
         Pageable pageable = Pageable.ofSize(5);
 
         //when
@@ -231,28 +147,18 @@ class AlbumRepositoryTest {
     @DisplayName("Should return list of active albums with artists data (including deactivated)")
     void should_return_albums_with_artists() {
         // given
-        Artist activeArtist = artistRepository.save(Artist.builder().name("Artist1").build());
-
-        Artist inactiveArtist = Artist.builder().name("Artist2").build();
+        Artist activeArtist = persister.createAndSaveArtist("Artist1");
+        Artist inactiveArtist = persister.createAndSaveArtist("Artist2");
         inactiveArtist.deactivate();
-        artistRepository.save(inactiveArtist);
 
-        Album inactiveAlbum = Album.builder().title("Title1").artists(List.of(activeArtist)).build();
+        Album inactiveAlbum = persister.createAndSaveAlbumWithArtists("Title1", List.of(activeArtist));
         inactiveAlbum.deactivate();
-        albumRepository.save(inactiveAlbum);
 
-        Album activeAlbumMulti = albumRepository.save(
-                Album.builder().title("Title2").artists(List.of(activeArtist, inactiveArtist)).build()
-        );
-
-        Album activeAlbumSingle = albumRepository.save(
-                Album.builder().title("Title3").artists(List.of(inactiveArtist)).build()
-        );
+        Album activeAlbumMulti = persister.createAndSaveAlbumWithArtists("Title2", List.of(activeArtist, inactiveArtist));
+        Album activeAlbumSingle = persister.createAndSaveAlbumWithArtists("Title3", List.of(inactiveArtist));
 
         List<Long> ids = List.of(inactiveAlbum.getId(), activeAlbumMulti.getId(), activeAlbumSingle.getId());
-
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         // when
         List<Album> results = albumRepository.findActiveWithArtistsByIds(ids);
@@ -276,49 +182,25 @@ class AlbumRepositoryTest {
     @DisplayName("Should return an active albums found by id with all related data initialized (Song, Artist) including inactive")
     void should_return_albums_with_all() {
         // given
-        Artist activeArtist = artistRepository.save(Artist.builder().name("Artist1").build());
-
-        Artist inactiveArtist = Artist.builder().name("Artist2").build();
+        Artist activeArtist = persister.createAndSaveArtist("Artist1");
+        Artist inactiveArtist = persister.createAndSaveArtist("Artist2");
         inactiveArtist.deactivate();
-        artistRepository.save(inactiveArtist);
 
-        Album savedAlbum = albumRepository.save(
-                Album.builder()
-                        .title("Title")
-                        .artists(List.of(activeArtist, inactiveArtist))
-                        .build()
-        );
+        Album savedAlbum = persister.createAndSaveAlbumWithArtists("Title", List.of(activeArtist, inactiveArtist));
 
+        persister.createAndSaveSong("Song1", savedAlbum);
 
-        songRepository.save(Song.builder()
-                .title("Song1")
-                .releaseDate(LocalDate.now())
-                .duration(200)
-                .language(SongLanguage.EN)
-                .album(savedAlbum)
-                .build());
-
-        Song inactiveSong = Song.builder()
-                .title("Song2")
-                .releaseDate(LocalDate.now())
-                .duration(200)
-                .language(SongLanguage.EN)
-                .album(savedAlbum)
-                .build();
+        Song inactiveSong = persister.createAndSaveSong("Song2", savedAlbum);
         inactiveSong.deactivate();
-        songRepository.save(inactiveSong);
 
-        entityManager.flush();
-        entityManager.clear();
-
+        flushAndClear();
 
         // when
         Optional<Album> albumById = albumRepository.findAlbumByIdEagerly(savedAlbum.getId());
 
         // then
         assertThat(albumById).isPresent();
-        assertThat(Hibernate.isInitialized(albumById.get().getArtists()))
-                .isTrue();
+        assertThat(Hibernate.isInitialized(albumById.get().getArtists())).isTrue();
         assertThat(Hibernate.isInitialized(albumById.get().getSongs())).isTrue();
 
         assertThat((albumById.get().getArtists())).hasSize(2);
@@ -329,26 +211,13 @@ class AlbumRepositoryTest {
     @DisplayName("Should return empty Optional if album is inactive")
     void should_not_return_album() {
         // given
-        Artist activeArtist = artistRepository.save(Artist.builder().name("Artist1").build());
-
-        Album savedAlbum = albumRepository.save(
-                Album.builder()
-                        .title("Title")
-                        .artists(List.of(activeArtist))
-                        .build()
-        );
+        Artist activeArtist = persister.createAndSaveArtist("Artist1");
+        Album savedAlbum = persister.createAndSaveAlbumWithArtists("Title", List.of(activeArtist));
         savedAlbum.deactivate();
 
-        songRepository.save(Song.builder()
-                .title("Song1")
-                .releaseDate(LocalDate.now())
-                .duration(200)
-                .language(SongLanguage.EN)
-                .album(savedAlbum)
-                .build());
+        persister.createAndSaveSong("Song1", savedAlbum);
 
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         // when
         Optional<Album> albumById = albumRepository.findAlbumByIdEagerly(savedAlbum.getId());
@@ -361,14 +230,13 @@ class AlbumRepositoryTest {
     @DisplayName("Should deactivate in bulk setting version and editedOn correctly")
     void should_deactivate_in_bulk() {
         // given
-        Album album1 = albumRepository.save(Album.builder().title("Title1").build());
+        Album album1 = persister.createAndSaveAlbum("Title1");
         Long id1 = album1.getId();
 
-        Album album2 = albumRepository.save(Album.builder().title("Title2").build());
+        Album album2 = persister.createAndSaveAlbum("Title2");
         Long id2 = album2.getId();
 
-        entityManager.flush();
-        entityManager.clear();
+        flushAndClear();
 
         Instant now = Instant.now().truncatedTo(ChronoUnit.MICROS);
 
@@ -390,5 +258,4 @@ class AlbumRepositoryTest {
         assertThat(updatedAlbum2.getVersion()).isEqualTo(1L);
         assertThat(updatedAlbum2.getEditedOn()).isEqualTo(now);
     }
-
 }
