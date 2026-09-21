@@ -66,11 +66,6 @@ class InMemoryAlbumRepository implements AlbumRepository {
     }
 
     @Override
-    public Optional<Album> findAlbumByIdLazily(final Long id) {
-        return findByIdAndActiveTrue(id);
-    }
-
-    @Override
     public Slice<Album> findByActiveTrue(final Pageable pageable) {
         List<Album> albumList = db.values().stream()
                 .filter(Album::isActive)

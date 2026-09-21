@@ -36,7 +36,7 @@ class AlbumRetrieverTest {
         when(albumRepository.findByIdAndActiveTrue(id)).thenReturn(Optional.of(album));
 
         // when
-        Album result = albumRetriever.getActiveWithArtist(id);
+        Album result = albumRetriever.getActive(id);
 
         // then
         assertThat(result).isEqualTo(album);

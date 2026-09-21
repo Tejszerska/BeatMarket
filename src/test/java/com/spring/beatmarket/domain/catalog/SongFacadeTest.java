@@ -107,7 +107,7 @@ class SongFacadeTest {
         Artist featArtist = TestObjectsFactory.createArtistWithId(101L, "Feat Artist");
 
         Mockito.when(genreRetriever.getActive(1L)).thenReturn(genre);
-        Mockito.when(albumRetriever.getActiveWithArtist(10L)).thenReturn(album);
+        Mockito.when(albumRetriever.getActive(10L)).thenReturn(album);
         Mockito.when(artistRetriever.getActives(Set.of(100L, 101L)))
                 .thenReturn(List.of(mainArtist, featArtist));
 

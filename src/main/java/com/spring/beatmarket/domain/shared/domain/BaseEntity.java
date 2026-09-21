@@ -3,6 +3,7 @@ package com.spring.beatmarket.domain.shared.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
+@Getter
 public abstract class BaseEntity implements Serializable {
     protected UUID uuid = UUID.randomUUID();
     @CreationTimestamp
@@ -27,8 +29,6 @@ public abstract class BaseEntity implements Serializable {
     public void deactivate(){
         this.active = false;
     }
-
-    public boolean isActive() {return this.active;}
 
     @Override
     public boolean equals(Object o) {

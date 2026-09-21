@@ -59,25 +59,6 @@ class InMemoryArtistRepository implements ArtistRepository {
     }
 
     @Override
-    public int deleteArtistById(final Long id) {
-        if (db.containsKey(id)) {
-            db.remove(id);
-            return 1;
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean existsById(final Long id) {
-        return db.containsKey(id);
-    }
-
-    @Override
-    public Artist getReferenceById(final Long id) {
-        return db.get(id);
-    }
-
-    @Override
     public List<Artist> findByIdInAndActiveTrue(final Collection<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return List.of();
