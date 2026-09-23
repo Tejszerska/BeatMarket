@@ -35,7 +35,7 @@ class Artist extends BaseEntity {
     private String name;
 
     @Column(columnDefinition = "TEXT")
-    private String imageUrl;
+    private String imageFileKey;
 
     // Using Set instead of List to prevent Hibernate MultipleBagFetchException
     // when multiple collections are fetched simultaneously.
@@ -50,13 +50,13 @@ class Artist extends BaseEntity {
     }
 
     @Builder
-    Artist(final String name, final String imageUrl, final Set<Song> songs, final Set<Album> albums) {
+    Artist(final String name, final String imageFileKey, final Set<Song> songs, final Set<Album> albums) {
         if (name == null || name.isBlank()) {
             throw new MissingRequiredFieldException("name");
         }
 
         this.name = name;
-        this.imageUrl = imageUrl;
+        this.imageFileKey = imageFileKey;
         this.songs = songs != null ? new HashSet<>(songs) : new HashSet<>();
         this.albums = albums != null ? new HashSet<>(albums) : new HashSet<>();
     }
@@ -69,7 +69,7 @@ class Artist extends BaseEntity {
     }
 
     void changeImageUrl(String newImageUrl) {
-        this.imageUrl = newImageUrl;
+        this.imageFileKey = newImageUrl;
     }
 
     /**

@@ -79,15 +79,15 @@ class Song extends BaseEntity {
     private List<Artist> artists = new ArrayList<>();
 
     @Column(columnDefinition = "TEXT")
-    private String previewUrl;
+    private String previewFileKey;
 
     @Column(columnDefinition = "TEXT")
-    private String fileUrl;
+    private String trackFileKey;
 
     @Builder
     Song(final String title, final LocalDate releaseDate, final Integer duration, final SongLanguage language,
          final Genre genre, final Album album, final List<Artist> artists,
-         final String previewUrl, final String fileUrl) {
+         final String previewFileKey, final String trackFileKey) {
         if (title == null || title.isBlank()) throw new MissingRequiredFieldException("title");
         if (releaseDate == null) throw new MissingRequiredFieldException("releaseDate");
         if (language == null) throw new MissingRequiredFieldException("language");
@@ -104,8 +104,8 @@ class Song extends BaseEntity {
         this.genre = genre;
         this.album = album;
         this.artists = artists != null ? new ArrayList<>(artists) : new ArrayList<>();
-        this.previewUrl = previewUrl;
-        this.fileUrl = fileUrl;
+        this.previewFileKey = previewFileKey;
+        this.trackFileKey = trackFileKey;
     }
 
     void changeTitle(String newTitle) {
@@ -187,10 +187,10 @@ class Song extends BaseEntity {
     }
 
     void changePreviewUrl(String previewUrl) {
-        this.previewUrl = previewUrl;
+        this.previewFileKey = previewUrl;
     }
 
     void changeFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
+        this.trackFileKey = fileUrl;
     }
 }

@@ -45,7 +45,7 @@ class Album extends BaseEntity {
     private LocalDate releaseDate;
 
     @Column(columnDefinition = "TEXT")
-    private String coverUrl;
+    private String coverFileKey;
 
     @ManyToMany
     @JoinTable(
@@ -61,7 +61,7 @@ class Album extends BaseEntity {
     private Set<Song> songs = new HashSet<>();
 
     @Builder
-    Album(final String title, final LocalDate releaseDate, final String coverUrl, final List<Artist> artists, final Set<Song> songs) {
+    Album(final String title, final LocalDate releaseDate, final String coverFileKey, final List<Artist> artists, final Set<Song> songs) {
         if (title == null || title.isBlank()) {
             throw new MissingRequiredFieldException("title");
         }
@@ -71,7 +71,7 @@ class Album extends BaseEntity {
 
         this.title = title;
         this.releaseDate = releaseDate;
-        this.coverUrl = coverUrl;
+        this.coverFileKey = coverFileKey;
         this.artists = artists != null ? new ArrayList<>(artists) : new ArrayList<>();
         this.songs = songs != null ? songs : new HashSet<>();
     }
@@ -91,7 +91,7 @@ class Album extends BaseEntity {
     }
 
     void changeCoverUrl(String newCoverUrl) {
-        this.coverUrl = newCoverUrl;
+        this.coverFileKey = newCoverUrl;
     }
     // Business validation (e.g., enforcing main vs. featured artist constraints)
     // is delegated to the ArtistRoleManager. This method solely handles persistence sync.
