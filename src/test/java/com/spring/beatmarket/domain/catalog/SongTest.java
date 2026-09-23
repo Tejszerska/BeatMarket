@@ -37,8 +37,8 @@ class SongTest {
                 .genre(genre)
                 .album(album)
                 .artists(artists)
-                .previewUrl("www.previewUrl.com")
-                .fileUrl("www.fileUrl.com")
+                .previewFileKey("www.previewUrl.com")
+                .trackFileKey("www.fileUrl.com")
                 .build();
 
         // when & then
@@ -50,8 +50,8 @@ class SongTest {
         assertThat(song.getGenre()).isEqualTo(genre);
         assertThat(song.getAlbum()).isEqualTo(album);
         assertThat(song.getArtists()).isEqualTo(artists);
-        assertThat(song.getPreviewUrl()).isEqualTo("www.previewUrl.com");
-        assertThat(song.getFileUrl()).isEqualTo("www.fileUrl.com");
+        assertThat(song.getPreviewFileKey()).isEqualTo("www.previewUrl.com");
+        assertThat(song.getTrackFileKey()).isEqualTo("www.fileUrl.com");
     }
 
     @Test
@@ -76,8 +76,8 @@ class SongTest {
         assertThat(song.getGenre()).isNull();
         assertThat(song.getAlbum()).isNull();
         assertThat(song.getArtists()).isEmpty();
-        assertThat(song.getPreviewUrl()).isNull();
-        assertThat(song.getFileUrl()).isNull();
+        assertThat(song.getPreviewFileKey()).isNull();
+        assertThat(song.getTrackFileKey()).isNull();
     }
 
     @ParameterizedTest
@@ -278,14 +278,14 @@ class SongTest {
         //given
         Song song = createCompleteSong("Title");
         String newPreviewUrl = "https://example.com/new-preview.mp3";
-        String oldPreviewUrl = song.getPreviewUrl();
+        String oldPreviewUrl = song.getPreviewFileKey();
 
         //when
         song.changePreviewUrl(newPreviewUrl);
 
         //then
-        assertThat(song.getPreviewUrl()).isEqualTo(newPreviewUrl);
-        assertThat(song.getPreviewUrl()).isNotEqualTo(oldPreviewUrl);
+        assertThat(song.getPreviewFileKey()).isEqualTo(newPreviewUrl);
+        assertThat(song.getPreviewFileKey()).isNotEqualTo(oldPreviewUrl);
     }
 
     @Test
@@ -299,7 +299,7 @@ class SongTest {
         song.changePreviewUrl(null);
 
         //then
-        assertThat(song.getPreviewUrl()).isNull();
+        assertThat(song.getPreviewFileKey()).isNull();
     }
 
     @Test
@@ -308,14 +308,14 @@ class SongTest {
         //given
         Song song = createCompleteSong("Title");
         String newFileUrl = "https://example.com/new-file.mp3";
-        String oldFileUrl = song.getFileUrl();
+        String oldFileUrl = song.getTrackFileKey();
 
         //when
-        song.changeFileUrl(newFileUrl);
+        song.changeTrackFileKey(newFileUrl);
 
         //then
-        assertThat(song.getFileUrl()).isEqualTo(newFileUrl);
-        assertThat(song.getFileUrl()).isNotEqualTo(oldFileUrl);
+        assertThat(song.getTrackFileKey()).isEqualTo(newFileUrl);
+        assertThat(song.getTrackFileKey()).isNotEqualTo(oldFileUrl);
     }
 
     @Test
@@ -323,13 +323,13 @@ class SongTest {
     void should_allow_changing_file_url_to_null() {
         //given
         Song song = createCompleteSong("Title");
-        song.changeFileUrl("https://example.com/file.mp3");
+        song.changeTrackFileKey("https://example.com/file.mp3");
 
         //when
-        song.changeFileUrl(null);
+        song.changeTrackFileKey(null);
 
         //then
-        assertThat(song.getFileUrl()).isNull();
+        assertThat(song.getTrackFileKey()).isNull();
     }
 
     @Test
@@ -640,8 +640,8 @@ class SongTest {
                 .genre(genre)
                 .album(album)
                 .artists(artists)
-                .previewUrl("https://some-example.com/preview.mp3")
-                .fileUrl("https://some-example.com/full-file.mp3")
+                .previewFileKey("www.previewUrl.com")
+                .trackFileKey("www.fileUrl.com")
                 .build();
     }
 

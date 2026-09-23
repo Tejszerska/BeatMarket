@@ -639,15 +639,8 @@ Uploads the full-length audio track and links the resource URL to the specified 
 
 - `file` (file/binary, required) _High-quality audio file .WAV._
 
-**Response (200 OK):**
-_Returns the URL of the uploaded resource._
-
-```json
-{
-  "message": "Full length track uploaded successfully",
-  "trackUrl": "https://s3.aws.com/your-bucket/tracks/in-the-end.wav"
-}
-```
+**Response (204 No content):**
+_Operation successful._
 
 **Error Response (404 Not Found)**
 _Returned when the song ID does not exist in the database._

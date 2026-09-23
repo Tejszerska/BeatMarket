@@ -2,6 +2,7 @@ package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
+import com.spring.beatmarket.shared.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ class SongUpdater {
 
     private final SongMapper songMapper;
     private final ArtistRoleManager artistRoleManager;
+    private final FileStoragePort fileStoragePort;
 
 
     SongDto.Info update(final Long id, final SongDto.Update dto) {
@@ -88,7 +90,7 @@ class SongUpdater {
 
         if (dto.mainArtistId() != null || dto.featArtistIds() != null) {
             artistRoleManager.sync(dto.mainArtistId(), dto.featArtistIds(), "Song",
-                    songFromDB.getArtists(), songFromDB::clearArtists ,songFromDB::assignArtist);
+                    songFromDB.getArtists(), songFromDB::clearArtists, songFromDB::assignArtist);
         }
 
         return songMapper.toInfoDto(songFromDB);
@@ -96,6 +98,25 @@ class SongUpdater {
 
     Integer bulkUpdateSongsByGenreId(final Long oldId, final Long newId) {
         return songRepository.bulkUpdateGenre(oldId, newId, Instant.now());
+    }
+
+    void updateTrackFile(final byte[] trackBytes, final Long id) {
+        Song song = songRetriever.getLazily(id);
+
+        String initTrackFileKey = song.getTrackFileKey();
+        if (initTrackFileKey != null && !initTrackFileKey.isBlank()) {
+            fileStoragePort.delete(initTrackFileKey);
+        }
+
+        String fileKey = StringUtils.createSlug(song.getTitle()) +
+                "-"
+                + song.getUuid().toString().substring(0, 4)
+                + ".wav";
+
+        fileStoragePort.upload(trackBytes, fileKey);
+        log.info("Successfully uploaded full track file for song id={}", song.getId());
+
+        song.changeTrackFileKey(fileKey);
     }
 }
 

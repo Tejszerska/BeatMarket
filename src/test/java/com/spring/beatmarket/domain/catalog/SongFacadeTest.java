@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 class SongFacadeTest {
 
     private final InMemorySongRepository songRepository = new InMemorySongRepository();
+    private final InMemoryFileStorageAdapter fileStorageAdapter = new InMemoryFileStorageAdapter();
 
     private final GenreRetriever genreRetriever = mock(GenreRetriever.class);
     private final AlbumRetriever albumRetriever = mock(AlbumRetriever.class);
@@ -39,7 +40,8 @@ class SongFacadeTest {
             albumRetriever,
             licensingFacade,
             artistRoleManager,
-            songMapper
+            songMapper,
+            fileStorageAdapter
     );
 
     @Test

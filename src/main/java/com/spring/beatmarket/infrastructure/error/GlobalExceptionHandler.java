@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidFileFormatException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -55,13 +56,13 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponseDto> handleValidationException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<MessageAndErrorsResponseDto> handleValidationException(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
 
         exception.getBindingResult().getFieldErrors()
                 .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
 
-        ValidationErrorResponseDto response = new ValidationErrorResponseDto("Validation failed", errors);
+        MessageAndErrorsResponseDto response = new MessageAndErrorsResponseDto("Validation failed", errors);
 
         log.warn("Validation failed: {}", errors);
         return ResponseEntity
@@ -72,10 +73,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler({
             InvalidSearchCriteriaException.class
     })
-    public ResponseEntity<ValidationErrorResponseDto> handleInvalidFiltering(InvalidSearchCriteriaException exception){
+    public ResponseEntity<MessageAndErrorsResponseDto> handleInvalidFiltering(InvalidSearchCriteriaException exception){
         Map<String, String> errors = new HashMap<>();
         errors.put(exception.getField(), exception.getMessage());
-        ValidationErrorResponseDto errorResponseDto = new ValidationErrorResponseDto("Validation failed", errors);
+        MessageAndErrorsResponseDto errorResponseDto = new MessageAndErrorsResponseDto("Validation failed", errors);
 
         log.warn("Validation failed: {}", errors);
         return ResponseEntity
@@ -93,8 +94,15 @@ class GlobalExceptionHandler {
         log.warn("Data integrity violation: {} ", exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<SingleStringErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
+        SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(InvalidFileFormatException.class)
+    public ResponseEntity<SingleStringErrorResponseDto> handleInvalidFileFormatException(InvalidFileFormatException ex) {
         SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
@@ -122,8 +130,8 @@ class GlobalExceptionHandler {
                     .body(singleStringError);
         }
 
-        ValidationErrorResponseDto errorResponseDto =
-                new ValidationErrorResponseDto("Validation failed due to invalid data format", errors);
+        MessageAndErrorsResponseDto errorResponseDto =
+                new MessageAndErrorsResponseDto("Validation failed due to invalid data format", errors);
 
         log.warn("Validation failed: {}", errors);
         return ResponseEntity

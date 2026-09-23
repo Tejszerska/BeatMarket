@@ -12,6 +12,8 @@ public interface SongFacade {
 
     SongDto.Info addSong(final SongDto.Create dto);
 
+    void addTrackFile(final byte[] trackBytes, final Long id);
+
     SongDto.Info updateSong(Long id, SongDto.Update songFromRequest);
 
     void deactivateSong(Long id);

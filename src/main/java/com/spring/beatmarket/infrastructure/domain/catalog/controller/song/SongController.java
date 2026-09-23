@@ -2,9 +2,10 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.SongFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.infrastructure.error.MessageAndErrorsResponseDto;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
-import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Tag(name = "2. Songs", description = "Endpoints for managing songs, their details, and genre assignments.")
 @RestController
@@ -44,15 +50,15 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of songs retrieved successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid query parameters.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class)))
 
     })
     @GetMapping
     ResponseEntity<SongApiDto.GetAllResponse> searchSongs(
             SongApiDto.SearchRequest searchRequestDto,
             @ParameterObject @PageableDefault(size = 20, sort = "editedOn", direction = Sort.Direction.DESC) Pageable pageable) {
-        if(searchRequestDto.maxPrice() != null){
-            if(searchRequestDto.currency() == null || searchRequestDto.license() == null){
+        if (searchRequestDto.maxPrice() != null) {
+            if (searchRequestDto.currency() == null || searchRequestDto.license() == null) {
                 throw new InvalidSearchCriteriaException("maxPrice",
                         "Filtering by maxPrice requires declaring currency and license.");
             }
@@ -68,7 +74,7 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Song found and returned successfully."),
             @ApiResponse(responseCode = "404", description = "Song with the provided ID does not exist.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
     })
     @GetMapping("/{id}")
     ResponseEntity<SongApiDto.DetailsResponse> getSongById(@PathVariable Long id) {
@@ -80,7 +86,7 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Song created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., negative duration).",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
     })
     @PostMapping
     ResponseEntity<SongApiDto.InfoResponse> createSong(@RequestBody @Valid SongApiDto.CreateRequest createSongRequest) {
@@ -89,11 +95,37 @@ class SongController {
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toInfoResponse(addedSong));
     }
 
+    @Operation(summary = "Upload full track file (.wav)", description = "Uploads the full-length audio track and links the resource to the specified song.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operation successful."),
+            @ApiResponse(responseCode = "404", description = "Song by id=10 was not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, too big or of an unsupported format.",
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
+    })
+    @PostMapping(value = "{id}/track", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<Void> uploadFullTrack(
+            @Parameter(description = "File of full track.")
+            @RequestPart("file") MultipartFile file,
+            @Parameter(description = "ID of a song from the file") @PathVariable Long id)
+            throws IOException {
+
+        String filename = file.getOriginalFilename();
+        if (filename == null || !filename.toLowerCase().endsWith(".wav")) {
+            throw new InvalidFileFormatException("Invalid format. Only .WAV files are allowed.");
+        }
+
+        facade.addTrackFile(file.getBytes(), id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
     @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Song updated successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Song not found.",
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
