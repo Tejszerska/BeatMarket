@@ -637,7 +637,7 @@ Uploads the full-length audio track and links the resource URL to the specified 
 
 **Request Body (Form-Data):**
 
-- `file` (file/binary, required) _High-quality audio file .WAV._
+- `file` (file/binary, required) _High-quality audio file .WAV or .FLAC._
 
 **Response (204 No content):**
 _Operation successful._
@@ -656,7 +656,7 @@ _Returned when the file is missing, empty, too big or of an unsupported format._
 
 ```json
 {
-  "message": "Invalid file format. Only audio/wav (WAV) is supported for full tracks."
+  "message": "Invalid file format. Only .Wav or .FLAC are supported for full tracks."
 }
 ```
 

@@ -26,16 +26,7 @@ class GenreFacadeTest {
     private final SongUpdater songUpdater = mock(SongUpdater.class);
     private final GenreMapper genreMapper = new GenreMapperImpl();
 
-    private final GenreFacade genreFacade = createGenreFacade();
-
-    private GenreFacade createGenreFacade() {
-        GenreAdder genreAdder = new GenreAdder(genreRepository, genreMapper);
-        GenreRetriever genreRetriever = new GenreRetriever(genreRepository, genreMapper);
-        GenreDeleter genreDeleter = new GenreDeleter(genreRetriever, songRetriever);
-        GenreUpdater genreUpdater = new GenreUpdater(genreRepository, genreRetriever, genreMapper);
-
-        return new GenreFacadeImpl(genreAdder, genreRetriever, genreDeleter, genreUpdater, songUpdater);
-    }
+    private final GenreFacade genreFacade = GenreFacadeTestConfiguration.createGenreFacade(genreRepository, genreMapper, songRetriever, songUpdater);
 
     @Test
     @DisplayName("Should return slice with Genres")

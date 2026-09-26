@@ -1,6 +1,7 @@
 package com.spring.beatmarket.infrastructure.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.spring.beatmarket.domain.catalog.audio.UnreadableAudioFileException;
 import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
@@ -98,6 +99,13 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<SingleStringErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
         SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(UnreadableAudioFileException.class)
+    public ResponseEntity<SingleStringErrorResponseDto> handleUnreadableAudioFileException(UnreadableAudioFileException ex) {
+        SingleStringErrorResponseDto errorResponse = new SingleStringErrorResponseDto(ex.getMessage());
+        log.warn(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 

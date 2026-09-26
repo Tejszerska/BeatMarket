@@ -30,6 +30,8 @@ class SongFacadeTest {
 
     private final ArtistRetriever artistRetriever = mock(ArtistRetriever.class);
     private final RoleValidator roleValidator = new RoleValidator();
+    private final AudioInspectorPort audioInspectorPort = new FakeAudioInspector();
+    private final AudioFileValidator audioFileValidator = new AudioFileValidator(audioInspectorPort);
     private final ArtistRoleManager artistRoleManager = new ArtistRoleManager(roleValidator, artistRetriever);
 
     private final SongMapper songMapper = new SongMapperImpl();
@@ -41,7 +43,8 @@ class SongFacadeTest {
             licensingFacade,
             artistRoleManager,
             songMapper,
-            fileStorageAdapter
+            fileStorageAdapter,
+            audioFileValidator
     );
 
     @Test

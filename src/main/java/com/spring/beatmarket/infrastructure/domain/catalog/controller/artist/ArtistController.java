@@ -3,7 +3,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 import com.spring.beatmarket.domain.catalog.ArtistFacade;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
-import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
+import com.spring.beatmarket.infrastructure.error.MessageAndErrorsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -66,7 +66,7 @@ class ArtistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Artist created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Song or Album not found.",
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })
@@ -80,7 +80,7 @@ class ArtistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist successfully updated."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Song, Album, or Artist(s) not found.",
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })

@@ -2,6 +2,7 @@ package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
+import com.spring.beatmarket.domain.catalog.audio.AudioMetadata;
 import com.spring.beatmarket.shared.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +22,7 @@ class SongUpdater {
     private final SongMapper songMapper;
     private final ArtistRoleManager artistRoleManager;
     private final FileStoragePort fileStoragePort;
+    private final AudioFileValidator fileValidator;
 
 
     SongDto.Info update(final Long id, final SongDto.Update dto) {
@@ -101,6 +103,8 @@ class SongUpdater {
     }
 
     void updateTrackFile(final byte[] trackBytes, final Long id) {
+        AudioMetadata audioMetadata = fileValidator.validateFullTrack(trackBytes);
+
         Song song = songRetriever.getLazily(id);
 
         String initTrackFileKey = song.getTrackFileKey();
@@ -108,10 +112,10 @@ class SongUpdater {
             fileStoragePort.delete(initTrackFileKey);
         }
 
-        String fileKey = StringUtils.createSlug(song.getTitle()) +
+        String fileKey = "tracks/" + StringUtils.createSlug(song.getTitle()) +
                 "-"
                 + song.getUuid().toString().substring(0, 4)
-                + ".wav";
+                + "." + audioMetadata.fileExtension().toString();
 
         fileStoragePort.upload(trackBytes, fileKey);
         log.info("Successfully uploaded full track file for song id={}", song.getId());
