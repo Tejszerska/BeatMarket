@@ -34,7 +34,7 @@ class ArtistTest {
         // when
         Artist artist = Artist.builder()
                 .name("Artist Name")
-                .imageUrl("http://example.com/image.jpg")
+                .imageFileKey("http://example.com/image.jpg")
                 .songs(songs)
                 .albums(albums)
                 .build();
@@ -42,7 +42,7 @@ class ArtistTest {
         // then
         assertThat(artist.getId()).isNull();
         assertThat(artist.getName()).isEqualTo("Artist Name");
-        assertThat(artist.getImageUrl()).isEqualTo("http://example.com/image.jpg");
+        assertThat(artist.getImageFileKey()).isEqualTo("http://example.com/image.jpg");
         assertThat(artist.getSongs()).containsExactly(song);
         assertThat(artist.getAlbums()).containsExactly(album);
     }
@@ -54,7 +54,7 @@ class ArtistTest {
         // given & when
         Artist artist = Artist.builder()
                 .name("Artist Name")
-                .imageUrl("http://example.com/image.jpg")
+                .imageFileKey("http://example.com/image.jpg")
                 .songs(null)
                 .albums(null)
                 .build();
@@ -62,7 +62,7 @@ class ArtistTest {
         // then
         assertThat(artist.getId()).isNull();
         assertThat(artist.getName()).isEqualTo("Artist Name");
-        assertThat(artist.getImageUrl()).isEqualTo("http://example.com/image.jpg");
+        assertThat(artist.getImageFileKey()).isEqualTo("http://example.com/image.jpg");
         assertThat(artist.getSongs()).isNotNull();
         assertThat(artist.getAlbums()).isNotNull();
     }
@@ -76,7 +76,7 @@ class ArtistTest {
         // then
         assertThat(artist.getId()).isNull();
         assertThat(artist.getName()).isEqualTo("Simple Artist");
-        assertThat(artist.getImageUrl()).isNull();
+        assertThat(artist.getImageFileKey()).isNull();
         assertThat(artist.getSongs()).isEmpty();
         assertThat(artist.getAlbums()).isEmpty();
     }
@@ -131,7 +131,7 @@ class ArtistTest {
         artist.changeImageUrl(newUrl);
 
         // then
-        assertThat(artist.getImageUrl()).isEqualTo(newUrl);
+        assertThat(artist.getImageFileKey()).isEqualTo(newUrl);
     }
 
     @Test
@@ -145,7 +145,7 @@ class ArtistTest {
         artist.changeImageUrl(null);
 
         // then
-        assertThat(artist.getImageUrl()).isNull();
+        assertThat(artist.getImageFileKey()).isNull();
     }
 
     @Test

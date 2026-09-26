@@ -9,11 +9,13 @@ class SongFacadeTestConfiguration {
             AlbumRetriever albumRetriever,
             LicensingFacade licensingFacade,
             ArtistRoleManager artistRoleManager,
-            SongMapper songMapper) {
+            SongMapper songMapper,
+            FileStoragePort fileStoragePort,
+            AudioFileValidator audioFileValidator) {
 
         SongRetriever songRetriever = new SongRetriever(songRepository, songMapper, licensingFacade);
         SongAdder songAdder = new SongAdder(songRepository, genreRetriever, albumRetriever, artistRoleManager, songMapper);
-        SongUpdater songUpdater = new SongUpdater(songRetriever, albumRetriever, genreRetriever, songRepository, songMapper, artistRoleManager);
+        SongUpdater songUpdater = new SongUpdater(songRetriever, albumRetriever, genreRetriever, songRepository, songMapper, artistRoleManager, fileStoragePort, audioFileValidator);
         SongDeleter songDeleter = new SongDeleter(songRepository, songRetriever, licensingFacade);
         return new SongFacadeImpl(songAdder, songRetriever, songDeleter, songUpdater);
     }

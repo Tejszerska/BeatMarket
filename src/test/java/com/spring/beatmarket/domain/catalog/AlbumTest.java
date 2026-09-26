@@ -27,7 +27,7 @@ class AlbumTest {
         Album album = Album.builder()
                 .title("Album Title")
                 .releaseDate(date)
-                .coverUrl("www.coverUrl.com")
+                .coverFileKey("www.coverUrl.com")
                 .artists(artists)
                 .songs(songs)
                 .build();
@@ -36,7 +36,7 @@ class AlbumTest {
         assertThat(album.getId()).isNull();
         assertThat(album.getTitle()).isEqualTo("Album Title");
         assertThat(album.getReleaseDate()).isEqualTo(date);
-        assertThat(album.getCoverUrl()).isEqualTo("www.coverUrl.com");
+        assertThat(album.getCoverFileKey()).isEqualTo("www.coverUrl.com");
         assertThat(album.getArtists()).isEqualTo(artists);
         assertThat(album.getSongs()).isEqualTo(songs);
     }
@@ -53,7 +53,7 @@ class AlbumTest {
         assertThat(album.getId()).isNull();
         assertThat(album.getTitle()).isEqualTo("Album Title");
         assertThat(album.getReleaseDate()).isNull();
-        assertThat(album.getCoverUrl()).isNull();
+        assertThat(album.getCoverFileKey()).isNull();
         assertThat(album.getArtists()).isEmpty();
         assertThat(album.getSongs()).isEmpty();
     }
@@ -163,20 +163,20 @@ class AlbumTest {
         album.changeCoverUrl(newUrl);
 
         //then
-        assertThat(album.getCoverUrl()).isEqualTo(newUrl);
+        assertThat(album.getCoverFileKey()).isEqualTo(newUrl);
     }
 
     @Test
     @DisplayName("Should allow changing cover URL to null")
     void should_allow_changing_cover_url_to_null() {
         //given
-        Album album = Album.builder().title("Title").coverUrl("url").build();
+        Album album = Album.builder().title("Title").coverFileKey("url").build();
 
         //when
         album.changeCoverUrl(null);
 
         //then
-        assertThat(album.getCoverUrl()).isNull();
+        assertThat(album.getCoverFileKey()).isNull();
     }
 
     @Test
