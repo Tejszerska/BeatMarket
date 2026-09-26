@@ -3,7 +3,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 import com.spring.beatmarket.domain.catalog.GenreFacade;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
-import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
+import com.spring.beatmarket.infrastructure.error.MessageAndErrorsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,7 +41,7 @@ class GenreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Genre created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., too short).",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class)))
     })
     @PostMapping
     ResponseEntity<GenreApiDto.InfoResponse> createGenre(@RequestBody @Valid GenreApiDto.Request genreRequest) {
@@ -104,7 +104,7 @@ class GenreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Genre updated successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Genre not found.",
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
             @ApiResponse(responseCode = "409", description = "Genre name must be unique.",

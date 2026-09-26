@@ -3,7 +3,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 import com.spring.beatmarket.domain.catalog.AlbumFacade;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
-import com.spring.beatmarket.infrastructure.error.ValidationErrorResponseDto;
+import com.spring.beatmarket.infrastructure.error.MessageAndErrorsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,7 +55,7 @@ class AlbumController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Album found and returned successfully."),
             @ApiResponse(responseCode = "404", description = "Album with the provided ID does not exist.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
     })
     @GetMapping("/{albumId}")
     ResponseEntity<AlbumApiDto.DetailsResponse> getAlbumById(@PathVariable Long albumId) {
@@ -67,7 +67,7 @@ class AlbumController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Album created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class)))
     })
     @PostMapping
     ResponseEntity<AlbumApiDto.InfoResponse> createAlbum(@RequestBody AlbumApiDto.CreateRequest createAlbumRequest) {
@@ -80,7 +80,7 @@ class AlbumController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Album updated successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Album not found.",
                     content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
     })

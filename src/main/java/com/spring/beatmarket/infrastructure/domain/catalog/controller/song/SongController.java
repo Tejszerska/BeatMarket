@@ -111,8 +111,8 @@ class SongController {
             throws IOException {
 
         String filename = file.getOriginalFilename();
-        if (filename == null || !filename.toLowerCase().endsWith(".wav")) {
-            throw new InvalidFileFormatException("Invalid format. Only .WAV files are allowed.");
+        if (filename == null || (!filename.toLowerCase().endsWith(".wav") && !filename.toLowerCase().endsWith(".flac"))) {
+            throw new InvalidFileFormatException("Invalid format. Only .WAV or .FLAC files are allowed.");
         }
 
         facade.addTrackFile(file.getBytes(), id);

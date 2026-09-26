@@ -204,7 +204,6 @@ public interface SongApiDto {
     ) {
     }
 
-    // for nesting eg. AlbumDetails
     @Schema(name = "SongReference")
     record Reference(
             Long id,
@@ -212,7 +211,6 @@ public interface SongApiDto {
     ) {
     }
 
-    // for nesting eg. AlbumDetails
     @Schema(name = "SongReference")
     record Basic(
             Long id,

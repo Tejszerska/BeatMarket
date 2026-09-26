@@ -46,7 +46,7 @@ interface SongMapper {
     default AlbumDto.Summary toActiveAlbumSummary(Album album) {
         if (album == null || !album.isActive()) return null;
         List<ArtistDto.Reference> artists = toActiveArtistReferenceList(album.getArtists());
-        return new AlbumDto.Summary(album.getId(), album.getTitle(), album.getCoverUrl(), artists);
+        return new AlbumDto.Summary(album.getId(), album.getTitle(), album.getCoverFileKey(), artists);
     }
 
     default AlbumDto.Reference toActiveAlbumReference(Album album) {
@@ -69,7 +69,7 @@ interface SongMapper {
                 .mapToObj(i -> new ArtistDto.Basic(
                         artists.get(i).getId(),
                         artists.get(i).getName(),
-                        artists.get(i).getImageUrl(),
+                        artists.get(i).getImageFileKey(),
                         i
                 ))
                 .toList();
