@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import com.spring.beatmarket.domain.catalog.audio.AudioMetadata;
 import com.spring.beatmarket.shared.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,42 +27,10 @@ class SongUpdater {
     SongDto.Info update(final Long id, final SongDto.Update dto) {
         Song songFromDB = songRetriever.getEagerly(id);
 
-        if (dto.title() != null) {
-            dto.title().ifPresentOrElse(
-                    songFromDB::changeTitle,
-                    () -> {
-                        throw new MissingRequiredFieldException("title");
-                    }
-            );
-        }
-
-        if (dto.releaseDate() != null) {
-            dto.releaseDate().ifPresentOrElse(
-                    songFromDB::changeReleaseDate,
-                    () -> {
-                        throw new MissingRequiredFieldException("releaseDate");
-                    }
-            );
-        }
-
-        if (dto.duration() != null) {
-            dto.duration().ifPresentOrElse(
-                    songFromDB::changeDuration,
-                    () -> {
-                        throw new MissingRequiredFieldException("duration");
-                    }
-            );
-        }
-
-        if (dto.language() != null) {
-            dto.language().ifPresentOrElse(
-                    songFromDB::changeLanguage,
-                    () -> {
-                        throw new MissingRequiredFieldException("language");
-                    }
-            );
-        }
-
+        if (dto.title() != null) dto.title().ifPresent(songFromDB::changeTitle);
+        if (dto.releaseDate() != null) dto.releaseDate().ifPresent(songFromDB::changeReleaseDate);
+        if (dto.duration() != null) dto.duration().ifPresent(songFromDB::changeDuration);
+        if (dto.language() != null) dto.language().ifPresent(songFromDB::changeLanguage);
 
         if (dto.genreId() != null) {
             dto.genreId().ifPresentOrElse(

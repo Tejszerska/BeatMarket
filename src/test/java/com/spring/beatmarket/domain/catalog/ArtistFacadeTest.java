@@ -447,22 +447,6 @@ class ArtistFacadeTest {
     }
 
     @Test
-    @DisplayName("Should throw MissingRequiredFieldException when explicitly updating required field with empty optional")
-    void should_throw_exception_when_required_field_is_empty_optional() {
-        // given
-        ArtistDto.Info artist = addArtist("Artist Name");
-
-        ArtistDto.Update updateDto = ArtistDto.Update.builder()
-                .name(Optional.empty())
-                .build();
-
-        // when & then
-        assertThatThrownBy(() -> artistFacade.updateArtist(artist.id(), updateDto))
-                .isInstanceOf(MissingRequiredFieldException.class)
-                .hasMessageContaining("name");
-    }
-
-    @Test
     @DisplayName("Should throw ResourceNotFoundException when updating non-existing artist")
     void should_throw_exception_when_updating_non_existing_artist() {
         // given

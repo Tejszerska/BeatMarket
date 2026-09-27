@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
-import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +20,9 @@ class AlbumUpdater {
 
     AlbumDto.Info update(final Long id, final AlbumDto.Update dto) {
         Album album = albumRetriever.getEagerly(id);
-        if (dto.title() != null) {
-            dto.title().ifPresentOrElse(
-                    album::changeTitle,
-                    () -> {
-                        throw new MissingRequiredFieldException("title");
-                    }
-            );
-        }
 
-        if (dto.releaseDate() != null) {
-            album.changeReleaseDate(dto.releaseDate().orElse(null));
-        }
+        if (dto.title() != null) dto.title().ifPresent(album::changeTitle);
+        if (dto.releaseDate() != null) dto.releaseDate().ifPresent(album::changeReleaseDate);
 
         if (dto.mainArtistId() != null || dto.featArtistsIds() != null) {
             artistRoleManager.sync(dto.mainArtistId(), dto.featArtistsIds(),

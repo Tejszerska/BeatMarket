@@ -360,21 +360,6 @@ class AlbumFacadeTest {
         assertThat(updatedAlbum.songs()).isEmpty();
     }
 
-    @Test
-    @DisplayName("Should throw MissingRequiredFieldException when explicitly updating required field with empty optional")
-    void should_throw_exception_when_required_field_is_empty_optional() {
-        // given
-        AlbumDto.Info album = addAlbum("Album Title");
-
-        AlbumDto.Update updateDto = AlbumDto.Update.builder()
-                .title(Optional.empty())
-                .build();
-
-        // when & then
-        assertThatThrownBy(() -> albumFacade.updateAlbum(album.id(), updateDto))
-                .isInstanceOf(MissingRequiredFieldException.class)
-                .hasMessageContaining("title");
-    }
 
     @Test
     @DisplayName("Should safely handle updating songs with an empty collection")

@@ -1,7 +1,6 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
-import com.spring.beatmarket.domain.catalog.exception.MissingRequiredFieldException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,36 +19,28 @@ class ArtistUpdater {
     private final AlbumRetriever albumRetriever;
     private final RoleValidator roleValidator;
 
-    ArtistDto.Info update(final Long artistId, final ArtistDto.Update updateFromRequest) {
-        Artist artistFromDB = artistRetriever.findEagerly(artistId);
+    ArtistDto.Info update(final Long artistId, final ArtistDto.Update dto) {
+        Artist artist = artistRetriever.findEagerly(artistId);
+        if (dto.name() != null) dto.name().ifPresent(artist::changeName);
 
-        if (updateFromRequest.name() != null) {
-            updateFromRequest.name().ifPresentOrElse(
-                    artistFromDB::changeName,
-                    () -> {
-                        throw new MissingRequiredFieldException("name");
-                    }
-            );
-        }
-
-        if (updateFromRequest.mainSongIds() != null || updateFromRequest.featSongIds() != null) {
-            Set<Song> allCurrentSongs = artistFromDB.getSongs();
+        if (dto.mainSongIds() != null || dto.featSongIds() != null) {
+            Set<Song> allCurrentSongs = artist.getSongs();
 
             List<Long> currentMainSongIds = allCurrentSongs.stream()
-                    .filter(song -> song.getArtists().indexOf(artistFromDB) == 0)
+                    .filter(song -> song.getArtists().indexOf(artist) == 0)
                     .map(Song::getId)
                     .toList();
 
             List<Long> currentFeatSongIds = allCurrentSongs.stream()
-                    .filter(song -> song.getArtists().indexOf(artistFromDB) > 0)
+                    .filter(song -> song.getArtists().indexOf(artist) > 0)
                     .map(Song::getId)
                     .toList();
 
-            List<Long> targetMainSongIds = updateFromRequest.mainSongIds() == null ?
-                    currentMainSongIds : updateFromRequest.mainSongIds().orElse(Collections.emptyList());
+            List<Long> targetMainSongIds = dto.mainSongIds() == null ?
+                    currentMainSongIds : dto.mainSongIds().orElse(Collections.emptyList());
 
-            List<Long> targetFeatSongIds = updateFromRequest.featSongIds() == null ?
-                    currentFeatSongIds : updateFromRequest.featSongIds().orElse(Collections.emptyList());
+            List<Long> targetFeatSongIds = dto.featSongIds() == null ?
+                    currentFeatSongIds : dto.featSongIds().orElse(Collections.emptyList());
 
 
             Set<Long> allTargetSongIds = roleValidator.combineAndValidateIds(
@@ -62,36 +53,36 @@ class ArtistUpdater {
             for (Song song : currentSongsCopy) {
                 if (!allTargetSongIds.contains(song.getId())) {
                     List<Artist> currentSongArtists = song.getArtists();
-                    roleValidator.validateIsMainArtist(currentSongArtists, artistFromDB, song.getId(), "Song");
-                    song.removeArtist(artistFromDB);
+                    roleValidator.validateIsMainArtist(currentSongArtists, artist, song.getId(), "Song");
+                    song.removeArtist(artist);
                 }
             }
 
             for (Song song : newSongs) {
                 boolean isMain = targetMainSongIds.contains(song.getId());
-                song.assignArtist(artistFromDB, isMain);
+                song.assignArtist(artist, isMain);
             }
         }
 
-        if (updateFromRequest.mainAlbumIds() != null || updateFromRequest.featAlbumIds() != null) {
+        if (dto.mainAlbumIds() != null || dto.featAlbumIds() != null) {
 
-            Set<Album> allCurrentAlbums = artistFromDB.getAlbums();
+            Set<Album> allCurrentAlbums = artist.getAlbums();
 
             List<Long> currentMainAlbumsIds = allCurrentAlbums.stream()
-                    .filter(album -> album.getArtists().indexOf(artistFromDB) == 0)
+                    .filter(album -> album.getArtists().indexOf(artist) == 0)
                     .map(Album::getId)
                     .toList();
 
             List<Long> currentFeatAlbumsIds = allCurrentAlbums.stream()
-                    .filter(album -> album.getArtists().indexOf(artistFromDB) > 0)
+                    .filter(album -> album.getArtists().indexOf(artist) > 0)
                     .map(Album::getId)
                     .toList();
 
-            List<Long> targetMainAlbumsIds = updateFromRequest.mainAlbumIds() == null ?
-                    currentMainAlbumsIds : updateFromRequest.mainAlbumIds().orElse(Collections.emptyList());
+            List<Long> targetMainAlbumsIds = dto.mainAlbumIds() == null ?
+                    currentMainAlbumsIds : dto.mainAlbumIds().orElse(Collections.emptyList());
 
-            List<Long> targetFeatAlbumsIds = updateFromRequest.featAlbumIds() == null ?
-                    currentFeatAlbumsIds : updateFromRequest.featAlbumIds().orElse(Collections.emptyList());
+            List<Long> targetFeatAlbumsIds = dto.featAlbumIds() == null ?
+                    currentFeatAlbumsIds : dto.featAlbumIds().orElse(Collections.emptyList());
 
             Set<Long> allTargetIds = roleValidator.combineAndValidateIds(targetMainAlbumsIds, targetFeatAlbumsIds, "Artist", "Album");
 
@@ -101,16 +92,16 @@ class ArtistUpdater {
             for (Album oldAlbum : oldAlbumsCopy) {
                 if (!allTargetIds.contains(oldAlbum.getId())) {
                     List<Artist> artists = oldAlbum.getArtists();
-                    roleValidator.validateIsMainArtist(artists, artistFromDB, oldAlbum.getId(), "Album");
+                    roleValidator.validateIsMainArtist(artists, artist, oldAlbum.getId(), "Album");
 
-                    oldAlbum.removeArtist(artistFromDB);
+                    oldAlbum.removeArtist(artist);
                 }
             }
             for (Album newAlbum : newAlbums) {
                 boolean isMain = targetMainAlbumsIds.contains(newAlbum.getId());
-                newAlbum.assignArtist(artistFromDB, isMain);
+                newAlbum.assignArtist(artist, isMain);
             }
         }
-        return artistMapper.toInfoDto(artistFromDB);
+        return artistMapper.toInfoDto(artist);
     }
 }

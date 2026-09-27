@@ -194,22 +194,6 @@ class SongFacadeTest {
     }
 
     @Test
-    @DisplayName("Should throw MissingRequiredFieldException when explicitly updating required field with empty optional")
-    void should_throw_exception_when_required_field_is_empty_optional() {
-        // given
-        SongDto.Info song = addSong("Title");
-
-        SongDto.Update updateDto = SongDto.Update.builder()
-                .title(Optional.empty())
-                .build();
-
-        // when & then
-        assertThatThrownBy(() -> songFacade.updateSong(song.id(), updateDto))
-                .isInstanceOf(MissingRequiredFieldException.class)
-                .hasMessage("Required field 'title' cannot be blank or null.");
-    }
-
-    @Test
     @DisplayName("Should bubble up entity invariant exception when updating with negative duration")
     void should_bubble_up_entity_exception_when_duration_is_invalid() {
         // given
