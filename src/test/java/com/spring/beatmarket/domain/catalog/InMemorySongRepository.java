@@ -1,10 +1,10 @@
 package com.spring.beatmarket.domain.catalog;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
@@ -115,41 +115,46 @@ class InMemorySongRepository implements SongRepository {
 
     @Override
     public Optional<Song> findOne(final Specification<Song> spec) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+        throw new UnsupportedOperationException("Is not implemented");
     }
 
     @Override
-    public List<Song> findAll(final Specification<Song> spec) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+    public List<Song> findAll(@Nullable final Specification<Song> spec) {
+        throw new UnsupportedOperationException("Is not implemented");
     }
 
     @Override
-    public Page<Song> findAll(final Specification<Song> spec, final Pageable pageable) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+    public Page<Song> findAll(@Nullable final Specification<Song> spec, final Pageable pageable) {
+        throw new UnsupportedOperationException("Is not implemented");
     }
 
     @Override
-    public List<Song> findAll(final Specification<Song> spec, final Sort sort) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+    public Page<Song> findAll(@Nullable final Specification<Song> spec, @Nullable final Specification<Song> countSpec, final Pageable pageable) {
+        throw new UnsupportedOperationException("Is not implemented");
     }
 
     @Override
-    public long count(final Specification<Song> spec) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+    public List<Song> findAll(@Nullable final Specification<Song> spec, final Sort sort) {
+        throw new UnsupportedOperationException("Is not implemented");
+    }
+
+    @Override
+    public long count(@Nullable final Specification<Song> spec) {
+        throw new UnsupportedOperationException("Is not implemented");
     }
 
     @Override
     public boolean exists(final Specification<Song> spec) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+        throw new UnsupportedOperationException("Is not implemented");
     }
 
     @Override
-    public long delete(final Specification<Song> spec) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+    public long delete(@Nullable final Specification<Song> spec) {
+        throw new UnsupportedOperationException("Is not implemented");
     }
 
     @Override
-    public <S extends Song, R> R findBy(final Specification<Song> spec, final Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-        throw new UnsupportedOperationException("Specification related methods are covered in integration tests.");
+    public <S extends Song, R> R findBy(final Specification<Song> spec, final Function<? super SpecificationFluentQuery<S>, R> queryFunction) {
+        throw new UnsupportedOperationException("Is not implemented");
     }
 }
