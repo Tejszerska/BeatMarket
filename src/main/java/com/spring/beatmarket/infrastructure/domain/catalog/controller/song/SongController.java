@@ -131,7 +131,7 @@ class SongController {
     })
     @PatchMapping("/{id}")
     ResponseEntity<SongApiDto.InfoResponse> updateSong(@PathVariable Long id,
-                                                       @RequestBody SongApiDto.UpdateRequest request) {
+                                                       @RequestBody @Valid SongApiDto.UpdateRequest request) {
         SongDto.Update updateSongDto = mapper.toDomainUpdate(request);
         SongDto.Info songDto = facade.updateSong(id, updateSongDto);
         return ResponseEntity.ok(mapper.toInfoResponse(songDto));

@@ -5,7 +5,6 @@ import com.spring.beatmarket.infrastructure.domain.catalog.controller.artist.Art
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.SongApiDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import org.openapitools.jackson.nullable.JsonNullable;
 
@@ -21,7 +20,6 @@ public interface AlbumApiDto {
             String title,
 
             @Schema(description = "Release date of the album in ISO format", example = "2010-10-10")
-            @NotNull(message = "releaseDate must be declared")
             @PastOrPresent(message = "releaseDate cannot be in the future")
             LocalDate releaseDate,
 
@@ -33,15 +31,16 @@ public interface AlbumApiDto {
 
             @Schema(description = "List of featured artist IDs. Use an empty array `[]` if no featured artists.", example = "[2, 3]")
             List<Long> featArtistsIds
-    ) {}
+    ) {
+    }
 
     @Schema(name = "UpdateAlbumRequest")
     record UpdateRequest(
             @Schema(description = "Title of the album", example = "Passivity madness")
-            JsonNullable<String> title,
+            JsonNullable<@NotBlank(message = "title must be declared") String> title,
 
             @Schema(description = "Release date of the album in ISO format", example = "2010-10-10")
-            JsonNullable<LocalDate> releaseDate,
+            JsonNullable<@PastOrPresent(message = "releaseDate cannot be in the future") LocalDate> releaseDate,
 
             @Schema(description = "List of song IDs. Use an empty array `[]` to clear the list completely.", example = "[4, 5]")
             JsonNullable<Set<Long>> songIds,
@@ -81,7 +80,8 @@ public interface AlbumApiDto {
 
             @Schema(description = "Set of songs included in the album")
             Set<SongApiDto.Reference> songs
-    ) {}
+    ) {
+    }
 
     @Schema(name = "AlbumSummaryResponse")
     record SummaryResponse(
@@ -96,7 +96,8 @@ public interface AlbumApiDto {
 
             @Schema(description = "List of artists who collaborated on the album")
             List<ArtistApiDto.Reference> artists
-    ) {}
+    ) {
+    }
 
     @Schema(name = "GetAllAlbumsResponse")
     record GetAllResponse(
@@ -105,7 +106,8 @@ public interface AlbumApiDto {
 
             @Schema(description = "Indicates if there is a next page of albums available", example = "true")
             boolean hasNext
-    ) {}
+    ) {
+    }
 
     @Schema(name = "AlbumReference")
     record Reference(
@@ -114,7 +116,8 @@ public interface AlbumApiDto {
 
             @Schema(description = "Title of the album", example = "Passivity madness")
             String title
-    ) {}
+    ) {
+    }
 
     @Schema(name = "AlbumBasic")
     record Basic(
@@ -126,7 +129,8 @@ public interface AlbumApiDto {
 
             @Schema(description = "Link to the album cover image", example = "https://s3.aws.com/your-bucket/covers/passivity-madness.jpg")
             String coverUrl
-    ) {}
+    ) {
+    }
 
     @Schema(name = "AlbumInfo")
     record InfoResponse(
@@ -148,5 +152,6 @@ public interface AlbumApiDto {
 
             @Schema(description = "Set of songs included in the album")
             Set<SongApiDto.Reference> songs
-    ) {}
+    ) {
+    }
 }

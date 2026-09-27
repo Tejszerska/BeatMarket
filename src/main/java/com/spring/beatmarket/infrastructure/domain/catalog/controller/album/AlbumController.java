@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -70,7 +71,7 @@ class AlbumController {
                     content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class)))
     })
     @PostMapping
-    ResponseEntity<AlbumApiDto.InfoResponse> createAlbum(@RequestBody AlbumApiDto.CreateRequest createAlbumRequest) {
+    ResponseEntity<AlbumApiDto.InfoResponse> createAlbum(@RequestBody @Valid  AlbumApiDto.CreateRequest createAlbumRequest) {
         AlbumDto.Create domainRequest = mapper.toDomainCreate(createAlbumRequest);
         AlbumDto.Info addedAlbum = facade.addAlbum(domainRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toInfoResponse(addedAlbum));
@@ -86,7 +87,7 @@ class AlbumController {
     })
     @PatchMapping("/{id}")
     ResponseEntity<AlbumApiDto.InfoResponse> updateAlbum(@PathVariable Long id,
-                                                       @RequestBody AlbumApiDto.UpdateRequest request) {
+                                                       @RequestBody @Valid AlbumApiDto.UpdateRequest request) {
         AlbumDto.Update updateAlbumDto = mapper.toDomainUpdate(request);
         AlbumDto.Info albumDto = facade.updateAlbum(id, updateAlbumDto);
         return ResponseEntity.ok(mapper.toInfoResponse(albumDto));

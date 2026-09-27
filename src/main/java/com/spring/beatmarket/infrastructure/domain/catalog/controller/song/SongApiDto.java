@@ -56,16 +56,20 @@ public interface SongApiDto {
     @Schema(name = "UpdateSongRequest")
     record UpdateRequest(
             @Schema(description = "Title of the song", example = "In the End")
-            JsonNullable<String> title,
+            JsonNullable<@NotBlank(message = "title must be declared") String> title,
 
             @Schema(description = "Release date of the song in ISO format", example = "2000-10-24")
-            JsonNullable<LocalDate> releaseDate,
+            JsonNullable<
+                    @NotNull(message = "releaseDate must be declared")
+                    @PastOrPresent(message = "releaseDate cannot be in the future") LocalDate> releaseDate,
 
             @Schema(description = "Duration of the song in seconds", example = "156")
-            JsonNullable<Integer> duration,
+            JsonNullable<
+                    @NotNull(message = "duration must be declared")
+                    @Positive(message = "duration must be a positive number") Integer> duration,
 
             @Schema(description = "Language of the song", example = "EN")
-            JsonNullable<SongLanguage> language,
+            JsonNullable<@NotNull(message = "language must be declared") SongLanguage> language,
 
             @Schema(description = "ID of the genre. Can be omitted if the genre is not yet in the system.", example = "1")
             JsonNullable<Long> genreId,
@@ -227,7 +231,8 @@ public interface SongApiDto {
                         LocalDate releaseDate,
                         List<ArtistApiDto.Reference> artists,
                         GenreApiDto.Reference genre,
-                        AlbumApiDto.Reference album) {}
+                        AlbumApiDto.Reference album) {
+    }
 
     @Schema(name = "SongPriceResponse")
     record Price(
@@ -248,5 +253,6 @@ public interface SongApiDto {
             BigDecimal maxPrice,
             String currency,
             String license
-    ) {}
+    ) {
+    }
 }

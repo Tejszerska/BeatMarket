@@ -33,7 +33,7 @@ public interface ArtistApiDto {
     @Schema(name = "UpdateArtistRequest")
     record UpdateRequest(
             @Schema(description = "Official name or pseudonym of the artist", example = "Linkin Park")
-            @NotBlank JsonNullable<String> name,
+            JsonNullable<@NotBlank(message = "name must be declared") String> name,
 
             @Schema(description = "List of song IDs where the artist is the main performer. Use an empty array `[]` to clear the list completely.", example = "[1, 2]")
             JsonNullable<List<Long>> mainSongIds,
