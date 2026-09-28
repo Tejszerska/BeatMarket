@@ -6,6 +6,7 @@ import com.spring.beatmarket.infrastructure.domain.catalog.controller.album.Albu
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.artist.ArtistApiDto;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.genre.GenreApiDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -33,6 +34,7 @@ public interface SongApiDto {
             @Schema(description = "Duration of the song in seconds", example = "156")
             @NotNull(message = "duration must be declared")
             @Positive(message = "duration must be a positive number")
+            @Max(value = 900, message = "max duration 15 min = 900 s.")
             Integer duration,
 
             @Schema(description = "Language of the song", example = "EN")

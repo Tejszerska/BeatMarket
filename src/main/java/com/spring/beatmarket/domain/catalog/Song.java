@@ -94,6 +94,7 @@ class Song extends BaseEntity {
         if (duration == null) throw new MissingRequiredFieldException("duration");
 
         if (duration <= 0) throw new IllegalArgumentException("Duration must be a positive number");
+        if (duration >= 900) throw new IllegalArgumentException("Duration must be max. 900 s.");
         if (releaseDate.isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Release date can't be in the future");
 

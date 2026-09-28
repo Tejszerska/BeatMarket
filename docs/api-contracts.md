@@ -514,7 +514,7 @@ Adds a new song to the system.
 
 - `title` (string, required) _Title of the song._
 - `releaseDate` (string, required) _Release date in YYYY-MM-DD format._
-- `duration` (integer, required) _Duration of the song in seconds. Must be > 0._
+- `duration` (integer, required) _Duration of the song in seconds. Must be > 0, <= 900._
 - `language` (string, required) _Language of the song (e.g., "EN")._
 - `genreId` (integer, optional) _ID of the genre. Can be omitted if the genre is not yet in the system._
 - `artistIds` (array[integer], optional) _List of artist IDs. Use an empty array `[]` if no artists are assigned yet. The first ID in the array is treated as the primary artist, while subsequent IDs represent featuring artists._
@@ -580,7 +580,7 @@ _Invalid input data (e.g., negative duration)._
 
 #### POST /api/catalog/songs/{id}/preview
 
-Uploads an audio preview file and links the resulting resource URL to the specified song. If a preview is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
+Uploads an audio preview file and links the resulting resource file key to the specified song. If a preview is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
 
 **Parameters:**
 
@@ -595,12 +595,12 @@ Uploads an audio preview file and links the resulting resource URL to the specif
 - `file` (file/binary, required) _The audio file (e.g., MP3, AAC (.m4a)) to be uploaded._
 
 **Response (200 OK):**
-_Returns the URL of the uploaded resource._
+_Returns the file key of the uploaded resource._
 
 ```json
 {
   "message": "Preview uploaded successfully",
-  "previewUrl": "https://s3.aws.com/your-bucket/previews/in-the-end-prv.mp3"
+  "previewUrl": "/previews/in-the-end-prv.mp3"
 }
 ```
 
@@ -626,7 +626,7 @@ _Returned when the file is missing, empty, or of an unsupported format._
 
 #### POST /api/catalog/songs/{id}/track
 
-Uploads the full-length audio track and links the resource URL to the specified song. If a full file is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
+Uploads the full-length audio track and links the resource file key to the specified song. If a full file is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
 **Parameters:**
 
 - `id` (integer, path parameter, required) _Song ID_
@@ -833,7 +833,7 @@ _Invalid input data (e.g., improper release date format)._
 
 #### POST /api/catalog/albums/{id}/cover
 
-Uploads album cover (image file) and links the resulting resource URL to the specified album. If a cover is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
+Uploads album cover (image file) and links the resulting resource file key to the specified album. If a cover is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
 
 **Parameters:**
 
@@ -1036,7 +1036,7 @@ _Invalid input data_
 
 #### POST /api/catalog/artists/{id}/image
 
-Uploads artist's image (image file) and links the resulting resource URL to the specified artist. If an image is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.
+Uploads artist's image (image file) and links the resulting resource file key to the specified artist. If an image is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
 
 **Parameters:**
 
