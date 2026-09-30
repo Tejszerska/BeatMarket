@@ -43,5 +43,4 @@ class AudioFileValidator {
 
         return extension;
     }
-
 }
