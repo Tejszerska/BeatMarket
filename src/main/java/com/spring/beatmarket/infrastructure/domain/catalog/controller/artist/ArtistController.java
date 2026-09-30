@@ -2,8 +2,8 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.artist;
 
 import com.spring.beatmarket.domain.catalog.ArtistFacade;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
-import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
-import com.spring.beatmarket.infrastructure.error.MessageAndErrorsResponseDto;
+import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponse;
+import com.spring.beatmarket.infrastructure.error.MessageAndMapErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,7 +54,7 @@ class ArtistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist found and returned successfully."),
             @ApiResponse(responseCode = "404", description = "Artist with the provided ID does not exist.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @GetMapping("/{artistId}")
     ResponseEntity<ArtistApiDto.DetailsResponse> getArtistById(@PathVariable Long artistId) {
@@ -66,9 +66,9 @@ class ArtistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Artist created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Song or Album not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @PostMapping
     ResponseEntity<ArtistApiDto.InfoResponse> createArtist(@Valid @RequestBody ArtistApiDto.CreateRequest request) {
@@ -80,9 +80,9 @@ class ArtistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Artist successfully updated."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Song, Album, or Artist(s) not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @PatchMapping("/{id}")
     ResponseEntity<ArtistApiDto.InfoResponse> updateArtist(
@@ -97,7 +97,7 @@ class ArtistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Artist deleted successfully (No Content)."),
             @ApiResponse(responseCode = "404", description = "Artist not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @DeleteMapping("/{artistId}")
     ResponseEntity<Void> deleteArtist(@PathVariable Long artistId) {

@@ -1,8 +1,5 @@
 package com.spring.beatmarket.domain.catalog.exception;
 
-import lombok.Getter;
-
-@Getter
 public class MainRoleRemovalException extends RoleConflictException {
     private final Long artistId;
     private final Long subjectId;
