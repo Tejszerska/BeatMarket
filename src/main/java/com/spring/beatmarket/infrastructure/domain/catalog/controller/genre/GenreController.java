@@ -2,8 +2,8 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 
 import com.spring.beatmarket.domain.catalog.GenreFacade;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponseDto;
-import com.spring.beatmarket.infrastructure.error.MessageAndErrorsResponseDto;
+import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponse;
+import com.spring.beatmarket.infrastructure.error.MessageAndMapErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,7 +41,7 @@ class GenreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Genre created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., too short).",
-                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class)))
     })
     @PostMapping
     ResponseEntity<GenreApiDto.InfoResponse> createGenre(@RequestBody @Valid GenreApiDto.Request genreRequest) {
@@ -65,7 +65,7 @@ class GenreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Genre found and returned successfully."),
             @ApiResponse(responseCode = "404", description = "Genre with the provided ID does not exist.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @GetMapping("/{genreId}")
     ResponseEntity<GenreApiDto.DetailsResponse> getGenreById(@PathVariable Long genreId) {
@@ -77,7 +77,7 @@ class GenreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Genre deleted successfully (No Content)."),
             @ApiResponse(responseCode = "404", description = "Genre not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @DeleteMapping("/{genreId}")
     ResponseEntity<Void> deleteGenreById(@PathVariable Long genreId) {
@@ -89,9 +89,9 @@ class GenreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Genre transferred successfully."),
             @ApiResponse(responseCode = "400", description = "Provided IDs are identical.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Genre not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @PatchMapping("/{oldId}/transfer-to/{newId}")
     ResponseEntity<GenreApiDto.TransferResponse> bulkUpdateByGenreId(@PathVariable Long oldId, @PathVariable Long newId) {
@@ -104,11 +104,11 @@ class GenreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Genre updated successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = MessageAndErrorsResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Genre not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = "Genre name must be unique.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
     })
     @PatchMapping("/{id}")
     ResponseEntity<GenreApiDto.InfoResponse> updateGenre(@PathVariable Long id,
