@@ -1,10 +1,14 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.audio.AudioMetadata;
-
 public class FakeAudioInspector implements AudioInspectorPort {
+
     @Override
-    public AudioMetadata inspect(final byte[] audioBytes) {
+    public AudioFileExtension inspectExtension(final byte[] audioBytes) {
+        throw new UnsupportedOperationException("Not implemented yet!");
+    }
+
+    @Override
+    public Double inspectDuration(final byte[] audioBytes, final AudioFileExtension extension) {
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 }

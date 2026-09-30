@@ -1,8 +1,8 @@
 package com.spring.beatmarket.domain.catalog;
 
-import com.spring.beatmarket.domain.catalog.audio.AudioFileExtension;
-import com.spring.beatmarket.domain.catalog.audio.AudioMetadata;
-import com.spring.beatmarket.domain.catalog.audio.IncorrectAudioFormat;
+import com.spring.beatmarket.domain.catalog.exception.AudioFileTooBigException;
+import com.spring.beatmarket.domain.catalog.exception.IncorrectAudioFormatException;
+import com.spring.beatmarket.domain.catalog.exception.SongDurationMismatchException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,18 +12,36 @@ import org.springframework.stereotype.Service;
 @Slf4j
 class AudioFileValidator {
     private final AudioInspectorPort inspectorPort;
+    // The file size limitation stems from the assumed 16-bit quality and max duration= 15 min
+    private static final double MAX_WAV_SIZE = 165.00; // [MB]
+    private static final double MAX_FLAC_SIZE = 95.00; // [MB]
 
-    AudioMetadata validateFullTrack(final byte[] trackBytes) {
-        AudioMetadata audioMetadata = inspectorPort.inspect(trackBytes);
+    AudioFileExtension validateFullTrack(final byte[] trackBytes, final int databaseDuration) {
+        double fileMB = trackBytes.length / (1024.0 * 1024.0);
 
-            if (audioMetadata.fileExtension() != AudioFileExtension.FLAC &&
-                    audioMetadata.fileExtension() != AudioFileExtension.WAV) {
-                throw new IncorrectAudioFormat("Only .WAV or .FLAC files accepted as full track files.");
-            }
+        AudioFileExtension extension = inspectorPort.inspectExtension(trackBytes);
 
-        //@TODO walidacja długość piosenki w bazie vs w metadanych
-        //@TODO ustalić granice wielkości plików i tez zwalidować
+        if (extension != AudioFileExtension.FLAC
+            && extension != AudioFileExtension.WAV) {
+            throw new IncorrectAudioFormatException("Only .WAV or .FLAC files accepted as full track files.");
+        }
 
-        return audioMetadata;
+        if ((extension == AudioFileExtension.WAV) && fileMB > MAX_WAV_SIZE) {
+            throw new AudioFileTooBigException(fileMB, MAX_WAV_SIZE);
+        }
+
+        if ((extension == AudioFileExtension.FLAC) && fileMB > MAX_FLAC_SIZE) {
+            throw new AudioFileTooBigException(fileMB, MAX_FLAC_SIZE);
+        }
+
+        Double fileDuration = inspectorPort.inspectDuration(trackBytes, extension);
+
+        if (fileDuration> databaseDuration + 3
+                || fileDuration < databaseDuration - 3) {
+            throw new SongDurationMismatchException(databaseDuration);
+        }
+
+        return extension;
     }
+
 }

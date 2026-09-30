@@ -1,4 +1,4 @@
-package com.spring.beatmarket.domain.catalog.audio;
+package com.spring.beatmarket.domain.catalog;
 
 public enum AudioFileExtension {
     WAV,

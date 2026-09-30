@@ -1,10 +1,10 @@
 package com.spring.beatmarket.infrastructure.audio;
 
 import com.spring.beatmarket.domain.catalog.AudioInspectorPort;
-import com.spring.beatmarket.domain.catalog.audio.AudioFileExtension;
-import com.spring.beatmarket.domain.catalog.audio.AudioMetadata;
-import com.spring.beatmarket.domain.catalog.audio.UnreadableAudioFileException;
+import com.spring.beatmarket.domain.catalog.AudioFileExtension;
+import com.spring.beatmarket.domain.catalog.exception.UnreadableAudioFileException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.gagravarr.flac.FlacFile;
@@ -24,8 +24,18 @@ import static java.lang.Double.parseDouble;
 @Slf4j
 class AudioInspectorAdapter implements AudioInspectorPort {
 
+    /**
+     * Checks "magic bytes" to extract file extension without parsing full file
+     */
     @Override
-    public AudioMetadata inspect(final byte[] audioBytes) {
+    public AudioFileExtension inspectExtension(final byte[] audioBytes) {
+        Tika tika = new Tika();
+        String contentType = tika.detect(audioBytes);
+        return mapContentTypeToExtension(contentType);
+    }
+
+    @Override
+    public Double inspectDuration(final byte[] audioBytes, final AudioFileExtension extension) {
         Metadata metadata;
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(audioBytes)) {
             metadata = TikaAnalysis.extractMetadatatUsingParser(inputStream);
@@ -33,9 +43,6 @@ class AudioInspectorAdapter implements AudioInspectorPort {
             log.error("Error parsing audio file with Tika", e);
             throw new UnreadableAudioFileException("An error occurred while analysing audio file.");
         }
-
-        String contentType = Metadata.CONTENT_TYPE;
-        AudioFileExtension extension = mapContentTypeToExtension(metadata.get(contentType));
 
         String durationString = metadata.get("xmpDM:duration");
         Double durationInSeconds = null;
@@ -52,9 +59,9 @@ class AudioInspectorAdapter implements AudioInspectorPort {
         if (durationInSeconds == null) {
             durationInSeconds = calculateDurationFromBytes(extension, audioBytes);
         }
-
-        return new AudioMetadata(extension, durationInSeconds);
+        return durationInSeconds;
     }
+
 
     /**
      * Stops the process and throws an exception because getting an improper
