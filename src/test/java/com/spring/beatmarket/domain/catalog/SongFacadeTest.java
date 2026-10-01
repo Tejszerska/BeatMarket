@@ -8,6 +8,7 @@ import com.spring.beatmarket.domain.licensing.LicensingFacade;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,8 +31,8 @@ class SongFacadeTest {
 
     private final ArtistRetriever artistRetriever = mock(ArtistRetriever.class);
     private final RoleValidator roleValidator = new RoleValidator();
-    private final AudioInspectorPort audioInspectorPort = new FakeAudioInspector();
-    private final AudioFileValidator audioFileValidator = new AudioFileValidator(audioInspectorPort);
+    private final FakeAudioInspector fakeAudioInspector = new FakeAudioInspector();
+    private final AudioFileValidator audioFileValidator = new AudioFileValidator(fakeAudioInspector);
     private final ArtistRoleManager artistRoleManager = new ArtistRoleManager(roleValidator, artistRetriever);
 
     private final SongMapper songMapper = new SongMapperImpl();
@@ -252,6 +253,65 @@ class SongFacadeTest {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Song with id " + nonExistingId + " not found or is inactive");
     }
+
+    @Test
+    @DisplayName("Should successfully assign full track bytes to the database record")
+    public void should_assign_full_track_to_database() {
+        // given
+        SongDto.Info addedSong = addSong("Some - song");
+        Long id = addedSong.id();
+
+        fakeAudioInspector.setDurationToReturn((double) addedSong.duration());
+        fakeAudioInspector.setExtensionToReturn(AudioFileExtension.WAV);
+        byte[] trackBytes = new byte[]{1, 2, 3, 4, 5, 6, 7, 8};
+
+        // when
+        songFacade.addTrackFile(trackBytes, id);
+
+        // then
+        Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
+        String assignedFileKey = (String) ReflectionTestUtils.getField(updatedSong, "trackFileKey");
+        assertThat(assignedFileKey).isNotNull();
+        assertThat(assignedFileKey)
+                .startsWith("tracks/")
+                .endsWith(".WAV")
+                .contains("some-song")
+                .contains(updatedSong.getUuid().toString().substring(0, 4));
+        assertThat(fileStorageAdapter.containsFile(assignedFileKey)).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should delete old track file from storage when replacing with a new one")
+    public void should_delete_old_file_from_storage_when_uploading_new_track() {
+        // given
+        SongDto.Info addedSong = addSong("Song with replaced track");
+        Long id = addedSong.id();
+
+        fakeAudioInspector.setDurationToReturn((double) addedSong.duration());
+        fakeAudioInspector.setExtensionToReturn(AudioFileExtension.WAV);
+
+        byte[] oldTrackBytes = new byte[]{1, 1, 1};
+        songFacade.addTrackFile(oldTrackBytes, id);
+
+        Song songAfterFirstUpload = songRepository.findByIdAndActiveTrue(id).orElseThrow();
+        String oldFileKey = (String) ReflectionTestUtils.getField(songAfterFirstUpload, "trackFileKey");
+
+        assertThat(fileStorageAdapter.containsFile(oldFileKey)).isTrue();
+
+        byte[] newTrackBytes = new byte[]{2, 2, 2};
+
+        // when
+        songFacade.addTrackFile(newTrackBytes, id);
+
+        // then
+        Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
+        String newFileKey = (String) ReflectionTestUtils.getField(updatedSong, "trackFileKey");
+        assertThat(fileStorageAdapter.containsFile(oldFileKey)).isFalse();
+        assertThat(fileStorageAdapter.containsFile(newFileKey)).isTrue();
+        //@TODO change test to match new business logic (file key changes for every upload)
+        assertThat(newFileKey).isNotEqualTo(oldFileKey);
+    }
+
 
     private SongDto.Info addSong(String title) {
         SongDto.Create createDto = TestObjectsFactory.createSongDto(title);
