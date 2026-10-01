@@ -16,6 +16,7 @@ import java.util.Set;
 public class LicensingFacade {
     private final SongPricesRetriever songPricesRetriever;
     private final SongPriceDeleter songPriceDeleter;
+    private final LicenseRetriever licenseRetriever;
 
     public Map<Long, List<SongPriceDto>> getMultiplePricingDto(List<Long> songIds) {
         return songPricesRetriever.getMultiplePricingDto(songIds);
@@ -32,7 +33,12 @@ public class LicensingFacade {
     public void deactivatePricesForSong(Long songId) {
         songPriceDeleter.deactivatePricesForSong(songId);
     }
+
     public void deactivatePricesForSongs(Set<Long> songIds) {
         songPriceDeleter.deactivatePricesForSongs(songIds);
+    }
+
+    public boolean hasAnyCurrentLicenses(final String trackFileKey) {
+        return licenseRetriever.hasAnyCurrentLicenses(trackFileKey);
     }
 }

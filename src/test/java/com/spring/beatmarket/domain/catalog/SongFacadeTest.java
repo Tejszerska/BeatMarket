@@ -308,7 +308,6 @@ class SongFacadeTest {
         String newFileKey = (String) ReflectionTestUtils.getField(updatedSong, "trackFileKey");
         assertThat(fileStorageAdapter.containsFile(oldFileKey)).isFalse();
         assertThat(fileStorageAdapter.containsFile(newFileKey)).isTrue();
-        //@TODO change test to match new business logic (file key changes for every upload)
         assertThat(newFileKey).isNotEqualTo(oldFileKey);
     }
 

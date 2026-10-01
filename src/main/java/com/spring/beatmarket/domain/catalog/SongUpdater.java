@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.domain.licensing.LicensingFacade;
 import com.spring.beatmarket.shared.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +22,7 @@ class SongUpdater {
     private final ArtistRoleManager artistRoleManager;
     private final FileStoragePort fileStoragePort;
     private final AudioFileValidator fileValidator;
+    private final LicensingFacade licensingFacade;
 
 
     SongDto.Info update(final Long id, final SongDto.Update dto) {
@@ -74,12 +76,15 @@ class SongUpdater {
 
         String initTrackFileKey = song.getTrackFileKey();
         if (initTrackFileKey != null && !initTrackFileKey.isBlank()) {
-            fileStoragePort.delete(initTrackFileKey);
+            if(!licensingFacade.hasAnyCurrentLicenses(initTrackFileKey)){
+                fileStoragePort.delete(initTrackFileKey);
+            }
         }
 
+        String timestamp = String.valueOf(Instant.now().toEpochMilli());
         String fileKey = "tracks/" + StringUtils.createSlug(song.getTitle()) +
                 "-"
-                + song.getUuid().toString().substring(0, 4)
+                + timestamp
                 + "." + extension.toString();
 
         fileStoragePort.upload(trackBytes, fileKey);
@@ -87,7 +92,6 @@ class SongUpdater {
 
         song.changeTrackFileKey(fileKey);
     }
-
 }
 
 
