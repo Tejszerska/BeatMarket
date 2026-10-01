@@ -38,6 +38,7 @@ class License extends BaseEntity {
     private Long userId;
     private Long paymentId;
     private Long songId;
+    private String trackFileKey;
 
     @Enumerated(EnumType.STRING)
     private LicenseTier tier;
