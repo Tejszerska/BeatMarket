@@ -16,7 +16,7 @@ CREATE TABLE album
     edited_on    TIMESTAMP WITHOUT TIME ZONE,
     active       BOOLEAN NOT NULL,
     version      BIGINT,
-    title        VARCHAR(255),
+    title        VARCHAR(255) NOT NULL,
     release_date date,
     cover_url    TEXT,
     CONSTRAINT pk_album PRIMARY KEY (id)
