@@ -15,7 +15,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AlbumRepositoryTest extends BaseRepositoryTest {
+class AlbumRepositoryIT extends BaseRepositoryIT {
 
     @Autowired
     private AlbumRepository albumRepository;
@@ -95,6 +95,8 @@ class AlbumRepositoryTest extends BaseRepositoryTest {
         //then
         assertThat(albumSlice.getContent())
                 .containsExactlyInAnyOrder(album1, album2);
+        assertThat(albumSlice.getContent())
+                .doesNotContain(album3);
     }
 
     @Test
@@ -118,6 +120,8 @@ class AlbumRepositoryTest extends BaseRepositoryTest {
         //then
         assertThat(albumSlice.getContent())
                 .containsExactlyInAnyOrder(album3, album2);
+        assertThat(albumSlice.getContent())
+                .doesNotContain(album1);
     }
 
     @Test
@@ -141,6 +145,8 @@ class AlbumRepositoryTest extends BaseRepositoryTest {
         //then
         assertThat(albumSlice.getContent())
                 .containsExactly(album2);
+        assertThat(albumSlice.getContent())
+                .doesNotContain(album3, album1);
     }
 
     @Test

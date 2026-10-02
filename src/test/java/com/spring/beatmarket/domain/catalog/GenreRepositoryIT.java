@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GenreRepositoryTest extends BaseRepositoryTest {
+class GenreRepositoryIT extends BaseRepositoryIT {
 
     @Autowired
     private GenreRepository genreRepository;

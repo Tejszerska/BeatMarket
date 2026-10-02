@@ -14,7 +14,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SongRepositoryTest extends BaseRepositoryTest {
+class SongRepositoryIT extends BaseRepositoryIT {
 
     @Autowired
     private SongRepository songRepository;

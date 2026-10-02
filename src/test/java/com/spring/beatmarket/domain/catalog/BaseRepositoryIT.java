@@ -15,7 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @Import(CatalogTestPersister.class)
-abstract class BaseRepositoryTest {
+abstract class BaseRepositoryIT {
 
     @Container
     @ServiceConnection
