@@ -599,7 +599,7 @@ _Returns the file key of the uploaded resource._
 
 ```json
 {
-  "message": "Preview uploaded successfully",
+  "songId": 10,
   "previewUrl": "/previews/in-the-end-prv.mp3"
 }
 ```

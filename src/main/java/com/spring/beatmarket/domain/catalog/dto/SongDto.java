@@ -94,4 +94,10 @@ public interface SongDto {
                           String currency,
                           String license) {
     }
+
+    record Preview(
+            Long songId,
+            String previewUrl
+    ) {
+    }
 }

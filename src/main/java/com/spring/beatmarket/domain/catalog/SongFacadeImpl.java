@@ -30,6 +30,9 @@ class SongFacadeImpl implements SongFacade {
     public void addTrackFile(final byte[] trackBytes, final Long id) {
         songUpdater.updateTrackFile(trackBytes, id);
     }
+    public SongDto.Preview addPreviewFile(byte[] bytes, Long id){
+       return songUpdater.updatePreviewFile(bytes, id);
+    }
 
     public SongDto.Info updateSong(Long id, SongDto.Update songFromRequest) {
         return songUpdater.update(id, songFromRequest);    }

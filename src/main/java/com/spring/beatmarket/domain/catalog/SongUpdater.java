@@ -76,7 +76,7 @@ class SongUpdater {
 
         String initTrackFileKey = song.getTrackFileKey();
         if (initTrackFileKey != null && !initTrackFileKey.isBlank()) {
-            if(!licensingFacade.hasAnyCurrentLicenses(initTrackFileKey)){
+            if (!licensingFacade.hasAnyCurrentLicenses(initTrackFileKey)) {
                 fileStoragePort.delete(initTrackFileKey);
             }
         }
@@ -91,6 +91,28 @@ class SongUpdater {
         log.info("Successfully uploaded full track file for song id={}", song.getId());
 
         song.changeTrackFileKey(fileKey);
+    }
+
+    SongDto.Preview updatePreviewFile(final byte[] bytes, final Long id) {
+        Song song = songRetriever.getLazily(id);
+        AudioFileExtension extension = fileValidator.validatePreviewTrack(bytes, song.getDuration());
+
+        String initPreviewKey = song.getTrackFileKey();
+        if (initPreviewKey != null && !initPreviewKey.isBlank()) {
+            fileStoragePort.delete(initPreviewKey);
+        }
+        String timestamp = String.valueOf(Instant.now().toEpochMilli()).substring(8);
+        String fileKey = "previews/" + StringUtils.createSlug(song.getTitle()) +
+                "-"
+                + timestamp
+                + "." + extension.toString();
+
+        fileStoragePort.upload(bytes, fileKey);
+        log.info("Successfully uploaded preview track file for song id={}", song.getId());
+
+        song.changePreviewFileKey(fileKey);
+
+        return new SongDto.Preview(song.getId(), "https://beatmarket1.s3.eu-north-1.amazonaws.com/" + fileKey);
     }
 }
 

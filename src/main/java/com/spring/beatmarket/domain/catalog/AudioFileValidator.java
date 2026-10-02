@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 class AudioFileValidator {
     private final AudioInspectorPort inspectorPort;
-    // The file size limitation stems from the assumed 16-bit quality and max duration= 15 min
+    // Full track file size limitation stems from the assumed 16-bit quality and max duration 15 [min]:
     private static final double MAX_WAV_SIZE = 165.00; // [MB]
     private static final double MAX_FLAC_SIZE = 95.00; // [MB]
+    // Preview file size limitation stems from max [kbps] and max duration 15 [min]:
+    private static final double MAX_MP3_SIZE = 40.00; // [MB], 320 [kbps]
+    private static final double MAX_AAC_SIZE = 40.00; // [MB], 256 [kbps]
 
     AudioFileExtension validateFullTrack(final byte[] trackBytes, final int databaseDuration) {
         double fileMB = trackBytes.length / (1024.0 * 1024.0);
@@ -22,7 +25,7 @@ class AudioFileValidator {
         AudioFileExtension extension = inspectorPort.inspectExtension(trackBytes);
 
         if (extension != AudioFileExtension.FLAC
-            && extension != AudioFileExtension.WAV) {
+                && extension != AudioFileExtension.WAV) {
             throw new IncorrectAudioFormatException("Only .WAV or .FLAC files accepted as full track files.");
         }
 
@@ -36,7 +39,35 @@ class AudioFileValidator {
 
         Double fileDuration = inspectorPort.inspectDuration(trackBytes, extension);
 
-        if (fileDuration> databaseDuration + 3
+        if (fileDuration > databaseDuration + 3
+                || fileDuration < databaseDuration - 3) {
+            throw new SongDurationMismatchException(databaseDuration);
+        }
+
+        return extension;
+    }
+
+    AudioFileExtension validatePreviewTrack(final byte[] trackBytes, final Integer databaseDuration) {
+        double fileMB = trackBytes.length / (1024.0 * 1024.0);
+
+        AudioFileExtension extension = inspectorPort.inspectExtension(trackBytes);
+
+        if (extension != AudioFileExtension.MP3
+                && extension != AudioFileExtension.AAC) {
+            throw new IncorrectAudioFormatException("Only .MP3 or .AAC files accepted as preview track files.");
+        }
+
+        if ((extension == AudioFileExtension.MP3) && fileMB > MAX_MP3_SIZE) {
+            throw new AudioFileTooBigException(fileMB, MAX_MP3_SIZE);
+        }
+
+        if ((extension == AudioFileExtension.AAC) && fileMB > MAX_AAC_SIZE) {
+            throw new AudioFileTooBigException(fileMB, MAX_AAC_SIZE);
+        }
+
+        Double fileDuration = inspectorPort.inspectDuration(trackBytes, extension);
+
+        if (fileDuration > databaseDuration + 3
                 || fileDuration < databaseDuration - 3) {
             throw new SongDurationMismatchException(databaseDuration);
         }

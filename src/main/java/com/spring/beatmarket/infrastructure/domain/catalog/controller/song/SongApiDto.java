@@ -257,4 +257,11 @@ public interface SongApiDto {
             String license
     ) {
     }
+
+    @Schema(name = "SongPreviewResponse")
+    record PreviewResponse(
+            Long songId,
+            String previewUrl
+    ) {
+    }
 }

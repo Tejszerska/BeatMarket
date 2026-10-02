@@ -281,7 +281,7 @@ class SongTest {
         String oldPreviewUrl = song.getPreviewFileKey();
 
         //when
-        song.changePreviewUrl(newPreviewUrl);
+        song.changePreviewFileKey(newPreviewUrl);
 
         //then
         assertThat(song.getPreviewFileKey()).isEqualTo(newPreviewUrl);
@@ -293,10 +293,10 @@ class SongTest {
     void should_allow_changing_preview_url_to_null() {
         //given
         Song song = createCompleteSong("Title");
-        song.changePreviewUrl("https://example.com/preview.mp3");
+        song.changePreviewFileKey("https://example.com/preview.mp3");
 
         //when
-        song.changePreviewUrl(null);
+        song.changePreviewFileKey(null);
 
         //then
         assertThat(song.getPreviewFileKey()).isNull();

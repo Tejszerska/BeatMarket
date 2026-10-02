@@ -17,4 +17,6 @@ public interface SongFacade {
     SongDto.Info updateSong(Long id, SongDto.Update songFromRequest);
 
     void deactivateSong(Long id);
+
+    SongDto.Preview addPreviewFile(byte[] bytes, Long id);
 }

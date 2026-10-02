@@ -187,8 +187,8 @@ class Song extends BaseEntity {
         }
     }
 
-    void changePreviewUrl(String previewUrl) {
-        this.previewFileKey = previewUrl;
+    void changePreviewFileKey(String previewFileKey) {
+        this.previewFileKey = previewFileKey;
     }
 
     void changeTrackFileKey(String trackFileKey) {

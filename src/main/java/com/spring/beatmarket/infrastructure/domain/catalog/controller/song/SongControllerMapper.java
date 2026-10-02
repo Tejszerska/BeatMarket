@@ -23,6 +23,8 @@ public interface SongControllerMapper {
 
     SongDto.Create toDomainCreate(SongApiDto.CreateRequest createSongRequest);
 
+    SongApiDto.PreviewResponse toPreviewResponse(SongDto.Preview previewDto);
+
     default SongApiDto.GetAllResponse toGetAllResponse(Slice<SongDto.Summary> slice) {
         return new SongApiDto.GetAllResponse(
                 toSummaryResponse(slice.getContent()),

@@ -120,6 +120,30 @@ class SongController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(summary = "Upload preview track file (.wav)", description = "Uploads an audio preview file and links the resulting resource file key to the specified song. If a preview is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operation successful."),
+            @ApiResponse(responseCode = "404", description = "Song by id=10 was not found.",
+                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, too big or of an unsupported format.",
+                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
+    })
+    @PostMapping(value = "{id}/preview", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<SongApiDto.PreviewResponse> uploadPreview(
+            @Parameter(description = "File of preview track.")
+            @RequestPart("file") MultipartFile file,
+            @Parameter(description = "ID of a song from the file") @PathVariable Long id)
+            throws IOException {
+        String filename = file.getOriginalFilename();
+        if (filename == null || (!filename.toLowerCase().endsWith(".mp3") && !filename.toLowerCase().endsWith(".aac"))) {
+            throw new InvalidFileFormatException("Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported.");
+        }
+
+        SongDto.Preview previewDto = facade.addPreviewFile(file.getBytes(), id);
+        return ResponseEntity.ok(mapper.toPreviewResponse(previewDto));
+
+    }
+
 
     @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
     @ApiResponses(value = {
