@@ -626,7 +626,9 @@ _Returned when the file is missing, empty, or of an unsupported format._
 
 #### POST /api/catalog/songs/{id}/track
 
-Uploads the full-length audio track and links the resource file key to the specified song. If a full file is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
+Uploads a full-length audio track and assigns a new file key to the specified song. 
+If a previous track exists and has no active licenses, it is permanently deleted from the storage.
+Otherwise, the old file is retained to support existing license holders. 
 **Parameters:**
 
 - `id` (integer, path parameter, required) _Song ID_
