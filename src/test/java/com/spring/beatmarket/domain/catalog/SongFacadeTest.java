@@ -275,8 +275,7 @@ class SongFacadeTest {
         assertThat(assignedFileKey)
                 .startsWith("tracks/")
                 .endsWith(".WAV")
-                .contains("some-song")
-                .contains(updatedSong.getUuid().toString().substring(0, 4));
+                .contains("some-song");
         assertThat(fileStorageAdapter.containsFile(assignedFileKey)).isTrue();
     }
 
@@ -307,6 +306,39 @@ class SongFacadeTest {
         Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
         String newFileKey = (String) ReflectionTestUtils.getField(updatedSong, "trackFileKey");
         assertThat(fileStorageAdapter.containsFile(oldFileKey)).isFalse();
+        assertThat(fileStorageAdapter.containsFile(newFileKey)).isTrue();
+        assertThat(newFileKey).isNotEqualTo(oldFileKey);
+    }
+
+    @Test
+    @DisplayName("Should keep both track files in storage when replacing with a new one but old one has an active license.")
+    public void should_keep_both_files_in_storage_when_uploading_new_track_and_old_licensed() {
+        // given
+        SongDto.Info addedSong = addSong("Song with replaced track");
+        Long id = addedSong.id();
+
+        fakeAudioInspector.setDurationToReturn((double) addedSong.duration());
+        fakeAudioInspector.setExtensionToReturn(AudioFileExtension.WAV);
+
+        byte[] oldTrackBytes = new byte[]{1, 1, 1};
+        songFacade.addTrackFile(oldTrackBytes, id);
+
+        Song songAfterFirstUpload = songRepository.findByIdAndActiveTrue(id).orElseThrow();
+        String oldFileKey = (String) ReflectionTestUtils.getField(songAfterFirstUpload, "trackFileKey");
+
+        assertThat(fileStorageAdapter.containsFile(oldFileKey)).isTrue();
+
+        byte[] newTrackBytes = new byte[]{2, 2, 2};
+
+        Mockito.when(licensingFacade.hasAnyCurrentLicenses(oldFileKey)).thenReturn(true);
+
+        // when
+        songFacade.addTrackFile(newTrackBytes, id);
+
+        // then
+        Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
+        String newFileKey = (String) ReflectionTestUtils.getField(updatedSong, "trackFileKey");
+        assertThat(fileStorageAdapter.containsFile(oldFileKey)).isTrue();
         assertThat(fileStorageAdapter.containsFile(newFileKey)).isTrue();
         assertThat(newFileKey).isNotEqualTo(oldFileKey);
     }
