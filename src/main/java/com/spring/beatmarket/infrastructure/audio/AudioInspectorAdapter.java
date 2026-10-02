@@ -1,7 +1,7 @@
 package com.spring.beatmarket.infrastructure.audio;
 
-import com.spring.beatmarket.domain.catalog.AudioInspectorPort;
 import com.spring.beatmarket.domain.catalog.AudioFileExtension;
+import com.spring.beatmarket.domain.catalog.AudioInspectorPort;
 import com.spring.beatmarket.domain.catalog.exception.UnreadableAudioFileException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
@@ -45,6 +45,7 @@ class AudioInspectorAdapter implements AudioInspectorPort {
         }
 
         String durationString = metadata.get("xmpDM:duration");
+
         Double durationInSeconds = null;
 
         if (durationString != null) {
@@ -82,7 +83,7 @@ class AudioInspectorAdapter implements AudioInspectorPort {
             try (FlacFile flacFile = FlacFile.open(new ByteArrayInputStream(audioBytes))) {
                 long frames = flacFile.getInfo().getNumberOfSamples();
                 return (frames + 0.0) / flacFile.getInfo().getSampleRate();
-            } catch (IOException e) {
+            } catch (IOException | IllegalArgumentException e) {
                 log.error("Error parsing audio file with FlacFile", e);
                 throw new UnreadableAudioFileException("An error occurred while analysing duration of a FLAC audio file.");
             }
@@ -95,15 +96,11 @@ class AudioInspectorAdapter implements AudioInspectorPort {
         if (contentType == null) {
             return null;
         }
-        String lowerCaseType = contentType.toLowerCase();
-        if (lowerCaseType.contains("wav") || lowerCaseType.contains("wave")) {
-            return AudioFileExtension.WAV;
-        } else if (lowerCaseType.contains("flac")) {
-            return AudioFileExtension.FLAC;
-        } else if (lowerCaseType.contains("mp3") || lowerCaseType.contains("mpeg")) {
-            return AudioFileExtension.MP3;
-        }
-
-        return null;
+        return switch (contentType.toLowerCase()) {
+            case "audio/wav", "audio/vnd.wave", "audio/x-wav" -> AudioFileExtension.WAV;
+            case "audio/flac", "audio/x-flac" -> AudioFileExtension.FLAC;
+            case "audio/mpeg", "audio/mp3" -> AudioFileExtension.MP3;
+            default -> null;
+        };
     }
 }
