@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "3. Albums", description = "Endpoints for managing music albums and their relations with songs.")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/albums")
+@RequestMapping("/catalog/albums")
 class AlbumController {
     private final AlbumFacade facade;
     private final AlbumControllerMapper mapper;

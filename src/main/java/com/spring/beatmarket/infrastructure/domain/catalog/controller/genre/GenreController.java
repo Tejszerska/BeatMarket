@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "5. Genres", description = "Endpoints for managing musical genres.")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/genres")
+@RequestMapping("/catalog/genres")
 class GenreController {
 
     private final GenreFacade facade;

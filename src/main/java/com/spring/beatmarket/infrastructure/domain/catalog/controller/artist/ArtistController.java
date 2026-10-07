@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "4. Artists", description = "Endpoints for managing artists, their profiles, and relationships with albums.")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/artists")
+@RequestMapping("/catalog/artists")
 class ArtistController {
 
     private final ArtistFacade facade;
