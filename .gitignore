@@ -38,7 +38,6 @@ build/
 # geneated pem keys
 *.pem
 
-docs/notatki-dla-mnie.txt
+docs/secret/
 saved-logs.txt
-docs/czemu-tak.txt
 test files/
