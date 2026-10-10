@@ -41,3 +41,4 @@ build/
 docs/secret/
 saved-logs.txt
 test files/
+src/main/java/com/spring/beatmarket/domain/catalog/s3tutorial
