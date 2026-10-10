@@ -280,6 +280,31 @@ class SongFacadeTest {
     }
 
     @Test
+    @DisplayName("Should keep the full track when uploading a preview")
+    void should_keep_full_track_when_uploading_preview() {
+        SongDto.Info addedSong = addSong("Song with preview");
+        Long id = addedSong.id();
+        fakeAudioInspector.setDurationToReturn((double) addedSong.duration());
+        fakeAudioInspector.setExtensionToReturn(AudioFileExtension.WAV);
+        songFacade.addTrackFile(new byte[]{1, 2, 3}, id);
+
+        Song songWithTrack = songRepository.findByIdAndActiveTrue(id).orElseThrow();
+        String trackFileKey = (String) ReflectionTestUtils.getField(songWithTrack, "trackFileKey");
+
+        fakeAudioInspector.setExtensionToReturn(AudioFileExtension.MP3);
+        songFacade.addPreviewFile(new byte[]{4, 5, 6}, id);
+
+        Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
+        String previewFileKey = (String) ReflectionTestUtils.getField(updatedSong, "previewFileKey");
+        String updatedTrackFileKey = (String) ReflectionTestUtils.getField(updatedSong, "trackFileKey");
+
+        assertThat(updatedTrackFileKey).isEqualTo(trackFileKey);
+        assertThat(fileStorageAdapter.containsFile(trackFileKey)).isTrue();
+        assertThat(previewFileKey).startsWith("previews/").endsWith(".MP3");
+        assertThat(fileStorageAdapter.containsFile(previewFileKey)).isTrue();
+    }
+
+    @Test
     @DisplayName("Should delete old track file from storage when replacing with a new one")
     public void should_delete_old_file_from_storage_when_uploading_new_track() {
         // given
