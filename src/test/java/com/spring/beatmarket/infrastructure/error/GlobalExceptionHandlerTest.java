@@ -1,0 +1,111 @@
+package com.spring.beatmarket.infrastructure.error;
+
+import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
+import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
+import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+class GlobalExceptionHandlerTest {
+
+    private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(handler, "maxFileSize", "165MB");
+    }
+
+    @Test
+    @DisplayName("Returns a not-found problem detail")
+    void returns_not_found_problem_detail() {
+        ProblemDetail problem = handler.handleNotFoundExceptions(
+                new ResourceNotFoundException("Song", 42L)
+        );
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(problem.getTitle()).isEqualTo("Resource not found");
+        assertThat(problem.getDetail()).contains("Song with id 42");
+    }
+
+    @Test
+    @DisplayName("Preserves role conflict data in problem extensions")
+    void preserves_role_conflict_data_in_problem_extensions() {
+        ProblemDetail problem = handler.handleRoleConflictException(
+                new DuplicateRoleException("Artist", "Song", Set.of(2L, 7L))
+        );
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.CONFLICT.value());
+        assertThat(problem.getProperties())
+                .containsEntry("entity", "Song")
+                .containsEntry("conflictingIds", Set.of(2L, 7L));
+    }
+
+    @Test
+    @DisplayName("Preserves invalid search criteria in a problem extension")
+    void preserves_invalid_search_criteria_in_problem_extension() {
+        ProblemDetail problem = handler.handleInvalidFiltering(
+                new InvalidSearchCriteriaException("maxPrice", "Currency is required.")
+        );
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(problem.getProperties())
+                .containsEntry("errors", Map.of("maxPrice", "Currency is required."));
+    }
+
+    @Test
+    @DisplayName("Preserves bean validation failure in a problem extension")
+    void preserves_bean_validation_failure_in_problem_extension() {
+        MethodArgumentNotValidException exception = mock(MethodArgumentNotValidException.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(exception.getBindingResult()).thenReturn(bindingResult);
+        when(bindingResult.getFieldErrors())
+                .thenReturn(List.of(new FieldError("request", "title", "must not be blank")));
+
+        ProblemDetail problem = handler.handleValidationException(exception);
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(problem.getProperties())
+                .containsEntry("errors", Map.of("title", "must not be blank"));
+    }
+
+    @Test
+    @DisplayName("Preserves the upload limit in a problem extension")
+    void preserves_upload_limit_in_problem_extension() {
+        ProblemDetail problem = handler.handleMaxSizeException(
+                new MaxUploadSizeExceededException(165L * 1024 * 1024)
+        );
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.PAYLOAD_TOO_LARGE.value());
+        assertThat(problem.getProperties()).containsEntry("maxSize", "165MB");
+    }
+
+    @Test
+    @DisplayName("Returns a malformed-request problem detail")
+    void returns_malformed_request_problem_detail() {
+        HttpMessageNotReadableException exception = mock(HttpMessageNotReadableException.class);
+        when(exception.getMessage()).thenReturn("Invalid JSON");
+
+        ProblemDetail problem = handler.handleInvalidJSON(exception);
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(problem.getTitle()).isEqualTo("Malformed request");
+        assertThat(problem.getDetail()).isEqualTo("Malformed JSON request.");
+    }
+}

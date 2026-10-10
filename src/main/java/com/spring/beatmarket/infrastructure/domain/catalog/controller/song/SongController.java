@@ -2,8 +2,6 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.SongFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.infrastructure.error.MessageAndMapErrorResponse;
-import com.spring.beatmarket.infrastructure.error.SingleStringErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +49,7 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of songs retrieved successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid query parameters.",
-                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
 
     })
     @GetMapping
@@ -74,7 +73,7 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Song found and returned successfully."),
             @ApiResponse(responseCode = "404", description = "Song with the provided ID does not exist.",
-                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
     })
     @GetMapping("/{id}")
     ResponseEntity<SongApiDto.DetailsResponse> getSongById(@PathVariable Long id) {
@@ -86,7 +85,7 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Song created successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data (e.g., negative duration).",
-                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
     })
     @PostMapping
     ResponseEntity<SongApiDto.InfoResponse> createSong(@RequestBody @Valid SongApiDto.CreateRequest createSongRequest) {
@@ -99,9 +98,9 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Operation successful."),
             @ApiResponse(responseCode = "404", description = "Song by id=10 was not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, too big or of an unsupported format.",
-                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
     })
     @PostMapping(value = "{id}/track", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<Void> uploadFullTrack(
@@ -124,9 +123,9 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Operation successful."),
             @ApiResponse(responseCode = "404", description = "Song by id=10 was not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, too big or of an unsupported format.",
-                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
     })
     @PostMapping(value = "{id}/preview", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<SongApiDto.PreviewResponse> uploadPreview(
@@ -149,9 +148,9 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Song updated successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid input data.",
-                    content = @Content(schema = @Schema(implementation = MessageAndMapErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "404", description = "Song not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
     @PatchMapping("/{id}")
     ResponseEntity<SongApiDto.InfoResponse> updateSong(@PathVariable Long id,
@@ -165,7 +164,7 @@ class SongController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Song deleted successfully (No Content)."),
             @ApiResponse(responseCode = "404", description = "Song not found.",
-                    content = @Content(schema = @Schema(implementation = SingleStringErrorResponse.class))),
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
     })
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteSong(@PathVariable Long id) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.spring.beatmarket.domain.catalog.exception.AudioFileTooBigException;
 import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
+import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.SongDurationMismatchException;
 import com.spring.beatmarket.domain.catalog.exception.UnreadableAudioFileException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidFileFormatException;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,131 +30,100 @@ class GlobalExceptionHandler {
     @Value("${spring.servlet.multipart.max-file-size}")
     String maxFileSize;
 
-    /*
-        @ExceptionHandler(ResourceNotFoundException.class)
-        public ResponseEntity<SingleStringErrorResponse> handleNotFoundExceptions(RuntimeException exception) {
-            SingleStringErrorResponse errorResponse = new SingleStringErrorResponse(exception.getMessage());
-
-            log.warn("Resource not found: {}", exception.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(errorResponse);
-        }
-    */
-
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ProblemDetail handleNotFoundExceptions(ResourceNotFoundException exception) {
+        log.warn("Resource not found: {}", exception.getMessage());
+        return problem(HttpStatus.NOT_FOUND, "Resource not found", exception.getMessage());
+    }
 
     @ExceptionHandler(DataConflictException.class)
-    public ResponseEntity<SingleStringErrorResponse> handleDataConflictExceptions(RuntimeException exception) {
-        SingleStringErrorResponse errorResponse = new SingleStringErrorResponse(exception.getMessage());
-
+    ProblemDetail handleDataConflictExceptions(DataConflictException exception) {
         log.warn("Data conflict: {}", exception.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(errorResponse);
+        return problem(HttpStatus.CONFLICT, "Data conflict", exception.getMessage());
     }
 
     @ExceptionHandler(DuplicateRoleException.class)
-    ResponseEntity<RoleConflictErrorResponse> handleRoleConflictException(final DuplicateRoleException ex) {
-        RoleConflictErrorResponse response = new RoleConflictErrorResponse(
-                ex.getMessage(),
-                ex.getTargetName(),
-                ex.getConflictingIds()
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    ProblemDetail handleRoleConflictException(final DuplicateRoleException ex) {
+        ProblemDetail detail = problem(HttpStatus.CONFLICT, "Role conflict", ex.getMessage());
+        detail.setProperty("entity", ex.getTargetName());
+        detail.setProperty("conflictingIds", ex.getConflictingIds());
+        return detail;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<MessageAndMapErrorResponse> handleValidationException(MethodArgumentNotValidException exception) {
+    ProblemDetail handleValidationException(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
 
         exception.getBindingResult().getFieldErrors()
                 .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
 
-        MessageAndMapErrorResponse response = new MessageAndMapErrorResponse("Validation failed", errors);
-
         log.warn("Validation failed: {}", errors);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(response);
+        ProblemDetail detail = problem(HttpStatus.BAD_REQUEST, "Validation failed", "Request validation failed.");
+        detail.setProperty("errors", errors);
+        return detail;
     }
 
-    @ExceptionHandler({
-            InvalidSearchCriteriaException.class
-    })
-    public ResponseEntity<MessageAndMapErrorResponse> handleInvalidFiltering(InvalidSearchCriteriaException exception) {
+    @ExceptionHandler(InvalidSearchCriteriaException.class)
+    ProblemDetail handleInvalidFiltering(InvalidSearchCriteriaException exception) {
         Map<String, String> errors = new HashMap<>();
         errors.put(exception.getField(), exception.getMessage());
-        MessageAndMapErrorResponse errorResponseDto = new MessageAndMapErrorResponse("Validation failed", errors);
 
         log.warn("Validation failed: {}", errors);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errorResponseDto);
+        ProblemDetail detail = problem(HttpStatus.BAD_REQUEST, "Validation failed", exception.getMessage());
+        detail.setProperty("errors", errors);
+        return detail;
     }
 
-    @ExceptionHandler({
-            DataIntegrityViolationException.class
-    })
-    public ResponseEntity<SingleStringErrorResponse> handleDataViolation(DataIntegrityViolationException exception) {
-        SingleStringErrorResponse errorResponse =
-                new SingleStringErrorResponse("A resource with this unique value already exists.");
-
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ProblemDetail handleDataViolation(DataIntegrityViolationException exception) {
         log.warn("Data integrity violation: {} ", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        return problem(HttpStatus.CONFLICT, "Data conflict", "A resource with this unique value already exists.");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<SingleStringErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        SingleStringErrorResponse errorResponse = new SingleStringErrorResponse(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
+        return problem(HttpStatus.BAD_REQUEST, "Invalid request", ex.getMessage());
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     ProblemDetail handleMaxSizeException(MaxUploadSizeExceededException ex) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+        ProblemDetail detail = problem(
                 HttpStatus.PAYLOAD_TOO_LARGE,
+                "Payload too large",
                 "The uploaded file exceeds the server's maximum size limit."
         );
-        problemDetail.setTitle("Payload Too Large");
-        problemDetail.setProperty("maxSize", maxFileSize + "MB");
-        return problemDetail;
+        detail.setProperty("maxSize", maxFileSize);
+        return detail;
     }
 
     @ExceptionHandler(UnreadableAudioFileException.class)
-    public ResponseEntity<SingleStringErrorResponse> handleUnreadableAudioFileException(UnreadableAudioFileException ex) {
-        SingleStringErrorResponse errorResponse = new SingleStringErrorResponse(ex.getMessage());
+    ProblemDetail handleUnreadableAudioFileException(UnreadableAudioFileException ex) {
         log.warn(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return problem(HttpStatus.BAD_REQUEST, "Unreadable audio file", ex.getMessage());
     }
 
     @ExceptionHandler(SongDurationMismatchException.class)
-    ResponseEntity<SongDurationMismatchResponse> handleSongDurationMismatchException(final SongDurationMismatchException ex) {
-        SongDurationMismatchResponse response = new SongDurationMismatchResponse(
-                ex.getMessage(),
-                ex.getDurationInDatabase());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    ProblemDetail handleSongDurationMismatchException(final SongDurationMismatchException ex) {
+        ProblemDetail detail = problem(HttpStatus.BAD_REQUEST, "Audio duration mismatch", ex.getMessage());
+        detail.setProperty("durationInDatabase", ex.getDurationInDatabase());
+        return detail;
     }
 
     @ExceptionHandler(AudioFileTooBigException.class)
-    ResponseEntity<AudioFileTooBigResponse> handleAudioFileTooBigException(final AudioFileTooBigException ex) {
-        AudioFileTooBigResponse response = new AudioFileTooBigResponse(
-                ex.getMessage(),
-                ex.getFileSize(),
-                ex.getMaxSize());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    ProblemDetail handleAudioFileTooBigException(final AudioFileTooBigException ex) {
+        ProblemDetail detail = problem(HttpStatus.BAD_REQUEST, "Audio file too large", ex.getMessage());
+        detail.setProperty("fileSize", ex.getFileSize());
+        detail.setProperty("maxSize", ex.getMaxSize());
+        return detail;
     }
 
     @ExceptionHandler(InvalidFileFormatException.class)
-    public ResponseEntity<SingleStringErrorResponse> handleInvalidFileFormatException(InvalidFileFormatException ex) {
-        SingleStringErrorResponse errorResponse = new SingleStringErrorResponse(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    ProblemDetail handleInvalidFileFormatException(InvalidFileFormatException ex) {
+        return problem(HttpStatus.BAD_REQUEST, "Invalid file format", ex.getMessage());
     }
 
-    @ExceptionHandler({
-            HttpMessageNotReadableException.class
-    })
-    public ResponseEntity<Object> handleInvalidJSON(HttpMessageNotReadableException exception) {
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ProblemDetail handleInvalidJSON(HttpMessageNotReadableException exception) {
         Map<String, String> errors = new HashMap<>();
 
         Throwable cause = exception.getCause();
@@ -167,19 +136,23 @@ class GlobalExceptionHandler {
             });
         }
         if (errors.isEmpty()) {
-            SingleStringErrorResponse singleStringError = new SingleStringErrorResponse("Malformed JSON request");
             log.warn("Malformed JSON request: {}", exception.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(singleStringError);
+            return problem(HttpStatus.BAD_REQUEST, "Malformed request", "Malformed JSON request.");
         }
 
-        MessageAndMapErrorResponse errorResponseDto =
-                new MessageAndMapErrorResponse("Validation failed due to invalid data format", errors);
-
         log.warn("Validation failed: {}", errors);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errorResponseDto);
+        ProblemDetail detail = problem(
+                HttpStatus.BAD_REQUEST,
+                "Validation failed",
+                "Validation failed due to invalid data format."
+        );
+        detail.setProperty("errors", errors);
+        return detail;
+    }
+
+    private ProblemDetail problem(HttpStatus status, String title, String detail) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
+        problemDetail.setTitle(title);
+        return problemDetail;
     }
 }
