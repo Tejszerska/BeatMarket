@@ -1,5 +1,26 @@
 ### API Endpoints / JSON Payloads
 
+### Error responses
+
+Errors handled by `GlobalExceptionHandler` use Spring's RFC 9457 `ProblemDetail` format and are returned as `application/problem+json`. The standard fields are `type`, `title`, `status`, `detail`, and `instance`; additional diagnostics are returned as extension properties such as `errors`, `maxSize`, `fileSize`, `durationInDatabase`, `entity`, and `conflictingIds`.
+
+```json
+{
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/catalog/songs",
+  "errors": {
+    "title": "must not be blank"
+  }
+}
+```
+
+Error responses explicitly created by a controller (for example, login failures, invalid email confirmation, and duplicate registration) retain their controller-specific payloads.
+
+Audio-specific handlers add `durationInDatabase` for a duration mismatch and `fileSize`/`maxSize` for an audio file that exceeds its format limit. A role conflict adds `entity` and `conflictingIds`. A multipart request exceeding the server limit returns status `413` with the configured `maxSize`.
+
 ### Account Module (`account`)
 
 ---
@@ -30,7 +51,11 @@ _Returned when validation fails (e.g., weak password, invalid email format)._
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/users/register",
   "errors": {
     "email": "Invalid email format",
     "password": "Password must be at least 8 characters long"
@@ -209,9 +234,13 @@ _Returned when the client provides invalid query parameters (e.g., negative page
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Filtering by maxPrice requires declaring currency and license.",
+  "instance": "/api/catalog/songs",
   "errors": {
-    "duration": "Duration must be more than 0"
+    "maxPrice": "Filtering by maxPrice requires declaring currency and license."
   }
 }
 ```
@@ -277,7 +306,11 @@ _Song with the provided ID does not exist._
 
 ```json
 {
-  "message": "Song by id=7 was not found "
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Song with id 7 not found or is inactive",
+  "instance": "/api/catalog/songs/7"
 }
 ```
 
@@ -332,7 +365,11 @@ Retrieves the detailsResponse of a specific genre by its ID.
 
 ```json
 {
-  "message": "Genre by id=1 was not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Genre with id 1 not found or is inactive",
+  "instance": "/api/catalog/genres/1"
 }
 ```
 
@@ -410,7 +447,11 @@ Retrieves detailed information about a specific artist by their ID, including th
 
 ```json
 {
-  "message": "Artist by id=2 was not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Artist with id 2 not found or is inactive",
+  "instance": "/api/catalog/artists/2"
 }
 ```
 
@@ -494,7 +535,11 @@ Retrieves detailed information about a specific album by its ID, including the l
 
 ```json
 {
-  "message": "Album by id=7 was not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Album with id 7 not found or is inactive",
+  "instance": "/api/catalog/albums/7"
 }
 ```
 
@@ -569,9 +614,13 @@ _Invalid input data (e.g., negative duration)._
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/catalog/songs",
   "errors": {
-    "duration": "Duration must be more than 0"
+    "duration": "duration must be a positive number"
   }
 }
 ```
@@ -609,7 +658,11 @@ _Returned when the song ID does not exist in the database._
 
 ```json
 {
-  "message": "Song by id=10 was not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Song with id 10 not found or is inactive",
+  "instance": "/api/catalog/songs/10/preview"
 }
 ```
 
@@ -618,7 +671,11 @@ _Returned when the file is missing, empty, or of an unsupported format._
 
 ```json
 {
-  "message": "Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported."
+  "type": "about:blank",
+  "title": "Invalid file format",
+  "status": 400,
+  "detail": "Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported.",
+  "instance": "/api/catalog/songs/10/preview"
 }
 ```
 
@@ -649,7 +706,11 @@ _Returned when the song ID does not exist in the database._
 
 ```json
 {
-  "message": "Song by id=10 was not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Song with id 10 not found or is inactive",
+  "instance": "/api/catalog/songs/10/track"
 }
 ```
 
@@ -658,7 +719,11 @@ _Returned when the file is missing, empty, too big or of an unsupported format._
 
 ```json
 {
-  "message": "Invalid file format. Only .Wav or .FLAC are supported for full tracks."
+  "type": "about:blank",
+  "title": "Invalid file format",
+  "status": 400,
+  "detail": "Invalid format. Only .WAV or .FLAC files are allowed.",
+  "instance": "/api/catalog/songs/10/track"
 }
 ```
 
@@ -732,7 +797,11 @@ _Song, Genre, Album, or Artist(s) not found._
 
 ```json
 {
-  "message": "Artist by id=45 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Artist with id 45 not found or is inactive",
+  "instance": "/api/catalog/artists"
 }
 ```
 
@@ -741,7 +810,11 @@ _Invalid input data (e.g., negative duration)._
 
 ```json
 {
-  "message": "Duration must be more than 0"
+  "type": "about:blank",
+  "title": "Invalid request",
+  "status": 400,
+  "detail": "Duration must be a positive number",
+  "instance": "/api/catalog/songs"
 }
 ```
 
@@ -761,7 +834,11 @@ Removes a song from the database by its ID.
 
 ```json
 {
-  "message": "Song by id=5 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Song with id 5 not found or is inactive",
+  "instance": "/api/catalog/songs/5"
 }
 ```
 
@@ -824,9 +901,13 @@ _Invalid input data (e.g., improper release date format)._
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/catalog/albums",
   "errors": {
-    "releaseDate": "Release date must be in YYYY-MM-DD format"
+    "releaseDate": "releaseDate cannot be in the future"
   }
 }
 ```
@@ -864,7 +945,11 @@ _Returned when the album ID does not exist in the database._
 
 ```json
 {
-  "message": "Album by id=10 was not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Album with id 10 not found or is inactive",
+  "instance": "/api/catalog/albums/10/cover"
 }
 ```
 
@@ -873,7 +958,11 @@ _Returned when the file is missing, empty, or of an unsupported format._
 
 ```json
 {
-  "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
+  "type": "about:blank",
+  "title": "Invalid file format",
+  "status": 400,
+  "detail": "Invalid image file format.",
+  "instance": "/api/catalog/albums/10/cover"
 }
 ```
 
@@ -935,7 +1024,11 @@ _Song, Genre, Album, or Artist(s) not found._
 
 ```json
 {
-  "message": "Album by id=45 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Album with id 45 not found or is inactive",
+  "instance": "/api/catalog/albums/10"
 }
 ```
 
@@ -944,9 +1037,13 @@ _Invalid input data (e.g., improper release date format)._
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/catalog/albums/10",
   "errors": {
-    "releaseDate": "Release date must be in YYYY-MM-DD format"
+    "releaseDate": "releaseDate cannot be in the future"
   }
 }
 ```
@@ -967,7 +1064,11 @@ Removes an album from the database by its ID.
 
 ```json
 {
-  "message": "Album by id=5 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Album with id 5 not found or is inactive",
+  "instance": "/api/catalog/albums/5"
 }
 ```
 
@@ -1030,7 +1131,11 @@ _Invalid input data_
 
 ```json
 {
-  "message": "Song by id=1 was not found"
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Song with id 1 not found or is inactive",
+  "instance": "/api/catalog/artists"
 }
 ```
 
@@ -1067,7 +1172,11 @@ _Returned when the artist ID does not exist in the database._
 
 ```json
 {
-  "message": "Artist by id=10 was not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Artist with id 10 not found or is inactive",
+  "instance": "/api/catalog/artists/10/image"
 }
 ```
 
@@ -1076,7 +1185,11 @@ _Returned when the file is missing, empty, or of an unsupported format._
 
 ```json
 {
-  "message": "Invalid file format. Only image/jpeg (JPG) and image/png (PNG) are supported."
+  "type": "about:blank",
+  "title": "Invalid file format",
+  "status": 400,
+  "detail": "Invalid image file format.",
+  "instance": "/api/catalog/artists/10/image"
 }
 ```
 
@@ -1136,7 +1249,11 @@ _Song, Album, or Artist(s) not found._
 
 ```json
 {
-  "message": "Album by id=45 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Album with id 45 not found or is inactive",
+  "instance": "/api/catalog/artists/10"
 }
 ```
 
@@ -1145,9 +1262,13 @@ _Invalid input data._
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/catalog/artists/10",
   "errors": {
-    "albumIds": "Only integers allowed in the albumIds array"
+    "name": "name must be declared"
   }
 }
 ```
@@ -1168,7 +1289,11 @@ Removes an artist from the database by its ID.
 
 ```json
 {
-  "message": "Artist by id=5 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Artist with id 5 not found or is inactive",
+  "instance": "/api/catalog/artists/5"
 }
 ```
 
@@ -1206,9 +1331,13 @@ _Invalid input data_
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/catalog/genres",
   "errors": {
-    "name": "Genre name must be at least 3 characters long"
+    "name": "Genre name must be between 3 and 255 characters long"
   }
 }
 ```
@@ -1245,7 +1374,11 @@ _Genre not found._
 
 ```json
 {
-  "message": "Genre by id=45 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Genre with id 45 not found or is inactive",
+  "instance": "/api/catalog/genres/45"
 }
 ```
 
@@ -1254,9 +1387,13 @@ _Invalid input data_
 
 ```json
 {
-  "message": "Validation failed",
+  "type": "about:blank",
+  "title": "Validation failed",
+  "status": 400,
+  "detail": "Request validation failed.",
+  "instance": "/api/catalog/genres/10",
   "errors": {
-    "name": "Genre name must be at least 3 characters long"
+    "name": "Genre name must be between 3 and 255 characters long"
   }
 }
 ```
@@ -1265,7 +1402,11 @@ _Genre name is not unique._
 
 ```json
 {
-  "message": "Genre name must be unique."
+  "type": "about:blank",
+  "title": "Data conflict",
+  "status": 409,
+  "detail": "A resource with this unique value already exists.",
+  "instance": "/api/catalog/genres/10"
 }
 ```
 ---
@@ -1284,7 +1425,11 @@ Removes a genre from the database by its ID.
 
 ```json
 {
-  "message": "Genre by id=5 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Genre with id 5 not found or is inactive",
+  "instance": "/api/catalog/genres/5"
 }
 ```
 
@@ -1313,7 +1458,11 @@ The service bulk-updates the genre_id field in the associated songs to the new I
 
 ```json
 {
-  "message": "Genre by id=5 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Genre with id 5 not found or is inactive",
+  "instance": "/api/catalog/genres/5/transfer-to/12"
 }
 ```
 
@@ -1321,7 +1470,11 @@ The service bulk-updates the genre_id field in the associated songs to the new I
 
 ```json
 {
-  "message": "Source and target genre IDs cannot be the same."
+  "type": "about:blank",
+  "title": "Invalid request",
+  "status": 400,
+  "detail": "Source and target genre IDs cannot be the same.",
+  "instance": "/api/catalog/genres/5/transfer-to/5"
 }
 ```
 
@@ -1354,7 +1507,11 @@ _Returned if the song does not exist in the catalog._
 
 ```json
 {
-  "message": "Song by id=10 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "Song with id 10 not found or is inactive",
+  "instance": "/api/payments"
 }
 ```
 
@@ -1363,7 +1520,11 @@ _Returned if communication with the Stripe API fails._
 
 ```json
 {
-  "message": "Could not initialize payment session with Stripe."
+  "type": "about:blank",
+  "title": "Internal Server Error",
+  "status": 500,
+  "detail": "Could not initialize payment session with Stripe.",
+  "instance": "/api/payments"
 }
 ```
 
@@ -1386,7 +1547,11 @@ _Returned when the webhook payload is invalid or the Stripe signature verificati
 
 ```json
 {
-  "message": "Webhook signature verification failed."
+  "type": "about:blank",
+  "title": "Invalid request",
+  "status": 400,
+  "detail": "Webhook signature verification failed.",
+  "instance": "/api/webhook/payments"
 }
 ```
 
@@ -1395,7 +1560,11 @@ _Returned if there is a server-side error while processing the event (e.g., data
 
 ```json
 {
-  "message": "Error processing webhook event."
+  "type": "about:blank",
+  "title": "Internal Server Error",
+  "status": 500,
+  "detail": "Error processing webhook event.",
+  "instance": "/api/webhook/payments"
 }
 ```
 
@@ -1451,7 +1620,11 @@ _Returned if the user attempts to access a license they do not own._
 
 ```json
 {
-  "message": "Access denied. You do not own this license."
+  "type": "about:blank",
+  "title": "Access denied",
+  "status": 403,
+  "detail": "Access denied. You do not own this license.",
+  "instance": "/api/licenses/101"
 }
 ```
 
@@ -1460,6 +1633,10 @@ _Returned if the license does not exist._
 
 ```json
 {
-  "message": "License by id=101 not found."
+  "type": "about:blank",
+  "title": "Resource not found",
+  "status": 404,
+  "detail": "License by id=101 not found.",
+  "instance": "/api/licenses/101"
 }
 ```
