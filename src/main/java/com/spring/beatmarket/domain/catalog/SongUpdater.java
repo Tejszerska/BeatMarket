@@ -97,7 +97,7 @@ class SongUpdater {
         Song song = songRetriever.getLazily(id);
         AudioFileExtension extension = fileValidator.validatePreviewTrack(bytes, song.getDuration());
 
-        String initPreviewKey = song.getTrackFileKey();
+        String initPreviewKey = song.getPreviewFileKey();
         if (initPreviewKey != null && !initPreviewKey.isBlank()) {
             fileStoragePort.delete(initPreviewKey);
         }
@@ -115,5 +115,4 @@ class SongUpdater {
         return new SongDto.Preview(song.getId(), "https://beatmarket1.s3.eu-north-1.amazonaws.com/" + fileKey);
     }
 }
-
 
