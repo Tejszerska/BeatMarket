@@ -7,6 +7,7 @@ import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.assertj.core.data.Percentage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,6 +17,7 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -137,14 +139,60 @@ class AudioInspectorAdapterIT {
     }
 
     @Test
-    @Description(value = "Should parse duration from metadata")
+    @Description(value = "Should parse duration from metadata when scale is not set")
     void should_parse_duration_from_metadata() {
         // given
         byte[] randomBytes = new byte[]{1, 2, 3,};
         AudioFileExtension extension = AudioFileExtension.WAV;
         double fileDuration = 10.0;
         Metadata metadata = new Metadata();
-        metadata.set("xmpDM:duration", "10000");
+        metadata.set("xmpDM:duration", "10");
+        try (MockedStatic<TikaAnalysis> mockedTika = Mockito.mockStatic(TikaAnalysis.class)) {
+            mockedTika.when(() -> TikaAnalysis.extractMetadatatUsingParser(any()))
+                    .thenReturn(metadata);
+
+            // when
+            Double inspectDuration = inspectorAdapter.inspectDuration(randomBytes, extension);
+
+            // then
+            assertThat(inspectDuration).isCloseTo(fileDuration, Percentage.withPercentage(10.0));
+        }
+    }
+
+    @Test
+    @Description(value = "Should parse duration using scale from metadata")
+    void should_parse_duration_using_scale_from_metadata() {
+        // given
+        byte[] randomBytes = new byte[]{1, 2, 3,};
+        AudioFileExtension extension = AudioFileExtension.WAV;
+        double fileDuration = 10.0;
+        Metadata metadata = new Metadata();
+        metadata.set("xmpDM:duration", "1");
+        metadata.set("xmpDM:scale", "0.1");
+
+        try (MockedStatic<TikaAnalysis> mockedTika = Mockito.mockStatic(TikaAnalysis.class)) {
+            mockedTika.when(() -> TikaAnalysis.extractMetadatatUsingParser(any()))
+                    .thenReturn(metadata);
+
+            // when
+            Double inspectDuration = inspectorAdapter.inspectDuration(randomBytes, extension);
+
+            // then
+            assertThat(inspectDuration).isCloseTo(fileDuration, Percentage.withPercentage(10.0));
+        }
+    }
+
+    @Test
+    @Description(value = "Should parse duration using common fraction scale from metadata")
+    void should_parse_duration_using_common_fraction_scale_from_metadata() {
+        // given
+        byte[] randomBytes = new byte[]{1, 2, 3,};
+        AudioFileExtension extension = AudioFileExtension.WAV;
+        double fileDuration = 10.0;
+        Metadata metadata = new Metadata();
+        metadata.set("xmpDM:duration", "1");
+        metadata.set("xmpDM:scale", "1/10");
+
         try (MockedStatic<TikaAnalysis> mockedTika = Mockito.mockStatic(TikaAnalysis.class)) {
             mockedTika.when(() -> TikaAnalysis.extractMetadatatUsingParser(any()))
                     .thenReturn(metadata);
@@ -181,6 +229,40 @@ class AudioInspectorAdapterIT {
     }
 
     @Test
+    @DisplayName("Calculates AAC ADTS duration when metadata is missing")
+    void calculates_aac_adts_duration_when_metadata_is_missing() {
+        byte[] audioBytes = loadFile(AudioFileExtension.AAC);
+        Metadata metadata = new Metadata();
+
+        try (MockedStatic<TikaAnalysis> mockedTika = Mockito.mockStatic(TikaAnalysis.class)) {
+            mockedTika.when(() -> TikaAnalysis.extractMetadatatUsingParser(any()))
+                    .thenReturn(metadata);
+
+            Double duration = inspectorAdapter.inspectDuration(audioBytes, AudioFileExtension.AAC);
+
+            assertThat(duration).isCloseTo(3,
+                    Percentage.withPercentage(10.0));
+        }
+    }
+
+    @Test
+    @DisplayName("Rejects a truncated AAC ADTS file")
+    void rejects_truncated_aac_adts_file() {
+        byte[] audioBytes = loadFile(AudioFileExtension.AAC);
+        byte[] truncatedBytes = Arrays.copyOf(audioBytes, audioBytes.length - 1);
+        Metadata metadata = new Metadata();
+
+        try (MockedStatic<TikaAnalysis> mockedTika = Mockito.mockStatic(TikaAnalysis.class)) {
+            mockedTika.when(() -> TikaAnalysis.extractMetadatatUsingParser(any()))
+                    .thenReturn(metadata);
+
+            assertThatThrownBy(() -> inspectorAdapter.inspectDuration(truncatedBytes, AudioFileExtension.AAC))
+                    .isInstanceOf(UnreadableAudioFileException.class)
+                    .hasMessage("An error occurred while analysing duration of an AAC audio file.");
+        }
+    }
+
+    @Test
     @Description(value = "Should return null duration when fallback calculation receives unsupported extension")
     void should_return_null_for_unsupported_extension_in_fallback() {
         // given
@@ -210,7 +292,8 @@ class AudioInspectorAdapterIT {
         }
     }
 
-    @ParameterizedTest(name = "Should map MIME type ''{0}'' to extension {1}")
+    @ParameterizedTest(name = "Maps MIME type ''{0}'' to extension {1}")
+    @DisplayName("Maps recognized audio MIME types to extensions")
     @CsvSource({
             "audio/wav, WAV",
             "audio/vnd.wave, WAV",
@@ -218,7 +301,9 @@ class AudioInspectorAdapterIT {
             "audio/flac, FLAC",
             "audio/x-flac, FLAC",
             "audio/mpeg, MP3",
-            "audio/mp3, MP3"
+            "audio/mp3, MP3",
+            "audio/aac, AAC",
+            "audio/x-aac, AAC"
     })
     void should_map_content_type_to_correct_extension(String mimeType, AudioFileExtension expectedExtension) {
         // given
@@ -238,6 +323,7 @@ class AudioInspectorAdapterIT {
         String fileName = switch (extension) {
             case WAV -> "/wavFile.wav";
             case FLAC -> "/flacFile.flac";
+            case AAC -> "/aacPreview.aac";
             default -> throw new IllegalArgumentException("Unsupported file type: " + extension);
         };
 

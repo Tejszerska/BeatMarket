@@ -29,6 +29,10 @@ import java.nio.file.Path;
 @Service
 @Slf4j
 class AudioInspectorAdapter implements AudioInspectorPort {
+    private static final int[] AAC_SAMPLE_RATES = {
+            96000, 88200, 64000, 48000, 44100, 32000, 24000,
+            22050, 16000, 12000, 11025, 8000, 7350
+    };
 
     /**
      * Checks "magic bytes" to extract file extension without parsing full file
@@ -105,6 +109,10 @@ class AudioInspectorAdapter implements AudioInspectorPort {
             }
         }
 
+        if (extension == AudioFileExtension.AAC) {
+            return calculateAacAdtsDuration(audioBytes);
+        }
+
         if (extension == AudioFileExtension.MP3) {
             Path tempFile = null;
 
@@ -134,6 +142,58 @@ class AudioInspectorAdapter implements AudioInspectorPort {
         return null;
     }
 
+    private Double calculateAacAdtsDuration(final byte[] audioBytes) {
+        if (audioBytes.length < 7) {
+            throw unreadableAacFile();
+        }
+
+        double durationInSeconds = 0.0;
+        int offset = 0;
+
+        while (offset < audioBytes.length) {
+            int remainingBytes = audioBytes.length - offset;
+            // Each ADTS frame has a minimum header size of 7 bytes (without CRC) or 9 bytes (with CRC)
+            if (remainingBytes < 7) {
+                throw unreadableAacFile();
+            }
+
+            // Check for ADTS syncword (0xFFF) and other header bits
+            int secondHeaderByte = Byte.toUnsignedInt(audioBytes[offset + 1]);
+            if (Byte.toUnsignedInt(audioBytes[offset]) != 0xFF
+                    || (secondHeaderByte & 0xF0) != 0xF0
+                    || (secondHeaderByte & 0x06) != 0) {
+                throw unreadableAacFile();
+            }
+
+            // Extract sample rate index from the ADTS header
+            int thirdHeaderByte = Byte.toUnsignedInt(audioBytes[offset + 2]);
+            int sampleRateIndex = (thirdHeaderByte & 0x3C) >> 2;
+            if (sampleRateIndex >= AAC_SAMPLE_RATES.length) {
+                throw unreadableAacFile();
+            }
+
+            // Calculate the frame length from the ADTS header
+            int headerLength = (secondHeaderByte & 0x01) == 1 ? 7 : 9;
+            int frameLength = ((Byte.toUnsignedInt(audioBytes[offset + 3]) & 0x03) << 11)
+                    | (Byte.toUnsignedInt(audioBytes[offset + 4]) << 3)
+                    | ((Byte.toUnsignedInt(audioBytes[offset + 5]) & 0xE0) >> 5);
+            if (frameLength < headerLength || frameLength > remainingBytes) {
+                throw unreadableAacFile();
+            }
+
+            int rawDataBlocks = (Byte.toUnsignedInt(audioBytes[offset + 6]) & 0x03) + 1;
+            durationInSeconds += rawDataBlocks * 1024.0 / AAC_SAMPLE_RATES[sampleRateIndex];
+            offset += frameLength;
+        }
+
+        return durationInSeconds;
+    }
+
+    private UnreadableAudioFileException unreadableAacFile() {
+        log.error("Invalid or truncated AAC ADTS frame");
+        return new UnreadableAudioFileException("An error occurred while analysing duration of an AAC audio file.");
+    }
+
 
     private AudioFileExtension mapContentTypeToExtension(String contentType) {
         if (contentType == null) {
@@ -143,6 +203,7 @@ class AudioInspectorAdapter implements AudioInspectorPort {
             case "audio/wav", "audio/vnd.wave", "audio/x-wav" -> AudioFileExtension.WAV;
             case "audio/flac", "audio/x-flac" -> AudioFileExtension.FLAC;
             case "audio/mpeg", "audio/mp3" -> AudioFileExtension.MP3;
+            case "audio/aac", "audio/x-aac" -> AudioFileExtension.AAC;
             default -> null;
         };
     }
