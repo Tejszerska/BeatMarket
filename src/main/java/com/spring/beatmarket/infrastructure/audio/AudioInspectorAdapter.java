@@ -29,10 +29,7 @@ import java.nio.file.Path;
 @Service
 @Slf4j
 class AudioInspectorAdapter implements AudioInspectorPort {
-    private static final int[] AAC_SAMPLE_RATES = {
-            96000, 88200, 64000, 48000, 44100, 32000, 24000,
-            22050, 16000, 12000, 11025, 8000, 7350
-    };
+
 
     /**
      * Checks "magic bytes" to extract file extension without parsing full file
@@ -84,115 +81,72 @@ class AudioInspectorAdapter implements AudioInspectorPort {
     }
 
 
-    /**
-     * Stops the process and throws an exception because getting an improper
-     * number of frames or sample rate indicates the file header is corrupted.
-     */
     private Double calculateDurationFromBytes(final AudioFileExtension extension, final byte[] audioBytes) {
         if (extension == AudioFileExtension.WAV) {
-            try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioBytes))) {
-                AudioFormat format = audioInputStream.getFormat();
-                long frames = audioInputStream.getFrameLength();
-                return (frames + 0.0) / format.getFrameRate();
-            } catch (UnsupportedAudioFileException | IOException e) {
-                log.error("Error parsing audio file with AudioInputStream", e);
-                throw new UnreadableAudioFileException("An error occurred while analysing duration of a WAV audio file.");
-            }
+            return calculateWavDuration(audioBytes);
         }
         if (extension == AudioFileExtension.FLAC) {
-            try (FlacFile flacFile = FlacFile.open(new ByteArrayInputStream(audioBytes))) {
-                long frames = flacFile.getInfo().getNumberOfSamples();
-                return (frames + 0.0) / flacFile.getInfo().getSampleRate();
-            } catch (IOException | IllegalArgumentException e) {
-                log.error("Error parsing audio file with FlacFile", e);
-                throw new UnreadableAudioFileException("An error occurred while analysing duration of a FLAC audio file.");
-            }
+            return calculateFlacDuration(audioBytes);
         }
 
         if (extension == AudioFileExtension.AAC) {
-            return calculateAacAdtsDuration(audioBytes);
+            return AacAdtsParser.calculateAacAdtsDuration(audioBytes);
         }
 
         if (extension == AudioFileExtension.MP3) {
-            Path tempFile = null;
-
-            try {
-                tempFile = Files.createTempFile("temp_audio", ".mp3");
-                Files.write(tempFile, audioBytes);
-                try {
-                    AudioFile audioFile = AudioFileIO.read(tempFile.toFile());
-                    return audioFile.getAudioHeader().getTrackLength() + 0.0;
-                } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
-                    log.error("Error parsing file with AudioFile", e);
-                    throw new UnreadableAudioFileException("An error occurred while analysing duration of a MP3 audio file.");
-                }
-            } catch (IOException e) {
-                log.error("Error parsing audio file with jaudiotagger", e);
-                throw new UnreadableAudioFileException("An error occurred while analysing duration of an MP3 audio file.");
-            } finally {
-                if (tempFile != null) {
-                    try {
-                        Files.deleteIfExists(tempFile);
-                    } catch (IOException e) {
-                        log.warn("Failed to delete temp file", e);
-                    }
-                }
-            }
+            return calculateMp3Duration(audioBytes);
         }
         return null;
     }
 
-    private Double calculateAacAdtsDuration(final byte[] audioBytes) {
-        if (audioBytes.length < 7) {
-            throw unreadableAacFile();
+    private static double calculateMp3Duration(final byte[] audioBytes) {
+        Path tempFile = null;
+
+        try {
+            tempFile = Files.createTempFile("temp_audio", ".mp3");
+            Files.write(tempFile, audioBytes);
+            try {
+                AudioFile audioFile = AudioFileIO.read(tempFile.toFile());
+                return audioFile.getAudioHeader().getTrackLength() + 0.0;
+            } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
+                log.error("Error parsing file with AudioFile", e);
+                throw new UnreadableAudioFileException("An error occurred while analysing duration of a MP3 audio file.");
+            }
+        } catch (IOException e) {
+            log.error("Error parsing audio file with jaudiotagger", e);
+            throw new UnreadableAudioFileException("An error occurred while analysing duration of an MP3 audio file.");
+        } finally {
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.warn("Failed to delete temp file", e);
+                }
+            }
         }
-
-        double durationInSeconds = 0.0;
-        int offset = 0;
-
-        while (offset < audioBytes.length) {
-            int remainingBytes = audioBytes.length - offset;
-            // Each ADTS frame has a minimum header size of 7 bytes (without CRC) or 9 bytes (with CRC)
-            if (remainingBytes < 7) {
-                throw unreadableAacFile();
-            }
-
-            // Check for ADTS syncword (0xFFF) and other header bits
-            int secondHeaderByte = Byte.toUnsignedInt(audioBytes[offset + 1]);
-            if (Byte.toUnsignedInt(audioBytes[offset]) != 0xFF
-                    || (secondHeaderByte & 0xF0) != 0xF0
-                    || (secondHeaderByte & 0x06) != 0) {
-                throw unreadableAacFile();
-            }
-
-            // Extract sample rate index from the ADTS header
-            int thirdHeaderByte = Byte.toUnsignedInt(audioBytes[offset + 2]);
-            int sampleRateIndex = (thirdHeaderByte & 0x3C) >> 2;
-            if (sampleRateIndex >= AAC_SAMPLE_RATES.length) {
-                throw unreadableAacFile();
-            }
-
-            // Calculate the frame length from the ADTS header
-            int headerLength = (secondHeaderByte & 0x01) == 1 ? 7 : 9;
-            int frameLength = ((Byte.toUnsignedInt(audioBytes[offset + 3]) & 0x03) << 11)
-                    | (Byte.toUnsignedInt(audioBytes[offset + 4]) << 3)
-                    | ((Byte.toUnsignedInt(audioBytes[offset + 5]) & 0xE0) >> 5);
-            if (frameLength < headerLength || frameLength > remainingBytes) {
-                throw unreadableAacFile();
-            }
-
-            int rawDataBlocks = (Byte.toUnsignedInt(audioBytes[offset + 6]) & 0x03) + 1;
-            durationInSeconds += rawDataBlocks * 1024.0 / AAC_SAMPLE_RATES[sampleRateIndex];
-            offset += frameLength;
-        }
-
-        return durationInSeconds;
     }
 
-    private UnreadableAudioFileException unreadableAacFile() {
-        log.error("Invalid or truncated AAC ADTS frame");
-        return new UnreadableAudioFileException("An error occurred while analysing duration of an AAC audio file.");
+    private static double calculateFlacDuration(final byte[] audioBytes) {
+        try (FlacFile flacFile = FlacFile.open(new ByteArrayInputStream(audioBytes))) {
+            long frames = flacFile.getInfo().getNumberOfSamples();
+            return (frames + 0.0) / flacFile.getInfo().getSampleRate();
+        } catch (IOException | IllegalArgumentException e) {
+            log.error("Error parsing audio file with FlacFile", e);
+            throw new UnreadableAudioFileException("An error occurred while analysing duration of a FLAC audio file.");
+        }
     }
+
+    private static double calculateWavDuration(final byte[] audioBytes) {
+        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(audioBytes))) {
+            AudioFormat format = audioInputStream.getFormat();
+            long frames = audioInputStream.getFrameLength();
+            return (frames + 0.0) / format.getFrameRate();
+        } catch (UnsupportedAudioFileException | IOException e) {
+            log.error("Error parsing audio file with AudioInputStream", e);
+            throw new UnreadableAudioFileException("An error occurred while analysing duration of a WAV audio file.");
+        }
+    }
+
 
 
     private AudioFileExtension mapContentTypeToExtension(String contentType) {
