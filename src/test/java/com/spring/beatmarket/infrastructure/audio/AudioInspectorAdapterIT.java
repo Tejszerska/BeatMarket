@@ -85,6 +85,32 @@ class AudioInspectorAdapterIT {
     }
 
     @Test
+    @DisplayName("Reads a positive duration from an MP3 file")
+    void reads_positive_duration_from_mp3_file() {
+        // given
+        byte[] bytes = loadFile(AudioFileExtension.MP3);
+
+        // when
+        Double duration = inspectorAdapter.inspectDuration(bytes, AudioFileExtension.MP3);
+
+        // then
+        assertThat(duration).isPositive().isLessThan(900.0);
+    }
+
+    @Test
+    @DisplayName("Detects the MP3 file extension")
+    void detects_mp3_file_extension() {
+        // given
+        byte[] bytes = loadFile(AudioFileExtension.MP3);
+
+        // when
+        AudioFileExtension extension = inspectorAdapter.inspectExtension(bytes);
+
+        // then
+        assertThat(extension).isEqualTo(AudioFileExtension.MP3);
+    }
+
+    @Test
     @Description(value = "Should return null extension when file format is unrecognized")
     void should_return_null_when_file_format_is_unrecognized() {
         // given
@@ -323,6 +349,7 @@ class AudioInspectorAdapterIT {
         String fileName = switch (extension) {
             case WAV -> "/wavFile.wav";
             case FLAC -> "/flacFile.flac";
+            case MP3 -> "/mp3Preview.MP3";
             case AAC -> "/aacPreview.aac";
             default -> throw new IllegalArgumentException("Unsupported file type: " + extension);
         };
