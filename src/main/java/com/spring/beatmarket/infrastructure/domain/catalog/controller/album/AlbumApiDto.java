@@ -154,4 +154,17 @@ public interface AlbumApiDto {
             Set<SongApiDto.Reference> songs
     ) {
     }
+
+    @Schema(name = "AlbumCoverResponse")
+    record CoverResponse(
+            @Schema(description = "ID of the album", example = "10")
+            Long albumId,
+
+            @Schema(description = "Upload result message", example = "Cover uploaded successfully")
+            String message,
+
+            @Schema(description = "Public URL of the uploaded album cover", example = "https://s3.aws.com/your-bucket/covers/cee-dee.webp")
+            String coverUrl
+    ) {
+    }
 }

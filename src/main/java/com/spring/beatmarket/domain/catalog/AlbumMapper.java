@@ -4,6 +4,7 @@ import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -13,12 +14,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
+        uses = AlbumCoverUrlMapper.class,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface AlbumMapper {
 
+    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "albumCoverUrl")
     AlbumDto.Summary toSummaryDto(Album album);
 
+    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "albumCoverUrl")
     AlbumDto.Details toDetailsDto(Album album);
 
     default AlbumDto.Reference toActiveReferenceDto(Album album) {
@@ -42,5 +46,6 @@ interface AlbumMapper {
                 .collect(Collectors.toSet());
     }
 
+    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "albumCoverUrl")
     AlbumDto.Info toInfoDto(Album album);
 }

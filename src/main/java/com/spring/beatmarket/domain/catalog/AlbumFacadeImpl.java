@@ -14,6 +14,7 @@ class AlbumFacadeImpl implements AlbumFacade {
     private final AlbumRetriever albumRetriever;
     private final AlbumAdder albumAdder;
     private final AlbumUpdater albumUpdater;
+    private final AlbumCoverUpdater albumCoverUpdater;
     private final AlbumDeleter albumDeleter;
 
     public Slice<AlbumDto.Summary> findAllAlbums(final Long artistId, final String title, final Pageable pageable) {
@@ -21,7 +22,6 @@ class AlbumFacadeImpl implements AlbumFacade {
     }
 
     public AlbumDto.Details getAlbumDetails(final Long albumId) {
-
         return albumRetriever.getDetails(albumId);
     }
 
@@ -31,6 +31,10 @@ class AlbumFacadeImpl implements AlbumFacade {
 
     public AlbumDto.Info updateAlbum(final Long id, final AlbumDto.Update dto) {
         return albumUpdater.update(id, dto);
+    }
+
+    public AlbumDto.Cover updateAlbumCover(final Long id, final byte[] imageBytes) {
+        return albumCoverUpdater.update(id, imageBytes);
     }
 
     public void deactivateAlbum(final Long id) {

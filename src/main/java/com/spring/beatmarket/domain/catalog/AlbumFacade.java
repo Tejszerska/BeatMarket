@@ -14,5 +14,7 @@ public interface AlbumFacade {
 
     AlbumDto.Info updateAlbum(Long albumId, AlbumDto.Update dto);
 
+    AlbumDto.Cover updateAlbumCover(Long albumId, byte[] imageBytes);
+
     void deactivateAlbum(final Long albumId);
 }

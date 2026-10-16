@@ -63,4 +63,7 @@ public interface AlbumDto {
     ) {
     }
 
+    record Cover(Long albumId, String message, String coverUrl) {
+    }
+
 }

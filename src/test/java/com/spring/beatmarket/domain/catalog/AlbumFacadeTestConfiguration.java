@@ -5,13 +5,20 @@ class AlbumFacadeTestConfiguration {
             AlbumMapper albumMapper,
             AlbumRepository albumRepository,
             SongRetriever songRetriever,
-            ArtistRoleManager artistRoleManager
+            ArtistRoleManager artistRoleManager,
+            AlbumCoverImageProcessorPort imageProcessor,
+            FileStoragePort fileStoragePort
             ) {
 
         AlbumRetriever albumRetriever = new AlbumRetriever(albumRepository, albumMapper);
         AlbumAdder albumAdder = new AlbumAdder(songRetriever, albumRepository, albumMapper, artistRoleManager);
         AlbumUpdater albumUpdater = new AlbumUpdater(albumRetriever, artistRoleManager, albumMapper, songRetriever);
+        AlbumCoverUpdater albumCoverUpdater = new AlbumCoverUpdater(
+                albumRetriever,
+                imageProcessor,
+                fileStoragePort
+        );
         AlbumDeleter albumDeleter = new AlbumDeleter(albumRepository, albumRetriever);
-        return new AlbumFacadeImpl(albumRetriever, albumAdder, albumUpdater, albumDeleter);
+        return new AlbumFacadeImpl(albumRetriever, albumAdder, albumUpdater, albumCoverUpdater, albumDeleter);
     }
 }

@@ -1,7 +1,10 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
 import com.spring.beatmarket.domain.catalog.AlbumFacade;
+import com.spring.beatmarket.domain.catalog.AlbumCoverImageProcessorPort;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.domain.catalog.exception.AlbumCoverFileTooBigException;
+import com.spring.beatmarket.domain.catalog.exception.InvalidAlbumCoverException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,10 +27,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Locale;
 
 @Tag(name = "3. Albums", description = "Endpoints for managing music albums and their relations with songs.")
 @RestController
@@ -74,6 +84,45 @@ class AlbumController {
         AlbumDto.Create domainRequest = mapper.toDomainCreate(createAlbumRequest);
         AlbumDto.Info addedAlbum = facade.addAlbum(domainRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toInfoResponse(addedAlbum));
+    }
+
+    @Operation(summary = "Upload album cover", description = "Uploads a JPEG, PNG, or WebP cover image up to 10 MB and 40 megapixels. The image is center-cropped, resized to 150x150 pixels, converted to WebP, and stored in S3.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Album cover uploaded successfully."),
+            @ApiResponse(responseCode = "400", description = "The file is empty, corrupt, or not a supported image.",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "404", description = "Album not found.",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "413", description = "The image exceeds the 10 MB upload limit.",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    })
+    @PutMapping(value = "/{id}/cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<AlbumApiDto.CoverResponse> uploadAlbumCover(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) throws IOException {
+        String filename = file.getOriginalFilename();
+        String lowercaseFilename = filename == null ? null : filename.toLowerCase(Locale.ROOT);
+        if (lowercaseFilename == null
+                || !(lowercaseFilename.endsWith(".jpg")
+                || lowercaseFilename.endsWith(".jpeg")
+                || lowercaseFilename.endsWith(".png")
+                || lowercaseFilename.endsWith(".webp"))) {
+            throw new InvalidAlbumCoverException(
+                    "Invalid file format. Only JPG, JPEG, PNG, and WebP files are allowed."
+            );
+        }
+        if (file.isEmpty()) {
+            throw new InvalidAlbumCoverException("An album cover image is required.");
+        }
+        if (file.getSize() > AlbumCoverImageProcessorPort.MAX_FILE_SIZE_BYTES) {
+            throw new AlbumCoverFileTooBigException(
+                    file.getSize(),
+                    AlbumCoverImageProcessorPort.MAX_FILE_SIZE_BYTES
+            );
+        }
+
+        AlbumDto.Cover cover = facade.updateAlbumCover(id, file.getBytes());
+        return ResponseEntity.ok(mapper.toCoverResponse(cover));
     }
 
     @Operation(summary = "Partially update album", description = "Updates specific fields of an existing album (e.g., changing only the title).")

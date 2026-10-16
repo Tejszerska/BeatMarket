@@ -23,5 +23,7 @@ public interface AlbumControllerMapper {
 
     AlbumApiDto.InfoResponse toInfoResponse(AlbumDto.Info addedAlbum);
 
+    AlbumApiDto.CoverResponse toCoverResponse(AlbumDto.Cover cover);
+
     AlbumDto.Update toDomainUpdate(AlbumApiDto.UpdateRequest request);
 }

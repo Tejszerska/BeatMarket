@@ -2,7 +2,10 @@
 
 ### Error responses
 
-Errors handled by `GlobalExceptionHandler` use Spring's RFC 9457 `ProblemDetail` format and are returned as `application/problem+json`. The standard fields are `type`, `title`, `status`, `detail`, and `instance`; additional diagnostics are returned as extension properties such as `errors`, `maxSize`, `fileSize`, `durationInDatabase`, `entity`, and `conflictingIds`.
+Errors handled by `GlobalExceptionHandler` use Spring's RFC 9457 `ProblemDetail` format and are returned as
+`application/problem+json`. The standard fields are `type`, `title`, `status`, `detail`, and `instance`; additional
+diagnostics are returned as extension properties such as `errors`, `maxSize`, `fileSize`, `durationInDatabase`,`entity`,
+and `conflictingIds`.
 
 ```json
 {
@@ -17,9 +20,12 @@ Errors handled by `GlobalExceptionHandler` use Spring's RFC 9457 `ProblemDetail`
 }
 ```
 
-Error responses explicitly created by a controller (for example, login failures, invalid email confirmation, and duplicate registration) retain their controller-specific payloads.
+Error responses explicitly created by a controller (for example, login failures, invalid email confirmation, and
+duplicate registration) retain their controller-specific payloads.
 
-Audio-specific handlers add `durationInDatabase` for a duration mismatch and `fileSize`/`maxSize` for an audio file that exceeds its format limit. A role conflict adds `entity` and `conflictingIds`. A multipart request exceeding the server limit returns status `413` with the configured `maxSize`.
+Audio-specific handlers add `durationInDatabase` for a duration mismatch and `fileSize`/`maxSize` for an audio file that
+exceeds its format limit. A role conflict adds `entity` and `conflictingIds`. A multipart request exceeding the server
+limit returns status `413` with the configured `maxSize`.
 
 ### Account Module (`account`)
 
@@ -152,10 +158,13 @@ _Clears the `HttpOnly` cookie in the response headers._
 
 #### Browser Flow: Google OAuth2 Login
 
-Initiates the OAuth2 authentication flow via Google. This is not a standard REST endpoint and must be accessed directly via a web browser.
+Initiates the OAuth2 authentication flow via Google. This is not a standard REST endpoint and must be accessed directly
+via a web browser.
 
 - **URL:** `GET /oauth2/authorization/google`
-- **Action:** Redirects the user to the Google consent screen. Upon successful authentication, Google redirects back to the backend, which automatically creates the user (if new), issues a JWT cookie, and redirects the user to the Swagger UI/frontend.
+- **Action:** Redirects the user to the Google consent screen. Upon successful authentication, Google redirects back to
+  the backend, which automatically creates the user (if new), issues a JWT cookie, and redirects the user to the Swagger
+  UI/frontend.
 
 ### Catalog Module (`catalog`)
 
@@ -171,7 +180,8 @@ Fetches a chunked list of all songs
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 5_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported; default value: ["editedOn,ASC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc). Default sort order is
+  ascending. Multiple sort criteria are supported; default value: ["editedOn,ASC"]_
 - `genre` (string, query parameter, optional) _Filter by exact genre name._
 - `artist` (string, query parameter, optional) _Filter by exact artist name._
 - `language` (string, query parameter, optional) _Filter by track language (e.g., "EN", "NONE" for instrumentals)._
@@ -179,7 +189,8 @@ Fetches a chunked list of all songs
 - `releaseDate` (string, query parameter, optional) _Filter by exact release date in ISO-8601 format (YYYY-MM-DD)._
 - `minDuration` (integer, query parameter, optional) _Filter by minimum track duration in seconds._
 - `maxDuration` (integer, query parameter, optional) _Filter by maximum track duration in seconds._
-- `maxPrice` (number, query parameter, optional) _Filter by maximum track price. **Note**: If provided, `currency` and `license` must also be specified._
+- `maxPrice` (number, query parameter, optional) _Filter by maximum track price. **Note**: If provided, `currency`
+  and `license` must also be specified._
 - `currency` (string, query parameter, optional) _Filter by currency. Required if `maxPrice` is used._
 - `license` (string, query parameter, optional) _Filter by license type. Required if `maxPrice` is used._
 
@@ -324,7 +335,8 @@ Retrieves a chunked list of available music genres.
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 20_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default
+  value: ["editedOn,ASC"]_
 
 **Response (200 OK):**
 
@@ -383,7 +395,8 @@ Retrieves a chunked list of available artists.
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 20_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default
+  value: ["editedOn,ASC"]_
 - `name` (string, query parameter, optional) _Filter by partial or exact artist name._
 
 **Response (200 OK):**
@@ -465,7 +478,8 @@ Retrieves a chunked list of available albums.
 
 - `page` (integer, query parameter) _Page index; default value: 0_
 - `size` (integer, query parameter) _The size of the page to be returned; default value: 20_
-- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default value: ["editedOn,ASC"]_
+- `sort` (array[string], query parameter) _Sorting criteria in the format: property,(asc|desc); default
+  value: ["editedOn,ASC"]_
 - `title` (string, query parameter, optional) _Filter by partial or exact album title._
 - `artistId` (integer, query parameter, optional) _Filter albums by a specific artist._
 
@@ -562,8 +576,10 @@ Adds a new song to the system.
 - `duration` (integer, required) _Duration of the song in seconds. Must be > 0, <= 900._
 - `language` (string, required) _Language of the song (e.g., "EN")._
 - `genreId` (integer, optional) _ID of the genre. Can be omitted if the genre is not yet in the system._
-- `artistIds` (array[integer], optional) _List of artist IDs. Use an empty array `[]` if no artists are assigned yet. The first ID in the array is treated as the primary artist, while subsequent IDs represent featuring artists._
-- `albumId` (integer, optional) _ID of the album. Can be omitted if the song is not part of an album or it's not yet in the system._
+- `artistIds` (array[integer], optional) _List of artist IDs. Use an empty array `[]` if no artists are assigned yet.
+  The first ID in the array is treated as the primary artist, while subsequent IDs represent featuring artists._
+- `albumId` (integer, optional) _ID of the album. Can be omitted if the song is not part of an album or it's not yet in
+  the system._
 
 **Request Body Example:**
 
@@ -574,7 +590,9 @@ Adds a new song to the system.
   "duration": 216,
   "language": "EN",
   "genreId": 1,
-  "artistIds": [1],
+  "artistIds": [
+    1
+  ],
   "albumId": 2
 }
 ```
@@ -627,9 +645,11 @@ _Invalid input data (e.g., negative duration)._
 
 ---
 
-#### POST /api/catalog/songs/{id}/preview
+#### PUT /api/catalog/songs/{id}/preview
 
-Uploads an audio preview file and links the resulting resource file key to the specified song. If a preview is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
+Uploads an audio preview file and links the resulting resource file key to the specified song, creating or replacing the
+preview. If a preview is already linked, the existing file is permanently deleted from the server and the file key is
+overwritten with the new one.
 
 **Parameters:**
 
@@ -681,11 +701,11 @@ _Returned when the file is missing, empty, or of an unsupported format._
 
 ---
 
-#### POST /api/catalog/songs/{id}/track
+#### PUT /api/catalog/songs/{id}/track
 
-Uploads a full-length audio track and assigns a new file key to the specified song. 
+Uploads a full-length audio track and assigns it to the specified song, creating or replacing the track.
 If a previous track exists and has no active licenses, it is permanently deleted from the storage.
-Otherwise, the old file is retained to support existing license holders. 
+Otherwise, the old file is retained to support existing license holders.
 **Parameters:**
 
 - `id` (integer, path parameter, required) _Song ID_
@@ -731,7 +751,8 @@ _Returned when the file is missing, empty, too big or of an unsupported format._
 
 #### PATCH /api/catalog/songs/{id}
 
-Partially updates an existing song's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
+Partially updates an existing song's metadata and its relationships. All fields are optional. Only the fields provided
+in the request body will be modified.
 **Note:** To explicitly remove an assignment (e.g., detach from an album), send `null` for that specific field.
 
 **Parameters:**
@@ -758,7 +779,10 @@ Partially updates an existing song's metadata and its relationships. All fields 
   "language": "EN",
   "genreId": 2,
   "albumId": null,
-  "artistIds": [1, 45]
+  "artistIds": [
+    1,
+    45
+  ]
 }
 ```
 
@@ -863,9 +887,15 @@ Adds a new album to the system.
 {
   "title": "Cee Dee",
   "releaseDate": "2010-10-10",
-  "songIds": [1, 2],
+  "songIds": [
+    1,
+    2
+  ],
   "mainArtistId": 1,
-  "featArtistsIds": [3, 4]
+  "featArtistsIds": [
+    3,
+    4
+  ]
 }
 ```
 
@@ -914,9 +944,12 @@ _Invalid input data (e.g., improper release date format)._
 
 ---
 
-#### POST /api/catalog/albums/{id}/cover
+#### PUT /api/catalog/albums/{id}/cover
 
-Uploads album cover (image file) and links the resulting resource file key to the specified album. If a cover is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
+Uploads an album cover and links it to the specified album. JPEG, PNG, and WebP images up to 10 MB and 40 megapixels are
+accepted. The server validates the image contents, center-crops it to a square, resizes it to 150×150 pixels, converts
+it to WebP at approximately 80% quality, and stores it in S3. When replacing an existing cover, the old object is
+deleted only after the new cover is committed.
 
 **Parameters:**
 
@@ -928,15 +961,16 @@ Uploads album cover (image file) and links the resulting resource file key to th
 
 **Request Body (Form-Data):**
 
-- `file` (file/binary, required) _The image file (e.g. JPG, PNG) to be uploaded._
+- `file` (file/binary, required) _JPEG, PNG, or WebP image; maximum size 10 MB._
 
 **Response (200 OK):**
-_Returns the URL of the uploaded resource._
+_Returns a success message and the public URL of the uploaded cover._
 
 ```json
 {
+  "albumId": 10,
   "message": "Cover uploaded successfully",
-  "coverUrl": "https://s3.aws.com/your-bucket/covers/cee-dee.png"
+  "coverUrl": "https://s3.aws.com/your-bucket/covers/cee-dee.webp"
 }
 ```
 
@@ -954,23 +988,27 @@ _Returned when the album ID does not exist in the database._
 ```
 
 **Error Response (400 Bad Request):**
-_Returned when the file is missing, empty, or of an unsupported format._
+_Returned when the file is missing, empty, corrupt, or not a supported image._
 
 ```json
 {
   "type": "about:blank",
-  "title": "Invalid file format",
+  "title": "Invalid album cover",
   "status": 400,
-  "detail": "Invalid image file format.",
+  "detail": "Only valid JPEG, PNG, or WebP image files are supported.",
   "instance": "/api/catalog/albums/10/cover"
 }
 ```
+
+**Error Response (413 Payload Too Large):**
+_Returned when the image exceeds 10 MB._
 
 ---
 
 #### PATCH /api/catalog/albums/{id}
 
-Partially updates an existing album's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
+Partially updates an existing album's metadata and its relationships. All fields are optional. Only the fields provided
+in the request body will be modified.
 **Note:** To explicitly remove an assignment (e.g., detach from a song list), send `null` for that specific field.
 
 **Parameters:**
@@ -989,7 +1027,10 @@ Partially updates an existing album's metadata and its relationships. All fields
 ```json
 {
   "releaseDate": "2026-07-18",
-  "artistIds": [1, 45]
+  "artistIds": [
+    1,
+    45
+  ]
 }
 ```
 
@@ -1083,23 +1124,33 @@ Adds a new artist to the system.
 **Request Body Fields:**
 
 - `name` (string, required) _Name of the artist._
-- `mainSongIds` (array[integer], optional) _List of song IDs where the artist is the primary performer. Use an empty array `[]` if no songs are assigned yet._
-- `featSongIds` (array[integer], optional) _List of song IDs where the artist is a featured (guest) performer. Use an empty array `[]` if no songs are assigned yet._
-- `mainAlbumIds` (array[integer], optional) _List of album IDs where the artist is the primary creator. Use an empty array `[]` if no albums are assigned yet._
-- `featAlbumIds` (array[integer], optional) _List of album IDs where the artist is a featured/collaborating creator. Use an empty array `[]` if no albums are assigned yet._
+- `mainSongIds` (array[integer], optional) _List of song IDs where the artist is the primary performer. Use an empty
+  array `[]` if no songs are assigned yet._
+- `featSongIds` (array[integer], optional) _List of song IDs where the artist is a featured (guest) performer. Use an
+  empty array `[]` if no songs are assigned yet._
+- `mainAlbumIds` (array[integer], optional) _List of album IDs where the artist is the primary creator. Use an empty
+  array `[]` if no albums are assigned yet._
+- `featAlbumIds` (array[integer], optional) _List of album IDs where the artist is a featured/collaborating creator. Use
+  an empty array `[]` if no albums are assigned yet._
 
 **Request Body Example:**
 
 ```json
 {
   "name": "Mr. Nimbus",
-  "mainSongIds": [1, 2],
-  "featSongIds": [7],
-  "mainAlbumIds": [1],
+  "mainSongIds": [
+    1,
+    2
+  ],
+  "featSongIds": [
+    7
+  ],
+  "mainAlbumIds": [
+    1
+  ],
   "featAlbumIds": []
 }
 ```
-
 
 **Response (201 Created):**
 
@@ -1143,7 +1194,9 @@ _Invalid input data_
 
 #### POST /api/catalog/artists/{id}/image
 
-Uploads artist's image (image file) and links the resulting resource file key to the specified artist. If an image is already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new one.
+Uploads artist's image (image file) and links the resulting resource file key to the specified artist. If an image is
+already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new
+one.
 
 **Parameters:**
 
@@ -1197,7 +1250,8 @@ _Returned when the file is missing, empty, or of an unsupported format._
 
 #### PATCH /api/catalog/artists/{id}
 
-Partially updates an existing artist's metadata and its relationships. All fields are optional. Only the fields provided in the request body will be modified.
+Partially updates an existing artist's metadata and its relationships. All fields are optional. Only the fields provided
+in the request body will be modified.
 
 **Parameters:**
 
@@ -1206,10 +1260,14 @@ Partially updates an existing artist's metadata and its relationships. All field
 **Request Body Fields:**
 
 - `name` (string, optional) _Name of the artist._
-- `mainSongIds` (array[integer], optional) _List of song IDs where the artist is the primary performer. Use an empty array `[]` to clear songs list._
-- `featSongIds` (array[integer], optional) _List of song IDs where the artist is a featured (guest) performer. Use an empty array `[]` to clear songs list._
-- `mainAlbumIds` (array[integer], optional) _List of album IDs where the artist is the primary creator. Use an empty array `[]` to clear albums list._
-- `featAlbumIds` (array[integer], optional) _List of album IDs where the artist is a featured/collaborating creator. Use an empty array `[]` to clear albums list._
+- `mainSongIds` (array[integer], optional) _List of song IDs where the artist is the primary performer. Use an empty
+  array `[]` to clear songs list._
+- `featSongIds` (array[integer], optional) _List of song IDs where the artist is a featured (guest) performer. Use an
+  empty array `[]` to clear songs list._
+- `mainAlbumIds` (array[integer], optional) _List of album IDs where the artist is the primary creator. Use an empty
+  array `[]` to clear albums list._
+- `featAlbumIds` (array[integer], optional) _List of album IDs where the artist is a featured/collaborating creator. Use
+  an empty array `[]` to clear albums list._
 
 **Request Body Example:**
 
@@ -1397,6 +1455,7 @@ _Invalid input data_
   }
 }
 ```
+
 **Error Response (409 Conflict):**
 _Genre name is not unique._
 
@@ -1409,6 +1468,7 @@ _Genre name is not unique._
   "instance": "/api/catalog/genres/10"
 }
 ```
+
 ---
 
 #### DELETE /api/catalog/genres/{id}
@@ -1444,8 +1504,8 @@ The service bulk-updates the genre_id field in the associated songs to the new I
 - `oldId` (integer, path parameter, required) _Genre ID to be changed in songs_
 - `newId` (integer, path parameter, required) _ New genre ID for songs related to `oldId` genre_
 
-
 **Response (200 OK):** _Genre transferred successfully._
+
 ```json
 {
   "updatedSongsCount": 15,
@@ -1453,8 +1513,8 @@ The service bulk-updates the genre_id field in the associated songs to the new I
   "newGenreId": 12
 }
 ```
-**Response (404 Not Found):** _Either the source (oldId) or target (newId) genre does not exist.
 
+**Response (404 Not Found):** _Either the source (oldId) or target (newId) genre does not exist.
 
 ```json
 {
@@ -1482,7 +1542,8 @@ The service bulk-updates the genre_id field in the associated songs to the new I
 
 #### POST /api/payments/
 
-Creates a new payment record in the local database (status: PENDING), initializes a Stripe Checkout session, and returns the session URL for the user to complete the transaction.
+Creates a new payment record in the local database (status: PENDING), initializes a Stripe Checkout session, and returns
+the session URL for the user to complete the transaction.
 
 **Request Body:**
 
