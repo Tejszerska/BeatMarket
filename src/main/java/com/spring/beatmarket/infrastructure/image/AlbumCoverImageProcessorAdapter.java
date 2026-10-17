@@ -32,7 +32,7 @@ class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
     @Override
     public byte[] process(final byte[] imageBytes) {
         if (imageBytes == null || imageBytes.length == 0) {
-            throw new InvalidAlbumCoverException("An album cover image is required.");
+            throw new InvalidAlbumCoverException("Uploaded file must not be empty.");
         }
         if (imageBytes.length > MAX_FILE_SIZE_BYTES) {
             throw new AlbumCoverFileTooBigException(imageBytes.length, MAX_FILE_SIZE_BYTES);

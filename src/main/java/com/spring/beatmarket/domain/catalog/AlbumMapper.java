@@ -14,21 +14,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
-        uses = AlbumCoverUrlMapper.class,
+        uses = FileStorageUrlMapper.class,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface AlbumMapper {
 
-    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "albumCoverUrl")
+    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "fileStorageUrl")
     AlbumDto.Summary toSummaryDto(Album album);
 
-    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "albumCoverUrl")
+    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "fileStorageUrl")
     AlbumDto.Details toDetailsDto(Album album);
 
-    default AlbumDto.Reference toActiveReferenceDto(Album album) {
-        if (album == null || !album.isActive()) return null;
-        return new AlbumDto.Reference(album.getId(), album.getTitle());
-    }
 
     default List<ArtistDto.Reference> toActiveArtistReferenceList(List<Artist> artists) {
         if (artists == null) return Collections.emptyList();
@@ -46,6 +42,6 @@ interface AlbumMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "albumCoverUrl")
+    @Mapping(source = "coverFileKey", target = "coverUrl", qualifiedByName = "fileStorageUrl")
     AlbumDto.Info toInfoDto(Album album);
 }

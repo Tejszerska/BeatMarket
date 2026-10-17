@@ -1,10 +1,8 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
 import com.spring.beatmarket.domain.catalog.AlbumFacade;
-import com.spring.beatmarket.domain.catalog.AlbumCoverImageProcessorPort;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
-import com.spring.beatmarket.domain.catalog.exception.AlbumCoverFileTooBigException;
-import com.spring.beatmarket.domain.catalog.exception.InvalidAlbumCoverException;
+import com.spring.beatmarket.infrastructure.upload.UploadFileValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Locale;
 
 @Tag(name = "3. Albums", description = "Endpoints for managing music albums and their relations with songs.")
 @RestController
@@ -45,6 +42,7 @@ import java.util.Locale;
 class AlbumController {
     private final AlbumFacade facade;
     private final AlbumControllerMapper mapper;
+    private final UploadFileValidator uploadFileValidator;
 
 
     @Operation(summary = "Get all albums", description = "Returns a paginated list of all albums available in the system.")
@@ -100,26 +98,7 @@ class AlbumController {
     ResponseEntity<AlbumApiDto.CoverResponse> uploadAlbumCover(
             @PathVariable Long id,
             @RequestPart("file") MultipartFile file) throws IOException {
-        String filename = file.getOriginalFilename();
-        String lowercaseFilename = filename == null ? null : filename.toLowerCase(Locale.ROOT);
-        if (lowercaseFilename == null
-                || !(lowercaseFilename.endsWith(".jpg")
-                || lowercaseFilename.endsWith(".jpeg")
-                || lowercaseFilename.endsWith(".png")
-                || lowercaseFilename.endsWith(".webp"))) {
-            throw new InvalidAlbumCoverException(
-                    "Invalid file format. Only JPG, JPEG, PNG, and WebP files are allowed."
-            );
-        }
-        if (file.isEmpty()) {
-            throw new InvalidAlbumCoverException("An album cover image is required.");
-        }
-        if (file.getSize() > AlbumCoverImageProcessorPort.MAX_FILE_SIZE_BYTES) {
-            throw new AlbumCoverFileTooBigException(
-                    file.getSize(),
-                    AlbumCoverImageProcessorPort.MAX_FILE_SIZE_BYTES
-            );
-        }
+        uploadFileValidator.validate(file, AlbumUploadPolicies.COVER);
 
         AlbumDto.Cover cover = facade.updateAlbumCover(id, file.getBytes());
         return ResponseEntity.ok(mapper.toCoverResponse(cover));
