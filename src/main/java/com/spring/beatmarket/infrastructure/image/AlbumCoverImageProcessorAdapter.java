@@ -20,14 +20,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Set;
 
 @Service
 class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
     private static final int OUTPUT_SIZE = 150;
     private static final long MAX_PIXEL_COUNT = 40_000_000;
     private static final float WEBP_QUALITY = 0.8f;
-    private static final Set<String> ALLOWED_FORMATS = Set.of("jpg", "jpeg", "png", "webp");
 
     @Override
     public byte[] process(final byte[] imageBytes) {
@@ -57,7 +55,7 @@ class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
             ImageReader reader = readers.next();
             try {
                 String format = reader.getFormatName().toLowerCase(Locale.ROOT);
-                if (!ALLOWED_FORMATS.contains(format)) {
+                if (!AlbumCoverImageFormats.SUPPORTED_FORMATS.contains(format)) {
                     throw invalidImage();
                 }
 
