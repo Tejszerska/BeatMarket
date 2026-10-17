@@ -2,6 +2,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.SongFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.infrastructure.upload.UploadFileValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -41,9 +43,9 @@ import java.io.IOException;
 @AllArgsConstructor
 public
 class SongController {
-
     private final SongFacade facade;
     private final SongControllerMapper mapper;
+    private final UploadFileValidator uploadFileValidator;
 
     @Operation(summary = "Get all songs", description = "Returns a paginated list of all songs in the database, with an option to limit results.")
     @ApiResponses(value = {
@@ -96,53 +98,49 @@ class SongController {
 
     @Operation(summary = "Upload full track file (.WAV or .FLAC)", description = "Uploads the full-length audio track and links the resource to the specified song.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Operation successful."),
+            @ApiResponse(responseCode = "200", description = "Track uploaded successfully."),
             @ApiResponse(responseCode = "404", description = "Song by id=10 was not found.",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, too big or of an unsupported format.",
+            @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, unreadable or of an unsupported format.",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "413", description = "Track file exceeds the upload size limit.",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
     })
-    @PostMapping(value = "{id}/track", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<Void> uploadFullTrack(
+    @PutMapping(value = "{id}/track", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<SongApiDto.TrackResponse> uploadFullTrack(
             @Parameter(description = "File of full track.")
             @RequestPart("file") MultipartFile file,
             @Parameter(description = "ID of a song from the file") @PathVariable Long id)
             throws IOException {
 
-        String filename = file.getOriginalFilename();
-        if (filename == null || (!filename.toLowerCase().endsWith(".wav") && !filename.toLowerCase().endsWith(".flac"))) {
-            throw new InvalidFileFormatException("Invalid format. Only .WAV or .FLAC files are allowed.");
-        }
+        uploadFileValidator.validate(file, SongUploadPolicies.FULL_TRACK);
 
-        facade.addTrackFile(file.getBytes(), id);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        SongDto.Track track = facade.addTrackFile(file.getBytes(), id);
+        return ResponseEntity.ok(mapper.toTrackResponse(track));
     }
 
     @Operation(summary = "Upload preview track file (.wav)", description = "Uploads an audio preview file and links the resulting resource file key to the specified song. If a preview is already linked, the existing file is permanently deleted from the server and the URL is overwritten with the new one.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Operation successful."),
+            @ApiResponse(responseCode = "200", description = "Preview uploaded successfully."),
             @ApiResponse(responseCode = "404", description = "Song by id=10 was not found.",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, too big or of an unsupported format.",
+            @ApiResponse(responseCode = "400", description = "Returned when the file is missing, empty, unreadable or of an unsupported format.",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "413", description = "Preview file exceeds the upload size limit.",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
     })
-    @PostMapping(value = "{id}/preview", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "{id}/preview", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<SongApiDto.PreviewResponse> uploadPreview(
             @Parameter(description = "File of preview track.")
             @RequestPart("file") MultipartFile file,
             @Parameter(description = "ID of a song from the file") @PathVariable Long id)
             throws IOException {
-        String filename = file.getOriginalFilename();
-        if (filename == null || (!filename.toLowerCase().endsWith(".mp3") && !filename.toLowerCase().endsWith(".aac"))) {
-            throw new InvalidFileFormatException("Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported.");
-        }
+        uploadFileValidator.validate(file, SongUploadPolicies.PREVIEW);
 
         SongDto.Preview previewDto = facade.addPreviewFile(file.getBytes(), id);
         return ResponseEntity.ok(mapper.toPreviewResponse(previewDto));
 
     }
-
 
     @Operation(summary = "Partially update song", description = "Updates specific fields of an existing song (e.g., changing only the title).")
     @ApiResponses(value = {

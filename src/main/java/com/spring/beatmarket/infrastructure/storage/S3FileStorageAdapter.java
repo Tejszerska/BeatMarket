@@ -20,11 +20,6 @@ class S3FileStorageAdapter implements FileStoragePort {
     private String bucketName;
 
     @Override
-    public String upload(final byte[] content, final String fileKey) {
-        return upload(content, fileKey, "application/octet-stream");
-    }
-
-    @Override
     public String upload(final byte[] content, final String fileKey, final String contentType) {
         s3Client.putObject(PutObjectRequest.builder()
                         .bucket(bucketName)

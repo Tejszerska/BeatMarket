@@ -647,9 +647,8 @@ _Invalid input data (e.g., negative duration)._
 
 #### PUT /api/catalog/songs/{id}/preview
 
-Uploads an audio preview file and links the resulting resource file key to the specified song, creating or replacing the
-preview. If a preview is already linked, the existing file is permanently deleted from the server and the file key is
-overwritten with the new one.
+Uploads an MP3 or AAC preview and links it to the specified song, creating or replacing the preview. The previous
+preview is removed after the database update is committed.
 
 **Parameters:**
 
@@ -661,15 +660,15 @@ overwritten with the new one.
 
 **Request Body (Form-Data):**
 
-- `file` (file/binary, required) _The audio file (e.g., MP3, AAC (.m4a)) to be uploaded._
+- `file` (file/binary, required) _An MP3 or AAC audio file, up to 40 MB._
 
 **Response (200 OK):**
-_Returns the file key of the uploaded resource._
+_Returns the song ID and public URL of the uploaded preview._
 
 ```json
 {
   "songId": 10,
-  "previewUrl": "/previews/in-the-end-prv.mp3"
+  "previewUrl": "https://beatmarket1.s3.eu-north-1.amazonaws.com/previews/in-the-end-1760624812345-a1b2c3d4.MP3"
 }
 ```
 
@@ -687,25 +686,30 @@ _Returned when the song ID does not exist in the database._
 ```
 
 **Error Response (400 Bad Request):**
-_Returned when the file is missing, empty, or of an unsupported format._
+_Returned when the file is missing, empty, corrupt, or of an unsupported format._
+
+An empty file returns the following detail:
 
 ```json
 {
   "type": "about:blank",
-  "title": "Invalid file format",
+  "title": "Invalid upload file",
   "status": 400,
-  "detail": "Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported.",
+  "detail": "Uploaded file must not be empty.",
   "instance": "/api/catalog/songs/10/preview"
 }
 ```
+
+**Error Response (413 Payload Too Large):**
+_Returned when the preview file exceeds 40 MB._
 
 ---
 
 #### PUT /api/catalog/songs/{id}/track
 
-Uploads a full-length audio track and assigns it to the specified song, creating or replacing the track.
-If a previous track exists and has no active licenses, it is permanently deleted from the storage.
-Otherwise, the old file is retained to support existing license holders.
+Uploads a WAV or FLAC full-length audio track and assigns it to the specified song, creating or replacing the track.
+If a previous track exists and has no active licenses, it is deleted after the database update commits. Otherwise,
+the old file is retained to support existing license holders.
 **Parameters:**
 
 - `id` (integer, path parameter, required) _Song ID_
@@ -716,10 +720,17 @@ Otherwise, the old file is retained to support existing license holders.
 
 **Request Body (Form-Data):**
 
-- `file` (file/binary, required) _High-quality audio file .WAV or .FLAC._
+- `file` (file/binary, required) _High-quality WAV or FLAC audio file, up to 165 MB._
 
-**Response (204 No content):**
-_Operation successful._
+**Response (200 OK):**
+_Returns the song ID and a success message._
+
+```json
+{
+  "songId": 10,
+  "message": "Track uploaded successfully"
+}
+```
 
 **Error Response (404 Not Found)**
 _Returned when the song ID does not exist in the database._
@@ -735,17 +746,22 @@ _Returned when the song ID does not exist in the database._
 ```
 
 **Error Response (400 Bad Request):**
-_Returned when the file is missing, empty, too big or of an unsupported format._
+_Returned when the file is missing, empty, unreadable, or of an unsupported format._
+
+An empty file returns the following detail:
 
 ```json
 {
   "type": "about:blank",
-  "title": "Invalid file format",
+  "title": "Invalid upload file",
   "status": 400,
-  "detail": "Invalid format. Only .WAV or .FLAC files are allowed.",
+  "detail": "Uploaded file must not be empty.",
   "instance": "/api/catalog/songs/10/track"
 }
 ```
+
+**Error Response (413 Payload Too Large):**
+_Returned when the track file exceeds 165 MB. The audio validator also applies the format-specific maximum size._
 
 ---
 
@@ -990,12 +1006,14 @@ _Returned when the album ID does not exist in the database._
 **Error Response (400 Bad Request):**
 _Returned when the file is missing, empty, corrupt, or not a supported image._
 
+An empty file returns the following detail:
+
 ```json
 {
   "type": "about:blank",
-  "title": "Invalid album cover",
+  "title": "Invalid upload file",
   "status": 400,
-  "detail": "Only valid JPEG, PNG, or WebP image files are supported.",
+  "detail": "Uploaded file must not be empty.",
   "instance": "/api/catalog/albums/10/cover"
 }
 ```

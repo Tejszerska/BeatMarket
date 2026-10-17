@@ -264,4 +264,11 @@ public interface SongApiDto {
             String previewUrl
     ) {
     }
+
+    @Schema(name = "SongTrackResponse")
+    record TrackResponse(
+            Long songId,
+            String message
+    ) {
+    }
 }

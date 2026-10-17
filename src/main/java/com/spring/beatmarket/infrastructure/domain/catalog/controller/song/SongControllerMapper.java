@@ -25,6 +25,8 @@ public interface SongControllerMapper {
 
     SongApiDto.PreviewResponse toPreviewResponse(SongDto.Preview previewDto);
 
+    SongApiDto.TrackResponse toTrackResponse(SongDto.Track trackDto);
+
     default SongApiDto.GetAllResponse toGetAllResponse(Slice<SongDto.Summary> slice) {
         return new SongApiDto.GetAllResponse(
                 toSummaryResponse(slice.getContent()),

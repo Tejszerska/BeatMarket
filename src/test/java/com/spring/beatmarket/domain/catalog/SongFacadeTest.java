@@ -9,11 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -35,7 +38,7 @@ class SongFacadeTest {
     private final AudioFileValidator audioFileValidator = new AudioFileValidator(fakeAudioInspector);
     private final ArtistRoleManager artistRoleManager = new ArtistRoleManager(roleValidator, artistRetriever);
 
-    private final SongMapper songMapper = new SongMapperImpl();
+    private final SongMapper songMapper = new SongMapperImpl(new FileStorageUrlMapper(fileStorageAdapter));
 
     private final SongFacade songFacade = SongFacadeTestConfiguration.createSongFacade(
             songRepository,
@@ -266,7 +269,7 @@ class SongFacadeTest {
         byte[] trackBytes = new byte[]{1, 2, 3, 4, 5, 6, 7, 8};
 
         // when
-        songFacade.addTrackFile(trackBytes, id);
+        executeInTransaction(() -> songFacade.addTrackFile(trackBytes, id));
 
         // then
         Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
@@ -286,13 +289,13 @@ class SongFacadeTest {
         Long id = addedSong.id();
         fakeAudioInspector.setDurationToReturn((double) addedSong.duration());
         fakeAudioInspector.setExtensionToReturn(AudioFileExtension.WAV);
-        songFacade.addTrackFile(new byte[]{1, 2, 3}, id);
+        executeInTransaction(() -> songFacade.addTrackFile(new byte[]{1, 2, 3}, id));
 
         Song songWithTrack = songRepository.findByIdAndActiveTrue(id).orElseThrow();
         String trackFileKey = (String) ReflectionTestUtils.getField(songWithTrack, "trackFileKey");
 
         fakeAudioInspector.setExtensionToReturn(AudioFileExtension.MP3);
-        songFacade.addPreviewFile(new byte[]{4, 5, 6}, id);
+        executeInTransaction(() -> songFacade.addPreviewFile(new byte[]{4, 5, 6}, id));
 
         Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
         String previewFileKey = (String) ReflectionTestUtils.getField(updatedSong, "previewFileKey");
@@ -315,7 +318,7 @@ class SongFacadeTest {
         fakeAudioInspector.setExtensionToReturn(AudioFileExtension.WAV);
 
         byte[] oldTrackBytes = new byte[]{1, 1, 1};
-        songFacade.addTrackFile(oldTrackBytes, id);
+        executeInTransaction(() -> songFacade.addTrackFile(oldTrackBytes, id));
 
         Song songAfterFirstUpload = songRepository.findByIdAndActiveTrue(id).orElseThrow();
         String oldFileKey = (String) ReflectionTestUtils.getField(songAfterFirstUpload, "trackFileKey");
@@ -325,7 +328,7 @@ class SongFacadeTest {
         byte[] newTrackBytes = new byte[]{2, 2, 2};
 
         // when
-        songFacade.addTrackFile(newTrackBytes, id);
+        executeInTransaction(() -> songFacade.addTrackFile(newTrackBytes, id));
 
         // then
         Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
@@ -346,7 +349,7 @@ class SongFacadeTest {
         fakeAudioInspector.setExtensionToReturn(AudioFileExtension.WAV);
 
         byte[] oldTrackBytes = new byte[]{1, 1, 1};
-        songFacade.addTrackFile(oldTrackBytes, id);
+        executeInTransaction(() -> songFacade.addTrackFile(oldTrackBytes, id));
 
         Song songAfterFirstUpload = songRepository.findByIdAndActiveTrue(id).orElseThrow();
         String oldFileKey = (String) ReflectionTestUtils.getField(songAfterFirstUpload, "trackFileKey");
@@ -358,7 +361,7 @@ class SongFacadeTest {
         Mockito.when(licensingFacade.hasAnyCurrentLicenses(oldFileKey)).thenReturn(true);
 
         // when
-        songFacade.addTrackFile(newTrackBytes, id);
+        executeInTransaction(() -> songFacade.addTrackFile(newTrackBytes, id));
 
         // then
         Song updatedSong = songRepository.findByIdAndActiveTrue(id).orElseThrow();
@@ -372,5 +375,26 @@ class SongFacadeTest {
     private SongDto.Info addSong(String title) {
         SongDto.Create createDto = TestObjectsFactory.createSongDto(title);
         return songFacade.addSong(createDto);
+    }
+
+    private <T> T executeInTransaction(final Supplier<T> action) {
+        TransactionSynchronizationManager.initSynchronization();
+        try {
+            T result = action.get();
+            for (TransactionSynchronization synchronization :
+                    TransactionSynchronizationManager.getSynchronizations()) {
+                synchronization.afterCommit();
+                synchronization.afterCompletion(TransactionSynchronization.STATUS_COMMITTED);
+            }
+            return result;
+        } catch (RuntimeException exception) {
+            for (TransactionSynchronization synchronization :
+                    TransactionSynchronizationManager.getSynchronizations()) {
+                synchronization.afterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK);
+            }
+            throw exception;
+        } finally {
+            TransactionSynchronizationManager.clearSynchronization();
+        }
     }
 }

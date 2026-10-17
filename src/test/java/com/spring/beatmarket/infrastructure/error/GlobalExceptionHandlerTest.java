@@ -3,6 +3,8 @@ package com.spring.beatmarket.infrastructure.error;
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
+import com.spring.beatmarket.infrastructure.upload.InvalidUploadFileException;
+import com.spring.beatmarket.infrastructure.upload.UploadFileTooBigException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,6 +96,32 @@ class GlobalExceptionHandlerTest {
 
         assertThat(problem.getStatus()).isEqualTo(HttpStatus.PAYLOAD_TOO_LARGE.value());
         assertThat(problem.getProperties()).containsEntry("maxSize", "165MB");
+    }
+
+    @Test
+    @DisplayName("Maps an invalid upload file to a bad-request problem detail")
+    void maps_invalid_upload_file_to_bad_request_problem_detail() {
+        ProblemDetail problem = handler.handleInvalidUploadFileException(
+                new InvalidUploadFileException("Unsupported format.")
+        );
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(problem.getTitle()).isEqualTo("Invalid upload file");
+        assertThat(problem.getDetail()).isEqualTo("Unsupported format.");
+    }
+
+    @Test
+    @DisplayName("Preserves upload size details in a payload-too-large problem")
+    void preserves_upload_size_details_in_payload_too_large_problem() {
+        ProblemDetail problem = handler.handleUploadFileTooBigException(
+                new UploadFileTooBigException(11, 10)
+        );
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.PAYLOAD_TOO_LARGE.value());
+        assertThat(problem.getProperties())
+                .containsEntry("fileSize", 11L)
+                .containsEntry("maxSize", 10L)
+                .containsEntry("sizeUnit", "bytes");
     }
 
     @Test

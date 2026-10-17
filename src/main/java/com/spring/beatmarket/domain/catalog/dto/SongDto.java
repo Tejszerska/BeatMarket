@@ -100,4 +100,7 @@ public interface SongDto {
             String previewUrl
     ) {
     }
+
+    record Track(Long songId, String message) {
+    }
 }

@@ -1,15 +1,11 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
-import com.spring.beatmarket.domain.licensing.LicensingFacade;
-import com.spring.beatmarket.shared.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-@Log4j2
 @RequiredArgsConstructor
 @Service
 class SongUpdater {
@@ -20,9 +16,6 @@ class SongUpdater {
 
     private final SongMapper songMapper;
     private final ArtistRoleManager artistRoleManager;
-    private final FileStoragePort fileStoragePort;
-    private final AudioFileValidator fileValidator;
-    private final LicensingFacade licensingFacade;
 
 
     SongDto.Info update(final Long id, final SongDto.Update dto) {
@@ -70,49 +63,4 @@ class SongUpdater {
         return songRepository.bulkUpdateGenre(oldId, newId, Instant.now());
     }
 
-    void updateTrackFile(final byte[] trackBytes, final Long id) {
-        Song song = songRetriever.getLazily(id);
-        AudioFileExtension extension = fileValidator.validateFullTrack(trackBytes, song.getDuration());
-
-        String initTrackFileKey = song.getTrackFileKey();
-        if (initTrackFileKey != null && !initTrackFileKey.isBlank()) {
-            if (!licensingFacade.hasAnyCurrentLicenses(initTrackFileKey)) {
-                fileStoragePort.delete(initTrackFileKey);
-            }
-        }
-
-        String timestamp = String.valueOf(Instant.now().toEpochMilli());
-        String fileKey = "tracks/" + StringUtils.createSlug(song.getTitle()) +
-                "-"
-                + timestamp
-                + "." + extension.toString();
-
-        fileStoragePort.upload(trackBytes, fileKey);
-        log.info("Successfully uploaded full track file for song id={}", song.getId());
-
-        song.changeTrackFileKey(fileKey);
-    }
-
-    SongDto.Preview updatePreviewFile(final byte[] bytes, final Long id) {
-        Song song = songRetriever.getLazily(id);
-        AudioFileExtension extension = fileValidator.validatePreviewTrack(bytes, song.getDuration());
-
-        String initPreviewKey = song.getPreviewFileKey();
-        if (initPreviewKey != null && !initPreviewKey.isBlank()) {
-            fileStoragePort.delete(initPreviewKey);
-        }
-        String timestamp = String.valueOf(Instant.now().toEpochMilli()).substring(8);
-        String fileKey = "previews/" + StringUtils.createSlug(song.getTitle()) +
-                "-"
-                + timestamp
-                + "." + extension.toString();
-
-        fileStoragePort.upload(bytes, fileKey);
-        log.info("Successfully uploaded preview track file for song id={}", song.getId());
-
-        song.changePreviewFileKey(fileKey);
-
-        return new SongDto.Preview(song.getId(), "https://beatmarket1.s3.eu-north-1.amazonaws.com/" + fileKey);
-    }
 }
-

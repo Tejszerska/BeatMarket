@@ -16,18 +16,24 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 @Mapper(componentModel = "spring",
-        uses = {GenreMapper.class},
+        uses = {GenreMapper.class, FileStorageUrlMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface SongMapper {
 
     @Mapping(source = "songPricesDto", target = "pricing")
+    @Mapping(source = "song.previewFileKey", target = "previewUrl", qualifiedByName = "fileStorageUrl")
     SongDto.Summary toSummaryDto(Song song, List<SongPriceDto> songPricesDto);
 
     @Mapping(source = "songPricesDto", target = "pricing")
+    @Mapping(source = "song.previewFileKey", target = "previewUrl", qualifiedByName = "fileStorageUrl")
     SongDto.Details toDetailsDto(Song song, List<SongPriceDto> songPricesDto);
 
     SongDto.Info toInfoDto(Song song);
+
+    @Mapping(target = "coverUrl", source = "album.coverFileKey", qualifiedByName = "fileStorageUrl")
+    @Mapping(target = "artists", source = "artists")
+    AlbumDto.Summary toAlbumSummaryDto(Album album, List<ArtistDto.Reference> artists);
 
     default Map<String, SongDto.Price> mapPricing(List<SongPriceDto> songPriceDtos) {
         if (songPriceDtos == null || songPriceDtos.isEmpty()) return Collections.emptyMap();
@@ -38,15 +44,11 @@ interface SongMapper {
         return mappedPricing;
     }
 
-    default SongDto.Reference toActiveReferenceDto(Song song) {
-        if (song == null || !song.isActive()) return null;
-        return new SongDto.Reference(song.getId(), song.getTitle());
-    }
 
     default AlbumDto.Summary toActiveAlbumSummary(Album album) {
         if (album == null || !album.isActive()) return null;
         List<ArtistDto.Reference> artists = toActiveArtistReferenceList(album.getArtists());
-        return new AlbumDto.Summary(album.getId(), album.getTitle(), album.getCoverFileKey(), artists);
+        return toAlbumSummaryDto(album, artists);
     }
 
     default AlbumDto.Reference toActiveAlbumReference(Album album) {

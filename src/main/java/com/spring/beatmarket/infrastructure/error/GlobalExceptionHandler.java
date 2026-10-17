@@ -9,8 +9,9 @@ import com.spring.beatmarket.domain.catalog.exception.InvalidAlbumCoverException
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.SongDurationMismatchException;
 import com.spring.beatmarket.domain.catalog.exception.UnreadableAudioFileException;
-import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidFileFormatException;
 import com.spring.beatmarket.infrastructure.domain.catalog.controller.song.InvalidSearchCriteriaException;
+import com.spring.beatmarket.infrastructure.upload.InvalidUploadFileException;
+import com.spring.beatmarket.infrastructure.upload.UploadFileTooBigException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -131,15 +132,25 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(AudioFileTooBigException.class)
     ProblemDetail handleAudioFileTooBigException(final AudioFileTooBigException ex) {
-        ProblemDetail detail = problem(HttpStatus.BAD_REQUEST, "Audio file too large", ex.getMessage());
+        ProblemDetail detail = problem(HttpStatus.PAYLOAD_TOO_LARGE, "Audio file too large", ex.getMessage());
         detail.setProperty("fileSize", ex.getFileSize());
         detail.setProperty("maxSize", ex.getMaxSize());
         return detail;
     }
 
-    @ExceptionHandler(InvalidFileFormatException.class)
-    ProblemDetail handleInvalidFileFormatException(InvalidFileFormatException ex) {
-        return problem(HttpStatus.BAD_REQUEST, "Invalid file format", ex.getMessage());
+    @ExceptionHandler(InvalidUploadFileException.class)
+    ProblemDetail handleInvalidUploadFileException(InvalidUploadFileException ex) {
+        log.warn("Invalid upload file: {}", ex.getMessage());
+        return problem(HttpStatus.BAD_REQUEST, "Invalid upload file", ex.getMessage());
+    }
+
+    @ExceptionHandler(UploadFileTooBigException.class)
+    ProblemDetail handleUploadFileTooBigException(UploadFileTooBigException ex) {
+        ProblemDetail detail = problem(HttpStatus.PAYLOAD_TOO_LARGE, "Upload file too large", ex.getMessage());
+        detail.setProperty("fileSize", ex.getFileSize());
+        detail.setProperty("maxSize", ex.getMaxSize());
+        detail.setProperty("sizeUnit", "bytes");
+        return detail;
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

@@ -15,11 +15,13 @@ class SongFacadeImpl implements SongFacade {
     private final SongRetriever songRetriever;
     private final SongDeleter songDeleter;
     private final SongUpdater songUpdater;
+    private final SongFilesUpdater songFilesUpdater;
 
     public Slice<SongDto.Summary> searchSongs(SongDto.SearchCriteria searchCriteria, Pageable pageable) {
-        return songRetriever.findAll(searchCriteria, pageable);    }
+        return songRetriever.findAll(searchCriteria, pageable);
+    }
 
-    public SongDto.Details  getSongDetails(Long id) {
+    public SongDto.Details getSongDetails(Long id) {
         return songRetriever.getDetails(id);
     }
 
@@ -27,15 +29,17 @@ class SongFacadeImpl implements SongFacade {
         return songAdder.add(dto);
     }
 
-    public void addTrackFile(final byte[] trackBytes, final Long id) {
-        songUpdater.updateTrackFile(trackBytes, id);
+    public SongDto.Track addTrackFile(final byte[] trackBytes, final Long id) {
+        return songFilesUpdater.updateTrackFile(trackBytes, id);
     }
-    public SongDto.Preview addPreviewFile(byte[] bytes, Long id){
-       return songUpdater.updatePreviewFile(bytes, id);
+
+    public SongDto.Preview addPreviewFile(byte[] bytes, Long id) {
+        return songFilesUpdater.updatePreviewFile(bytes, id);
     }
 
     public SongDto.Info updateSong(Long id, SongDto.Update songFromRequest) {
-        return songUpdater.update(id, songFromRequest);    }
+        return songUpdater.update(id, songFromRequest);
+    }
 
     public void deactivateSong(Long id) {
         songDeleter.deactivate(id);
