@@ -1,8 +1,8 @@
 package com.spring.beatmarket.infrastructure.image;
 
-import com.spring.beatmarket.domain.catalog.AlbumCoverImageProcessorPort;
-import com.spring.beatmarket.domain.catalog.exception.AlbumCoverFileTooBigException;
-import com.spring.beatmarket.domain.catalog.exception.InvalidAlbumCoverException;
+import com.spring.beatmarket.domain.catalog.ImageProcessorPort;
+import com.spring.beatmarket.domain.catalog.exception.ImageFileTooBigException;
+import com.spring.beatmarket.domain.catalog.exception.InvalidImageException;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.IIOImage;
@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 @Service
-class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
+class ImageProcessorAdapter implements ImageProcessorPort {
     private static final int OUTPUT_SIZE = 150;
     private static final long MAX_PIXEL_COUNT = 40_000_000;
     private static final float WEBP_QUALITY = 0.8f;
@@ -30,10 +30,10 @@ class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
     @Override
     public byte[] process(final byte[] imageBytes) {
         if (imageBytes == null || imageBytes.length == 0) {
-            throw new InvalidAlbumCoverException("Uploaded file must not be empty.");
+            throw new InvalidImageException("Uploaded file must not be empty.");
         }
         if (imageBytes.length > MAX_FILE_SIZE_BYTES) {
-            throw new AlbumCoverFileTooBigException(imageBytes.length, MAX_FILE_SIZE_BYTES);
+            throw new ImageFileTooBigException(imageBytes.length, MAX_FILE_SIZE_BYTES);
         }
 
         BufferedImage decodedImage = decode(imageBytes);
@@ -55,7 +55,7 @@ class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
             ImageReader reader = readers.next();
             try {
                 String format = reader.getFormatName().toLowerCase(Locale.ROOT);
-                if (!AlbumCoverImageFormats.SUPPORTED_FORMATS.contains(format)) {
+                if (!ImageFormats.SUPPORTED_FORMATS.contains(format)) {
                     throw invalidImage();
                 }
 
@@ -66,7 +66,7 @@ class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
                     throw invalidImage();
                 }
                 if ((long) width * height > MAX_PIXEL_COUNT) {
-                    throw new InvalidAlbumCoverException("Image dimensions cannot exceed 40 megapixels.");
+                    throw new InvalidImageException("Image dimensions cannot exceed 40 megapixels.");
                 }
 
                 BufferedImage image = reader.read(0);
@@ -138,13 +138,13 @@ class AlbumCoverImageProcessorAdapter implements AlbumCoverImageProcessorPort {
             output.flush();
             return bytes.toByteArray();
         } catch (IOException exception) {
-            throw new IllegalStateException("Unable to encode the album cover as WebP.", exception);
+            throw new IllegalStateException("Unable to encode the image as WebP.", exception);
         } finally {
             writer.dispose();
         }
     }
 
-    private InvalidAlbumCoverException invalidImage() {
-        return new InvalidAlbumCoverException("Only valid JPEG, PNG, or WebP image files are supported.");
+    private InvalidImageException invalidImage() {
+        return new InvalidImageException("Only valid JPEG, PNG, or WebP image files are supported.");
     }
 }

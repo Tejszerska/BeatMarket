@@ -160,7 +160,7 @@ class AlbumTest {
         String newUrl = "https://example.com/cover.jpg";
 
         //when
-        album.changeCoverUrl(newUrl);
+        album.changeCoverFileKey(newUrl);
 
         //then
         assertThat(album.getCoverFileKey()).isEqualTo(newUrl);
@@ -173,7 +173,7 @@ class AlbumTest {
         Album album = Album.builder().title("Title").coverFileKey("url").build();
 
         //when
-        album.changeCoverUrl(null);
+        album.changeCoverFileKey(null);
 
         //then
         assertThat(album.getCoverFileKey()).isNull();

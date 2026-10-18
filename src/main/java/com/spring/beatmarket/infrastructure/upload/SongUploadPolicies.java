@@ -1,16 +1,14 @@
-package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
-
-import com.spring.beatmarket.infrastructure.upload.UploadFilePolicy;
+package com.spring.beatmarket.infrastructure.upload;
 
 import java.util.Set;
 
-final class SongUploadPolicies {
-    static final UploadFilePolicy FULL_TRACK = new UploadFilePolicy(
+public final class SongUploadPolicies {
+    public static final UploadFilePolicy FULL_TRACK = new UploadFilePolicy(
             Set.of(".wav", ".flac"),
             165L * 1024 * 1024,
             "Invalid file format. Only audio/wav (WAV) and audio/flac (FLAC) are supported."
     );
-    static final UploadFilePolicy PREVIEW = new UploadFilePolicy(
+    public static final UploadFilePolicy PREVIEW = new UploadFilePolicy(
             Set.of(".mp3", ".aac"),
             40L * 1024 * 1024,
             "Invalid file format. Only audio/mpeg (MP3) and audio/aac (AAC) are supported."

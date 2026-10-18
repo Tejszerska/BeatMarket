@@ -68,8 +68,8 @@ class Artist extends BaseEntity {
         this.name = newName.trim();
     }
 
-    void changeImageUrl(String newImageUrl) {
-        this.imageFileKey = newImageUrl;
+    void changeImageFileKey(String newImageFileKey) {
+        this.imageFileKey = newImageFileKey;
     }
 
     /**

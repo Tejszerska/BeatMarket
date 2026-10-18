@@ -89,6 +89,8 @@ public interface ArtistApiDto {
             Long id,
             @Schema(description = "Official name or pseudonym of the artist", example = "Linkin Park")
             String name,
+            @Schema(description = "URL to the artist's profile image", example = "https://s3.aws.com/your-bucket/artists/linkin-park.webp")
+            String imageUrl,
             @Schema(description = "List of songs associated with the artist")
             List<SongApiDto.Reference> songs,
             @Schema(description = "List of albums associated with the artist")
@@ -124,6 +126,17 @@ public interface ArtistApiDto {
             List<SummaryResponse> artists,
             @Schema(description = "Indicates if there is a next page of artists available", example = "true")
             boolean hasNext
+    ) {
+    }
+
+    @Schema(name = "ArtistImageResponse")
+    record ImageResponse(
+            @Schema(description = "Unique ID of the artist", example = "10")
+            Long id,
+            @Schema(description = "Upload result message", example = "Artist image uploaded successfully")
+            String message,
+            @Schema(description = "Public URL of the uploaded artist image", example = "https://s3.aws.com/your-bucket/artists/linkin-park.webp")
+            String imageUrl
     ) {
     }
 }

@@ -40,7 +40,7 @@ class AlbumFacadeTest {
     private final ArtistRoleManager artistRoleManager = new ArtistRoleManager(roleValidator, artistRetriever);
     private final InMemoryFileStorageAdapter fileStoragePort = new InMemoryFileStorageAdapter();
     private final AlbumMapper albumMapper = new AlbumMapperImpl(new FileStorageUrlMapper(fileStoragePort));
-    private final AlbumCoverImageProcessorPort imageProcessor = mock(AlbumCoverImageProcessorPort.class);
+    private final ImageProcessorPort imageProcessor = mock(ImageProcessorPort.class);
 
     private final AlbumFacade albumFacade = AlbumFacadeTestConfiguration.createAlbumFacade(
             albumMapper,

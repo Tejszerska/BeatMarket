@@ -33,12 +33,15 @@ class ArtistFacadeTest {
     private final AlbumRetriever albumRetriever = mock(AlbumRetriever.class);
     private final SongDeleter songDeleter = mock(SongDeleter.class);
     private final AlbumDeleter albumDeleter = mock(AlbumDeleter.class);
+    private final InMemoryFileStorageAdapter fileStoragePort = new InMemoryFileStorageAdapter();
+    private final ImageProcessorPort imageProcessor = mock(ImageProcessorPort.class);
 
-    private final ArtistMapper artistMapper = new ArtistMapperImpl();
+    private final ArtistMapper artistMapper = new ArtistMapperImpl(new FileStorageUrlMapper(fileStoragePort));
     private final RoleValidator roleValidator = new RoleValidator();
 
     private final ArtistFacade artistFacade = ArtistFacadeTestConfiguration.createArtistFacade
-                                            (artistRepository, albumRetriever, songRetriever, roleValidator, artistMapper, songDeleter, albumDeleter);
+                                            (artistRepository, albumRetriever, songRetriever, roleValidator, artistMapper,
+                                                    songDeleter, albumDeleter, imageProcessor, fileStoragePort);
 
     @Test
     @DisplayName("Should return slice with all artists when no filtering present")

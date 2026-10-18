@@ -1,6 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.ArtistDto;
+import com.spring.beatmarket.domain.catalog.dto.ImageDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ class ArtistFacadeImpl implements ArtistFacade {
     private final ArtistRetriever artistRetriever;
     private final ArtistDeleter artistDeleter;
     private final ArtistUpdater artistUpdater;
+    private final ArtistImageUpdater artistImageUpdater;
 
     public Slice<ArtistDto.Summary> findAllArtists(String name, Pageable pageable) {
         return artistRetriever.findAll(name, pageable);
@@ -31,6 +33,10 @@ class ArtistFacadeImpl implements ArtistFacade {
 
     public ArtistDto.Info updateArtist(Long artistId, ArtistDto.Update dto) {
         return artistUpdater.update(artistId, dto);
+    }
+
+    public ImageDto.Upload updateArtistImage(Long artistId, byte[] imageBytes) {
+        return artistImageUpdater.update(artistId, imageBytes);
     }
 
     public void deactivateArtist(final Long artistId) {

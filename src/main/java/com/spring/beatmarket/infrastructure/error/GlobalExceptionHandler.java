@@ -1,11 +1,11 @@
 package com.spring.beatmarket.infrastructure.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.spring.beatmarket.domain.catalog.exception.AlbumCoverFileTooBigException;
 import com.spring.beatmarket.domain.catalog.exception.AudioFileTooBigException;
 import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
-import com.spring.beatmarket.domain.catalog.exception.InvalidAlbumCoverException;
+import com.spring.beatmarket.domain.catalog.exception.ImageFileTooBigException;
+import com.spring.beatmarket.domain.catalog.exception.InvalidImageException;
 import com.spring.beatmarket.domain.catalog.exception.ResourceNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.SongDurationMismatchException;
 import com.spring.beatmarket.domain.catalog.exception.UnreadableAudioFileException;
@@ -99,11 +99,11 @@ class GlobalExceptionHandler {
         return detail;
     }
 
-    @ExceptionHandler(AlbumCoverFileTooBigException.class)
-    ProblemDetail handleAlbumCoverTooBigException(AlbumCoverFileTooBigException exception) {
+    @ExceptionHandler(ImageFileTooBigException.class)
+    ProblemDetail handleImageTooBigException(ImageFileTooBigException exception) {
         ProblemDetail detail = problem(
                 HttpStatus.PAYLOAD_TOO_LARGE,
-                "Album cover too large",
+                "Image too large",
                 exception.getMessage()
         );
         detail.setProperty("fileSize", exception.getFileSize());
@@ -111,10 +111,10 @@ class GlobalExceptionHandler {
         return detail;
     }
 
-    @ExceptionHandler(InvalidAlbumCoverException.class)
-    ProblemDetail handleInvalidAlbumCoverException(InvalidAlbumCoverException exception) {
-        log.warn("Invalid album cover: {}", exception.getMessage());
-        return problem(HttpStatus.BAD_REQUEST, "Invalid album cover", exception.getMessage());
+    @ExceptionHandler(InvalidImageException.class)
+    ProblemDetail handleInvalidImageException(InvalidImageException exception) {
+        log.warn("Invalid image: {}", exception.getMessage());
+        return problem(HttpStatus.BAD_REQUEST, "Invalid image", exception.getMessage());
     }
 
     @ExceptionHandler(UnreadableAudioFileException.class)

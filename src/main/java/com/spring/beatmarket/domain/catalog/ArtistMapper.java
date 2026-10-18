@@ -10,43 +10,26 @@ import org.mapstruct.Mapping;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 @Mapper(componentModel = "spring",
+        uses = FileStorageUrlMapper.class,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 interface ArtistMapper {
 
+    @Mapping(source = "imageFileKey", target = "imageUrl", qualifiedByName = "fileStorageUrl")
     ArtistDto.Summary toSummaryDto(Artist artist);
 
+    @Mapping(source = "imageFileKey", target = "imageUrl", qualifiedByName = "fileStorageUrl")
     ArtistDto.Details toDetailsDto(Artist artist);
 
+    @Mapping(source = "imageFileKey", target = "imageUrl", qualifiedByName = "fileStorageUrl")
     ArtistDto.Info toInfoDto(Artist artist);
 
+    @Mapping(source = "artist.imageFileKey", target = "imageUrl", qualifiedByName = "fileStorageUrl")
     @Mapping(target = "displayOrder", source = "orderIndex")
     ArtistDto.Basic toBasicDto(Artist artist, Integer orderIndex);
 
-    default ArtistDto.Reference toReferenceDto(Artist artist) {
-        if (artist == null || !artist.isActive()) return null;
-        return new ArtistDto.Reference(artist.getId(), artist.getName());
-    }
-
-    default List<ArtistDto.Basic> toBasicList(List<Artist> artists) {
-        if (artists == null) return Collections.emptyList();
-        return IntStream.range(0, artists.size())
-                .filter(i -> artists.get(i).isActive())
-                .mapToObj(i -> toBasicDto(artists.get(i), i))
-                .toList();
-    }
-
-    default List<ArtistDto.Reference> toReferenceList(List<Artist> artists) {
-        if (artists == null) return Collections.emptyList();
-        return artists.stream()
-                .filter(Artist::isActive)
-                .map(this::toReferenceDto)
-                .toList();
-    }
-
-    default List<AlbumDto.Reference> toActiveAlbumReferenceList(List<Album> albums) {
+    default List<AlbumDto.Reference> toActiveAlbumReferenceList(Set<Album> albums) {
         if (albums == null) return Collections.emptyList();
         return albums.stream()
                 .filter(Album::isActive)

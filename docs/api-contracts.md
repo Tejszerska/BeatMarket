@@ -1176,6 +1176,7 @@ Adds a new artist to the system.
 {
   "id": 10,
   "name": "Mr. Nimbus",
+  "imageUrl": null,
   "songs": [
     {
       "id": 2,
@@ -1212,9 +1213,9 @@ _Invalid input data_
 
 #### POST /api/catalog/artists/{id}/image
 
-Uploads artist's image (image file) and links the resulting resource file key to the specified artist. If an image is
-already linked, the existing file is permanently deleted from the server and the file key is overwritten with the new
-one.
+Uploads a JPEG, PNG, or WebP image up to 10 MB and 40 megapixels. The server validates the image contents, center-crops
+it to a square, resizes it to 150×150 pixels, converts it to WebP at approximately 80% quality, and stores it in S3. If
+an image is already linked, the previous file is deleted only after the new image is committed.
 
 **Parameters:**
 
@@ -1226,15 +1227,16 @@ one.
 
 **Request Body (Form-Data):**
 
-- `file` (file/binary, required) _The image file (e.g. JPG, PNG) to be uploaded._
+- `file` (file/binary, required) _JPEG, PNG, or WebP image; maximum size 10 MB._
 
 **Response (200 OK):**
 _Returns the URL of the uploaded resource._
 
 ```json
 {
+  "id": 10,
   "message": "Artist image uploaded successfully",
-  "imageUrl": "https://s3.aws.com/your-bucket/artists/mr-nimbus.png"
+  "imageUrl": "https://s3.aws.com/your-bucket/artists/mr-nimbus.webp"
 }
 ```
 
@@ -1252,17 +1254,25 @@ _Returned when the artist ID does not exist in the database._
 ```
 
 **Error Response (400 Bad Request):**
-_Returned when the file is missing, empty, or of an unsupported format._
+_Returned when the file is empty, its extension is unsupported, or its contents are not a supported image._
 
 ```json
 {
   "type": "about:blank",
-  "title": "Invalid file format",
+  "title": "Invalid upload file",
   "status": 400,
-  "detail": "Invalid image file format.",
+  "detail": "Invalid file format. Only JPG, JPEG, PNG, and WebP files are allowed.",
   "instance": "/api/catalog/artists/10/image"
 }
 ```
+
+Invalid image contents return title `Invalid image` and detail
+`Only valid JPEG, PNG, or WebP image files are supported.` Images larger than 40 megapixels return title `Invalid image`
+and detail `Image dimensions cannot exceed 40 megapixels.` An empty file returns title `Invalid upload file` and detail
+`Uploaded file must not be empty.`
+
+**Error Response (413 Payload Too Large):**
+_Returned when the image exceeds 10 MB._
 
 ---
 
@@ -1301,6 +1311,7 @@ in the request body will be modified.
 {
   "id": 10,
   "name": "Nr. Mimbus",
+  "imageUrl": null,
   "songs": [
     {
       "id": 2,

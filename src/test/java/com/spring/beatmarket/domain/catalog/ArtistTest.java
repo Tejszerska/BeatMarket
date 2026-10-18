@@ -128,7 +128,7 @@ class ArtistTest {
         String newUrl = "http://example.com/new.jpg";
 
         // when
-        artist.changeImageUrl(newUrl);
+        artist.changeImageFileKey(newUrl);
 
         // then
         assertThat(artist.getImageFileKey()).isEqualTo(newUrl);
@@ -139,10 +139,10 @@ class ArtistTest {
     void should_allow_changing_image_url_to_null() {
         // given
         Artist artist = new Artist("Artist Name");
-        artist.changeImageUrl("http://example.com/old.jpg");
+        artist.changeImageFileKey("http://example.com/old.jpg");
 
         // when
-        artist.changeImageUrl(null);
+        artist.changeImageFileKey(null);
 
         // then
         assertThat(artist.getImageFileKey()).isNull();

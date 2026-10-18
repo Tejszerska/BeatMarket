@@ -42,6 +42,7 @@ public interface ArtistDto {
     record Info(
             Long id,
             String name,
+            String imageUrl,
             List<SongDto.Reference> songs,
             List<AlbumDto.Reference> albums
 

@@ -53,6 +53,11 @@ class ArtistRetriever {
         return foundArtists;
     }
 
+    Artist getActive(final Long artistId) {
+        return artistRepository.findByIdAndActiveTrue(artistId)
+                .orElseThrow(() -> new ResourceNotFoundException("Artist", artistId));
+    }
+
 
     // Two-step querying prevents Cartesian product in the database
     // when fetching multiple collections (songs and albums) simultaneously.

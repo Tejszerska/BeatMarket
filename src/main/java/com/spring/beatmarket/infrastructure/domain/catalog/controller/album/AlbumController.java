@@ -2,6 +2,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.album;
 
 import com.spring.beatmarket.domain.catalog.AlbumFacade;
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
+import com.spring.beatmarket.infrastructure.upload.ImageUploadPolicies;
 import com.spring.beatmarket.infrastructure.upload.UploadFileValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -98,7 +99,7 @@ class AlbumController {
     ResponseEntity<AlbumApiDto.CoverResponse> uploadAlbumCover(
             @PathVariable Long id,
             @RequestPart("file") MultipartFile file) throws IOException {
-        uploadFileValidator.validate(file, AlbumUploadPolicies.COVER);
+        uploadFileValidator.validate(file, ImageUploadPolicies.ALBUM_COVER);
 
         AlbumDto.Cover cover = facade.updateAlbumCover(id, file.getBytes());
         return ResponseEntity.ok(mapper.toCoverResponse(cover));

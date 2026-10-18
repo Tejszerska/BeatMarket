@@ -2,6 +2,7 @@ package com.spring.beatmarket.infrastructure.domain.catalog.controller.song;
 
 import com.spring.beatmarket.domain.catalog.SongFacade;
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
+import com.spring.beatmarket.infrastructure.upload.SongUploadPolicies;
 import com.spring.beatmarket.infrastructure.upload.UploadFileValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

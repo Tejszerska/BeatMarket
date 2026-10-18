@@ -20,7 +20,8 @@ class SongFacadeTestConfiguration {
                 songRetriever,
                 audioFileValidator,
                 fileStoragePort,
-                licensingFacade
+                licensingFacade,
+                new FileKeyGenerator()
         );
         SongDeleter songDeleter = new SongDeleter(songRepository, songRetriever, licensingFacade);
         return new SongFacadeImpl(songAdder, songRetriever, songDeleter, songUpdater, songFilesUpdater);

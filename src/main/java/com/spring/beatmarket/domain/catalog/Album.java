@@ -90,8 +90,8 @@ class Album extends BaseEntity {
         this.releaseDate = newReleaseDate;
     }
 
-    void changeCoverUrl(String newCoverUrl) {
-        this.coverFileKey = newCoverUrl;
+    void changeCoverFileKey(String newCoverFileKey) {
+        this.coverFileKey = newCoverFileKey;
     }
     // Business validation (e.g., enforcing main vs. featured artist constraints)
     // is delegated to the ArtistRoleManager. This method solely handles persistence sync.

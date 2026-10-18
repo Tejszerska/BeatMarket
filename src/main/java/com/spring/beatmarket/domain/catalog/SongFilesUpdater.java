@@ -2,15 +2,12 @@ package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.SongDto;
 import com.spring.beatmarket.domain.licensing.LicensingFacade;
-import com.spring.beatmarket.shared.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.time.Instant;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -20,13 +17,14 @@ class SongFilesUpdater {
     private final AudioFileValidator fileValidator;
     private final FileStoragePort fileStoragePort;
     private final LicensingFacade licensingFacade;
+    private final FileKeyGenerator fileKeyGenerator;
 
     SongDto.Track updateTrackFile(final byte[] trackBytes, final Long songId) {
         Song song = songRetriever.getLazily(songId);
         AudioFileExtension extension = fileValidator.validateFullTrack(trackBytes, song.getDuration());
         String previousFileKey = song.getTrackFileKey();
         boolean previousFileHasActiveLicenses = hasActiveLicenses(previousFileKey);
-        String newFileKey = createFileKey("tracks", song.getTitle(), extension);
+        String newFileKey = fileKeyGenerator.generate("tracks", song.getTitle(), extension.toString());
 
         ensureTransactionSynchronizationActive();
         fileStoragePort.upload(trackBytes, newFileKey, extension.contentType());
@@ -45,7 +43,7 @@ class SongFilesUpdater {
         Song song = songRetriever.getLazily(songId);
         AudioFileExtension extension = fileValidator.validatePreviewTrack(previewBytes, song.getDuration());
         String previousFileKey = song.getPreviewFileKey();
-        String newFileKey = createFileKey("previews", song.getTitle(), extension);
+        String newFileKey = fileKeyGenerator.generate("previews", song.getTitle(), extension.toString());
 
         ensureTransactionSynchronizationActive();
         fileStoragePort.upload(previewBytes, newFileKey, extension.contentType());
@@ -54,16 +52,6 @@ class SongFilesUpdater {
         log.info("Successfully uploaded preview track file for song id={}", song.getId());
 
         return new SongDto.Preview(song.getId(), fileStoragePort.urlFor(newFileKey));
-    }
-
-    private String createFileKey(
-            final String directory,
-            final String songTitle,
-            final AudioFileExtension extension) {
-        String timestamp = String.valueOf(Instant.now().toEpochMilli());
-        String uniqueSuffix = UUID.randomUUID().toString().substring(0, 8);
-        return directory + "/" + StringUtils.createSlug(songTitle) +
-                "-" + timestamp + "-" + uniqueSuffix + "." + extension;
     }
 
     private boolean hasActiveLicenses(final String fileKey) {

@@ -1,7 +1,7 @@
 package com.spring.beatmarket.domain.catalog;
 
 import com.spring.beatmarket.domain.catalog.dto.AlbumDto;
-import com.spring.beatmarket.domain.catalog.exception.InvalidAlbumCoverException;
+import com.spring.beatmarket.domain.catalog.exception.InvalidImageException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,12 +21,13 @@ import static org.mockito.Mockito.when;
 
 class AlbumCoverUpdaterTest {
     private final AlbumRetriever albumRetriever = mock(AlbumRetriever.class);
-    private final AlbumCoverImageProcessorPort imageProcessor = mock(AlbumCoverImageProcessorPort.class);
+    private final ImageProcessorPort imageProcessor = mock(ImageProcessorPort.class);
     private final FileStoragePort fileStoragePort = mock(FileStoragePort.class);
+    private final ImageUploader imageUploader = new ImageUploader(imageProcessor, fileStoragePort);
     private final AlbumCoverUpdater albumCoverUpdater = new AlbumCoverUpdater(
             albumRetriever,
-            imageProcessor,
-            fileStoragePort
+            new FileKeyGenerator(),
+            imageUploader
     );
 
     @AfterEach
@@ -37,14 +38,14 @@ class AlbumCoverUpdaterTest {
     }
 
     @Test
-    @DisplayName("Should upload the processed cover and remove the previous cover after commit")
+    @DisplayName("Uploads the processed cover and removes the previous cover after commit")
     void should_upload_processed_cover_and_remove_previous_after_commit() {
         // given
         TransactionSynchronizationManager.initSynchronization();
         byte[] originalImage = {1, 2, 3};
         byte[] processedImage = {4, 5, 6};
         Album album = TestObjectsFactory.createAlbumWithId(42L, "Album");
-        album.changeCoverUrl("covers/old-cover.webp");
+        album.changeCoverFileKey("covers/old-cover.webp");
         AlbumDto.Cover expectedCover = new AlbumDto.Cover(42L, "Cover uploaded successfully", "cover-url");
         when(albumRetriever.getActive(42L)).thenReturn(album);
         when(imageProcessor.process(originalImage)).thenReturn(processedImage);
@@ -55,7 +56,7 @@ class AlbumCoverUpdaterTest {
 
         // then
         assertThat(result).isEqualTo(expectedCover);
-        assertThat(album.getCoverFileKey()).matches("covers/album-\\d{5}\\.webp");
+        assertThat(album.getCoverFileKey()).matches("covers/album-\\d{5}-[a-f0-9]{8}\\.webp");
         verify(fileStoragePort).upload(processedImage, album.getCoverFileKey(), "image/webp");
         verify(fileStoragePort).urlFor(album.getCoverFileKey());
         verify(albumRetriever).getActive(42L);
@@ -69,14 +70,14 @@ class AlbumCoverUpdaterTest {
     }
 
     @Test
-    @DisplayName("Should remove the new cover and preserve the previous cover after rollback")
+    @DisplayName("Removes the new cover and preserves the previous cover after rollback")
     void should_remove_new_cover_after_rollback() {
         // given
         TransactionSynchronizationManager.initSynchronization();
         byte[] originalImage = {1};
         byte[] processedImage = {2};
         Album album = TestObjectsFactory.createAlbumWithId(42L, "Album");
-        album.changeCoverUrl("covers/old-cover.webp");
+        album.changeCoverFileKey("covers/old-cover.webp");
         when(albumRetriever.getActive(42L)).thenReturn(album);
         when(imageProcessor.process(originalImage)).thenReturn(processedImage);
         when(fileStoragePort.urlFor(anyString())).thenReturn("cover-url");
@@ -95,34 +96,34 @@ class AlbumCoverUpdaterTest {
     }
 
     @Test
-    @DisplayName("Should preserve the current cover when image processing fails")
+    @DisplayName("Preserves the current cover when image processing fails")
     void should_preserve_current_cover_when_processing_fails() {
         // given
         TransactionSynchronizationManager.initSynchronization();
         byte[] invalidImage = {1};
         Album album = TestObjectsFactory.createAlbumWithId(42L, "Album");
-        album.changeCoverUrl("covers/old-cover.webp");
+        album.changeCoverFileKey("covers/old-cover.webp");
         when(albumRetriever.getActive(42L)).thenReturn(album);
         when(imageProcessor.process(invalidImage)).thenThrow(
-                new InvalidAlbumCoverException("Invalid image.")
+                new InvalidImageException("Invalid image.")
         );
 
         // when & then
         assertThatThrownBy(() -> albumCoverUpdater.update(42L, invalidImage))
-                .isInstanceOf(InvalidAlbumCoverException.class);
+                .isInstanceOf(InvalidImageException.class);
         assertThat(album.getCoverFileKey()).isEqualTo("covers/old-cover.webp");
         verify(fileStoragePort, never()).upload(any(byte[].class), anyString(), anyString());
     }
 
     @Test
-    @DisplayName("Should preserve the current cover when S3 upload fails")
+    @DisplayName("Preserves the current cover when S3 upload fails")
     void should_preserve_current_cover_when_s3_upload_fails() {
         // given
         TransactionSynchronizationManager.initSynchronization();
         byte[] originalImage = {1};
         byte[] processedImage = {2};
         Album album = TestObjectsFactory.createAlbumWithId(42L, "Album");
-        album.changeCoverUrl("covers/old-cover.webp");
+        album.changeCoverFileKey("covers/old-cover.webp");
         when(albumRetriever.getActive(42L)).thenReturn(album);
         when(imageProcessor.process(originalImage)).thenReturn(processedImage);
         doThrow(new IllegalStateException("S3 is unavailable"))
