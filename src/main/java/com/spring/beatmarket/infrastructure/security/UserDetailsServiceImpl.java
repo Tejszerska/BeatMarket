@@ -17,6 +17,6 @@ class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         return userRepository.findFirstByEmail(username)
                 .map(SecurityUser::new)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }
