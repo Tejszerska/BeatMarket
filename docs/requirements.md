@@ -8,13 +8,13 @@
 - [x] An admin role is provisioned manually within the database to grant secure access for catalog management.
 
 #### Catalog Module
-- [ ] Unauthenticated users can search the system using filtering options for the artist, genre, album, language, release date, price and duration, alongside specific sorting capabilities.
-- [ ] These public queries return a lightweight data transfer object containing basic metadata and an AWS S3 URL linking to a 30-second watermarked audio sample.
+- [x] Unauthenticated users can search the system using filtering options for the artist, genre, album, language, release date, price and duration, alongside specific sorting capabilities.
+- [x] These public queries return a lightweight data transfer object containing basic metadata and an AWS S3 URL linking to a 30-second watermarked audio sample.
 - [x] The language filtering mechanism supports a dedicated value to strictly identify instrumental tracks.
-- [ ] Unauthenticated users can also retrieve general lists of available genres, artists, and albums.
+- [x] Unauthenticated users can also retrieve general lists of available genres, artists, and albums.
 - [ ] Authenticated customers querying a specific song identifier receive a highly detailed response that includes all metadata, associated license tiers, and their respective pricing structures.
 - [ ] To manage this data, the admin holds exclusive access to the creation, modification, and deletion endpoints for the entire catalog.
-- [ ] The admin is additionally responsible for uploading audio files, which the backend routes directly to an Amazon S3 bucket while persisting the generated URLs in the PostgreSQL database.
+- [x] The admin is additionally responsible for uploading audio files, which the backend routes directly to an Amazon S3 bucket while persisting the generated URLs in the PostgreSQL database.
 
 #### Payment Module
 - [ ] Authenticated users initiate their purchases by sending a request to a dedicated checkout endpoint.

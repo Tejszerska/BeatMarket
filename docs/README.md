@@ -1,109 +1,81 @@
-# 🎵 BeatMarket  🎵
+# BeatMarket
+
+BeatMarket is a B2B music licensing platform exposed as a REST API. It is built as a modular monolith: business
+capabilities are separated into modules, while the application currently focuses on the account and music catalog
+functionality.
+
+## Modules and implementation status
+
+- **Account** — registration and authentication, including email verification, Google OAuth2, user roles, and access
+  control. The functionality is implemented; integration-test coverage still needs to be completed, including the
+  user-repository area.
+- **Catalog (WIP)** — songs, artists, albums, and genres; catalog search and filtering; audio and image validation and
+  processing; and file storage through Amazon S3. The module is nearly complete, with tests still to be finished.
+- **Licensing (WIP)** — license tiers, song pricing, and license records. The target flow provisions a license after
+  successful payment and delivers its certificate by email.
+- **Payment (WIP)** — payment records and statuses. The planned checkout and payment confirmation flow integrates with
+  Stripe, including signed webhooks.
+
+The project uses a pragmatic combination of hexagonal and layered architecture. Business modules communicate through
+domain-facing ports; external services and technical integrations are handled in the infrastructure layer.
+
+## Tech stack
+
+- **Language:** Java 17
+- **Framework:** Spring Boot 3.5.16, Spring MVC
+- **Security:** Spring Security, Google OAuth2, JWT
+- **Database:** PostgreSQL, Spring Data JPA / Hibernate, Flyway
+- **File storage:** Amazon S3 (AWS SDK)
+- **Email:** Spring Mail
+- **API documentation:** Springdoc OpenAPI / Swagger UI
+- **Testing:** JUnit 5, Mockito, AssertJ, Testcontainers
+- **Build:** Maven
+- **Local environment:** Docker and Docker Compose
+
+## Running locally
+
+### Prerequisites
+
+- Docker and Docker Compose
+
+### Start the application
+
+1. Clone the repository and move into its directory:
+
+   ```bash
+   git clone https://github.com/Tejszerska/BeatMarket.git
+   cd BeatMarket
+   ```
+
+2. Create a local `.env` file from the example:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Add your Google OAuth2 and Gmail app-password credentials to `.env` if you want to use Google login and email
+   verification. Add `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` if you want to use S3 uploads. These variables are passed to
+   the application by Docker Compose.
+
+4. Build and start the application and PostgreSQL database:
+
+   ```bash
+   docker compose up --build
+   ```
+
+The API is available at <https://localhost:8443>, and Swagger UI at <https://localhost:8443/swagger-ui/index.html>. The
+local HTTPS certificate may require accepting a browser security warning.
+
+To stop the containers, press `Ctrl+C`; to remove the containers and network afterward, run:
+
+```bash
+docker compose down
+```
 
 ## Documentation
 
-Detailed project documentation is divided into the following sections:
-* [Project Requirements & Roadmap](docs/requirements.md)
-* [System Architecture & Flows](docs/architecture.md)
-* [API Contracts](docs/api-contracts.md)
-
-*** 
-*** 
-*** 
-*OLD:* 
-
-
-
-### <i> Advanced Music Database REST API </i>
-
-##  About The Project
-BeatMarket is a scalable RESTful API designed for managing a music database (Songs, Albums, Artists, and Genres).
-
-The core CRUD operations are implemented with a strong emphasis on Clean Code principles, SOLID architecture, and REST API best practices, ensuring high maintainability and readability.
-<br>**Furthermore, the primary focus of this project is a highly secure Hybrid Authentication System**. It combines traditional manual registration with Google OAuth2 Login, unified under a custom RSA-signed JWT architecture.
-
-## Tech Stack
-* **Language:** Java 17
-* **Framework:** Spring Boot 3
-* **Security:** Spring Security 6, OAuth2 Client, Auth0 JWT
-* **Database:** PostgreSQL, Spring Data JPA, Hibernate
-* **Testing:** JUnit 5, Mockito, Testcontainers
-* **Documentation:** Springdoc OpenAPI (Swagger)
-* **Build Tool:** Maven
-* **DevOps:** Docker, Docker Compose
-
-## Key Features
-* **Advanced Hybrid Security Architecture:**
-    * **Unified Token System:** Both traditional login and Google OAuth2 result in a custom, self-signed RSA-256 JWT.
-    * **Stateless Sessions:** Fully stateless architecture utilizing `HttpOnly` and `Secure` cookies to prevent XSS attacks. No tokens are exposed in the Local Storage.
-    * **Auto-Registration:** Users logging in via Google for the first time are automatically registered in the database.
-    * **Email Verification:** Manual registration requires account activation via an email confirmation link.
-* **Complex Data Relations:** Managed Many-to-Many and One-to-Many relationships between Artists, Albums, and Songs using Hibernate/JPA.
-* **Interactive API Documentation:** Beautifully integrated Swagger UI / OpenAPI 3.0.
-* **Fully Containerized:** The entire application, including the PostgreSQL database, is fully containerized using a multi-stage Docker build and Docker Compose.
-
-###  Security Flow Highlights
-As a junior developer, I wanted to go beyond standard Basic Auth. Here is how the security flows in this application:
-1. **OAuth2 Flow:** When a user logs in via Google, the application intercepts the Google Token, verifies the user, and discards the Google Token.
-2. **Custom JWT Generation:** The backend then generates its own custom JWT signed with a private RSA key.
-3. **Cookie Delivery:** This JWT is embedded into an `HttpOnly`, `Secure` cookie and sent to the browser.
-4. **Custom Filter:** Every subsequent request is intercepted by a custom `JwtAuthTokenFilter` that extracts the cookie, validates the RSA signature using the public key, and sets the Spring `SecurityContext`.
-
-## Getting Started
-
-### Prerequisites
-* Docker and Docker Compose installed on your machine.
-* *(No local Java or Maven installation is required to run the project, as it uses a multi-stage Docker build).*
-
-### Installation & Running
-1. Clone the repository:
-```bash
-   git clone https://github.com/Tejszerska/beatmarket
-```
-Navigate to the project directory:
-```bash
-cd beatmarket
-```
-
-Build and start the entire ecosystem (App + Database) using Docker Compose:
-```bash
-docker-compose up -d --build
-```
-### API Documentation
-Once the application is running, you can interact with the API and test the authentication flows using the Swagger UI:
-
-URL: https://localhost:8443/swagger-ui/index.html
-<br>**(Note: requires accepting the self-signed SSL certificate for HTTPS).**
-
-##  Important Note on Environment Variables & Security
-
-For security reasons, sensitive credentials (such as Google OAuth2 Client Secrets and Gmail SMTP passwords) are strictly excluded from this repository and ignored via `.gitignore`.
-* The application will still successfully boot up using fallback dummy values. 
-* Core CRUD operations and traditional manual JWT authentication will work perfectly with example user credentials
- ```bash
- {
-  "username": "a@dmin",
-  "password": "123"
-  }
-   ```
-at endpoint
- ```bash
- POST /intentity/token
-   ```
-
-Since the JWT token is automatically stored in a secure cookie upon login, you don't need to manually copy and paste it anywhere. Just log in and start testing the endpoints right away!
-
-### How to run the app with your own credentials:
-If you want to test the full flow (including Google Login and Email Verification), follow these steps before running Docker:
-
-1. Locate the `.env.example` file in the root directory.
-2. Create a copy of this file and rename it to exactly `.env`.
-3. Fill in the `.env` file with your actual credentials:
-   ```bash
-   MAIL_SENDER_PWD=your_16_character_google_app_password
-   OAUTH2_CLIENT_ID=your_google_oauth2_client_id
-   OAUTH2_SECRET=your_google_oauth2_client_secret
-
-<br><br> (Note: requires accepting the self-signed SSL certificate for HTTPS).
+- [Requirements and roadmap](requirements.md)
+- [System architecture and flows](architecture.md)
+- [API contracts](api-contracts.md)
 
 <img src="/docs/images/swagger-ui.png" alt="Screenshot of Swagger interface for BeatMarket API">

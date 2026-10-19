@@ -27,6 +27,7 @@ class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+    //@TODO Add authorization rules for endpoints after development is finished
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, JwtAuthTokenFilter jwtAuthTokenFilter) throws Exception {
         http.csrf(c -> c.disable());
