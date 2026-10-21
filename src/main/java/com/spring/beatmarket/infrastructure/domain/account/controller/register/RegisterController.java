@@ -1,9 +1,6 @@
 package com.spring.beatmarket.infrastructure.domain.account.controller.register;
 
-import com.spring.beatmarket.domain.account.UserExistsException;
 import com.spring.beatmarket.domain.account.UserFacade;
-import com.spring.beatmarket.infrastructure.domain.account.controller.register.dto.RegisterUserRequestDto;
-import com.spring.beatmarket.infrastructure.domain.account.controller.register.dto.RegisterUserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -34,19 +31,13 @@ class RegisterController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created successfully. Confirmation email sent."),
             @ApiResponse(responseCode = "400", description = "Invalid registration data."),
-            @ApiResponse(responseCode = "409", description = "User with this email already exists.")
+            @ApiResponse(responseCode = "409", description = "Registration conflicts with existing account data.")
     })
     @PostMapping("/register")
-    public ResponseEntity<RegisterUserResponseDto> register(@Valid @RequestBody RegisterUserRequestDto request) {
-        try {
-            userFacade.registerNewUser(mapper.mapFromRegisterUserRequestDtoToUserRequestDto(request));
-        } catch (UserExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new RegisterUserResponseDto("User with this email already exists."));
-        }
-
+    public ResponseEntity<RegisterUserResponse> register(@Valid @RequestBody RegisterUserRequest request) {
+        userFacade.registerNewUser(mapper.toDomainRegistration(request));
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new RegisterUserResponseDto("User created successfully. Confirmation email sent."));
+                .body(new RegisterUserResponse("User created successfully. Confirmation email sent."));
     }
 
     @Operation(summary = "Confirm email address", description = "Validates the token from the email link and activates the user account.")
@@ -55,15 +46,15 @@ class RegisterController {
             @ApiResponse(responseCode = "404", description = "Failed token.")
     })
     @GetMapping("/confirm")
-    public ResponseEntity<RegisterUserResponseDto> confirm(@RequestParam String token) {
+    public ResponseEntity<RegisterUserResponse> confirm(@RequestParam String token) {
         boolean isConfirmed = userFacade.confirmUser(token);
         if (isConfirmed) {
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create("https://localhost:8443/swagger-ui/index.html"))
-                    .body((new RegisterUserResponseDto("Account activated. Redirecting to Swagger UI")));
+                    .body((new RegisterUserResponse("Account activated. Redirecting to Swagger UI")));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body((new RegisterUserResponseDto("Confirmation failed. cannot login")));
+                    .body((new RegisterUserResponse("Confirmation failed. cannot login")));
         }
     }
 }

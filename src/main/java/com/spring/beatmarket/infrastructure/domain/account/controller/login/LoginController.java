@@ -1,6 +1,5 @@
 package com.spring.beatmarket.infrastructure.domain.account.controller.login;
 
-import com.spring.beatmarket.infrastructure.domain.shared.MessageResponse;
 import com.spring.beatmarket.infrastructure.security.jwt.CookieService;
 import com.spring.beatmarket.infrastructure.security.jwt.dto.JwtGenerationDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,10 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,17 +34,11 @@ class LoginController {
             @ApiResponse(responseCode = "401", description = "Authentication failed due to incorrect credentials or an unverified account.")
     })
     @PostMapping("/login")
-    public ResponseEntity<MessageResponse> authenticateAndGenerateToken(@RequestBody LoginRequestDto dto, HttpServletResponse response) {
-        JwtGenerationDto jwtGenerationDto = mapper.mapFromLoginRequestDtoToJwtGenerationDto(dto);
-        try {
-            Cookie cookie = cookieService.createAccessTokenCookie(jwtGenerationDto, 360);
-            response.addCookie(cookie);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new MessageResponse("Invalid email or password."));
-        }
-
-        return ResponseEntity.ok(new MessageResponse("Login successful."));
+    public ResponseEntity<LoginResponse> authenticateAndGenerateToken(@Valid @RequestBody LoginRequest dto, HttpServletResponse response) {
+        JwtGenerationDto jwtGenerationDto = mapper.mapFromLoginRequestToJwtGenerationDto(dto);
+        Cookie cookie = cookieService.createAccessTokenCookie(jwtGenerationDto, 360);
+        response.addCookie(cookie);
+        return ResponseEntity.ok(new LoginResponse("Login successful."));
     }
 
     @Operation(
@@ -57,10 +49,10 @@ class LoginController {
             @ApiResponse(responseCode = "200", description = "Successfully cleared the JWT authorization cookie,."),
     })
     @PostMapping("/logout")
-    public ResponseEntity<MessageResponse> clearJwtAuthorizationCookie(HttpServletResponse response) {
+    public ResponseEntity<LoginResponse> clearJwtAuthorizationCookie(HttpServletResponse response) {
         Cookie cookie = cookieService.clearTokenCookie();
         response.addCookie(cookie);
-        return ResponseEntity.ok(new MessageResponse("Logged out successfully."));
+        return ResponseEntity.ok(new LoginResponse("Logged out successfully."));
     }
 
 }

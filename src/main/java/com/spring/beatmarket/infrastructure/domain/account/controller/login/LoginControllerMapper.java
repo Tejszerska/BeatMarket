@@ -5,5 +5,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 interface LoginControllerMapper {
-    JwtGenerationDto mapFromLoginRequestDtoToJwtGenerationDto(LoginRequestDto dto);
+    JwtGenerationDto mapFromLoginRequestToJwtGenerationDto(LoginRequest dto);
 }

@@ -1,4 +1,4 @@
-package com.spring.beatmarket.infrastructure.domain.account.controller.register.dto;
+package com.spring.beatmarket.infrastructure.domain.account.controller.register;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Schema(description = "Payload for registering a new user")
-public record RegisterUserRequestDto(
+public record RegisterUserRequest(
 
         @Schema(description = "User's email address, used for registration and account verification", example = "test@gmail.com")
         @NotBlank(message = "Email is required")
