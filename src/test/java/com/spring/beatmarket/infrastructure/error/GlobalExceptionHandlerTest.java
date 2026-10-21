@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -32,6 +33,18 @@ class GlobalExceptionHandlerTest {
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(handler, "maxFileSize", "165MB");
+    }
+
+    @Test
+    @DisplayName("Returns a generic unauthorized problem detail for authentication failure")
+    void returns_generic_unauthorized_problem_detail() {
+        ProblemDetail problem = handler.handleAuthenticationException(
+                new BadCredentialsException("Account is not activated.")
+        );
+
+        assertThat(problem.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(problem.getTitle()).isEqualTo("Authentication failed");
+        assertThat(problem.getDetail()).isEqualTo("Invalid email or password.");
     }
 
     @Test

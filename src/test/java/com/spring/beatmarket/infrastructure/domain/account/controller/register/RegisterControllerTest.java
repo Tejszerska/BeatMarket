@@ -2,8 +2,8 @@ package com.spring.beatmarket.infrastructure.domain.account.controller.register;
 
 import com.spring.beatmarket.domain.account.UserExistsException;
 import com.spring.beatmarket.domain.account.UserFacade;
-import com.spring.beatmarket.domain.account.dto.UserRequestDto;
-import com.spring.beatmarket.infrastructure.domain.account.controller.register.dto.RegisterUserRequestDto;
+import com.spring.beatmarket.domain.account.dto.UserRegistrationDto;
+import com.spring.beatmarket.infrastructure.error.GlobalExceptionHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +41,7 @@ class RegisterControllerTest {
         validator = new LocalValidatorFactoryBean();
         validator.afterPropertiesSet();
         mockMvc = MockMvcBuilders.standaloneSetup(new RegisterController(userFacade, mapper))
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .setValidator(validator)
                 .build();
     }
@@ -54,9 +55,9 @@ class RegisterControllerTest {
     @DisplayName("Registers a valid user and returns a created response")
     void registers_valid_user() throws Exception {
         // given
-        RegisterUserRequestDto request = new RegisterUserRequestDto("new@example.com", "strong-password");
-        UserRequestDto mappedRequest = new UserRequestDto(request.email(), request.password());
-        when(mapper.mapFromRegisterUserRequestDtoToUserRequestDto(request)).thenReturn(mappedRequest);
+        RegisterUserRequest request = new RegisterUserRequest("new@example.com", "strong-password");
+        UserRegistrationDto mappedRequest = new UserRegistrationDto(request.email(), request.password());
+        when(mapper.toDomainRegistration(request)).thenReturn(mappedRequest);
 
         // when & then
         mockMvc.perform(post("/users/register")
@@ -75,10 +76,11 @@ class RegisterControllerTest {
     @DisplayName("Returns a conflict response when the email already exists")
     void returns_conflict_for_duplicate_email() throws Exception {
         // given
-        RegisterUserRequestDto request = new RegisterUserRequestDto("existing@example.com", "strong-password");
-        UserRequestDto mappedRequest = new UserRequestDto(request.email(), request.password());
-        when(mapper.mapFromRegisterUserRequestDtoToUserRequestDto(request)).thenReturn(mappedRequest);
-        doThrow(mock(UserExistsException.class)).when(userFacade).registerNewUser(mappedRequest);
+        RegisterUserRequest request = new RegisterUserRequest("existing@example.com", "strong-password");
+        UserRegistrationDto mappedRequest = new UserRegistrationDto(request.email(), request.password());
+        when(mapper.toDomainRegistration(request)).thenReturn(mappedRequest);
+        doThrow(new UserExistsException("User with this email already exists."))
+                .when(userFacade).registerNewUser(mappedRequest);
 
         // when & then
         mockMvc.perform(post("/users/register")
@@ -87,7 +89,9 @@ class RegisterControllerTest {
                                 {"email":"existing@example.com","password":"strong-password"}
                                 """))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("User with this email already exists."));
+                .andExpect(jsonPath("$.title").value("Registration conflict"))
+                .andExpect(jsonPath("$.detail")
+                        .value("Registration could not be completed with the provided details."));
 
         verify(userFacade).registerNewUser(mappedRequest);
     }
