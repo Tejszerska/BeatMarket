@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.account;
 
-import com.spring.beatmarket.domain.account.dto.UserRequestDto;
+import com.spring.beatmarket.domain.account.dto.UserRegistrationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,12 +18,12 @@ class UserRegisterer {
     private final UserRepository userRepository;
     private final UserRetriever userRetriever;
 
-    User registerNewUser(UserRequestDto userRequestDto) {
-        userRetriever.throwExceptionIfUserExits(userRequestDto.email());
+    User registerNewUser(UserRegistrationDto userRegistrationDto) {
+        userRetriever.throwExceptionIfUserExits(userRegistrationDto.email());
 
         User user = User.builder()
-                .email(userRequestDto.email())
-                .password(passwordEncoder.encode(userRequestDto.password()))
+                .email(userRegistrationDto.email())
+                .password(passwordEncoder.encode(userRegistrationDto.password()))
                 .authorities(DEFAULT_USER_ROLES)
                 .enabled(false)
                 .confirmationToken(UUID.randomUUID().toString())

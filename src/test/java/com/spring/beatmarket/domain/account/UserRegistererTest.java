@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.account;
 
-import com.spring.beatmarket.domain.account.dto.UserRequestDto;
+import com.spring.beatmarket.domain.account.dto.UserRegistrationDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +30,7 @@ class UserRegistererTest {
     @DisplayName("Registers a new inactive user with an encoded password and confirmation token")
     void registers_inactive_user() {
         // given
-        UserRequestDto request = new UserRequestDto("new@example.com", "plain-password");
+        UserRegistrationDto request = new UserRegistrationDto("new@example.com", "plain-password");
         when(passwordEncoder.encode(request.password())).thenReturn("encoded-password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -52,7 +52,7 @@ class UserRegistererTest {
     @DisplayName("Rejects registration before encoding or saving an existing user")
     void rejects_duplicate_registration() {
         // given
-        UserRequestDto request = new UserRequestDto("existing@example.com", "plain-password");
+        UserRegistrationDto request = new UserRegistrationDto("existing@example.com", "plain-password");
         doThrow(new UserExistsException("User with this email already exists."))
                 .when(userRetriever).throwExceptionIfUserExits(request.email());
 

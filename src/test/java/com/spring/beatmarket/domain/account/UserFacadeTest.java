@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.account;
 
-import com.spring.beatmarket.domain.account.dto.UserRequestDto;
+import com.spring.beatmarket.domain.account.dto.UserRegistrationDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,7 +24,7 @@ class UserFacadeTest {
     @DisplayName("Publishes a registration event after registering a user")
     void publishes_registration_event() {
         // given
-        UserRequestDto request = new UserRequestDto("new@example.com", "password");
+        UserRegistrationDto request = new UserRegistrationDto("new@example.com", "password");
         User user = User.builder().email(request.email()).build();
         when(userRegisterer.registerNewUser(request)).thenReturn(user);
 
@@ -39,7 +39,7 @@ class UserFacadeTest {
     @DisplayName("Does not publish a registration event when registration fails")
     void skips_event_after_registration_failure() {
         // given
-        UserRequestDto request = new UserRequestDto("existing@example.com", "password");
+        UserRegistrationDto request = new UserRegistrationDto("existing@example.com", "password");
         when(userRegisterer.registerNewUser(request))
                 .thenThrow(new UserExistsException("User with this email already exists."));
 

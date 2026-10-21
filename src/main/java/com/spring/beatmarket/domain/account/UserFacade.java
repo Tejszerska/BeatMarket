@@ -1,6 +1,6 @@
 package com.spring.beatmarket.domain.account;
 
-import com.spring.beatmarket.domain.account.dto.UserRequestDto;
+import com.spring.beatmarket.domain.account.dto.UserRegistrationDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,8 +18,8 @@ public class UserFacade {
         return userConformer.confirmUser(confirmationToken);
     }
 
-    public void registerNewUser(UserRequestDto userRequestDto) {
-        User user = userRegisterer.registerNewUser(userRequestDto);
+    public void registerNewUser(UserRegistrationDto userRegistrationDto) {
+        User user = userRegisterer.registerNewUser(userRegistrationDto);
         eventPublisher.publishEvent(new UserRegisteredEvent(user));
     }
 
