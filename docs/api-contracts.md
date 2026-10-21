@@ -20,8 +20,9 @@ and `conflictingIds`.
 }
 ```
 
-Error responses explicitly created by a controller (for example, login failures, invalid email confirmation, and
-duplicate registration) retain their controller-specific payloads.
+Errors handled by `GlobalExceptionHandler`, including failed login attempts, use the `ProblemDetail` format.
+Duplicate registration is also handled by `GlobalExceptionHandler`; invalid email confirmation still returns a
+controller-specific payload.
 
 Audio-specific handlers add `durationInDatabase` for a duration mismatch and `fileSize`/`maxSize` for an audio file that
 exceeds its format limit. A role conflict adds `entity` and `conflictingIds`. A multipart request exceeding the server
@@ -70,11 +71,15 @@ _Returned when validation fails (e.g., weak password, invalid email format)._
 ```
 
 **Error Response (409 Conflict):**
-_Returned when the email address is already registered in the system._
+_Returned when the registration conflicts with existing account data._
 
 ```json
 {
-  "message": "User with this email already exists."
+  "type": "about:blank",
+  "title": "Registration conflict",
+  "status": 409,
+  "detail": "Registration could not be completed with the provided details.",
+  "instance": "/api/users/register"
 }
 ```
 
@@ -135,7 +140,11 @@ _Returned for incorrect credentials or unactivated accounts._
 
 ```json
 {
-  "message": "Invalid email or password."
+  "type": "about:blank",
+  "title": "Authentication failed",
+  "status": 401,
+  "detail": "Invalid email or password.",
+  "instance": "/api/users/login"
 }
 ```
 
