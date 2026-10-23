@@ -26,7 +26,7 @@
 
 - [ ] spr SongPriceId.class - czy dobrze zaimplementowałam?
 
-- [ ] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych (moduł catalog) ---- rozważyć w jaki sposób zabezpieczyć te pola w samej encji Song,
+- [x] Dodawanie plików do AWS (audio i image ) i obsługa w bazie danych (moduł catalog) ---- rozważyć w jaki sposób zabezpieczyć te pola w samej encji Song,
   aby uniemożliwić ich przypadkową zmianę z zewnątrz (np. poprzez usunięcie standardowych setterów i wprowadzenie dedykowanych metod assignFile(...)?)
 
 - [ ] Dodawanie wyceny licencji piosenki - komunikacja między modułami catalog, licensing
@@ -38,3 +38,5 @@
 - [ ] Stworzenie ukrytego endpointu Webhooka pod odbieranie potwierdzeń ze Stripe.
 
 - [ ] Podpięcie istniejącego mechanizmu mailowego pod zmianę statusu płatności, by wysyłał powiadomienie po wygenerowaniu licencji.
+
+- [ ] Poprawienie w account simple mail sender - wywalenie do infrastruktury 
