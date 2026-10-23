@@ -64,7 +64,7 @@ class JwtAuthTokenFilterTest {
     @DisplayName("Authenticates the subject and roles from the access cookie")
     void authenticates_access_cookie() throws ServletException, IOException {
         // given
-        String token = createToken("cookie@example.com", List.of("ROLE_USER"));
+        String token = createToken("cookie@example.com", List.of("ROLE_CUSTOMER"));
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setCookies(new Cookie("accessToken", token));
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -74,7 +74,7 @@ class JwtAuthTokenFilterTest {
         filter.doFilter(request, response, chain);
 
         // then
-        assertAuthentication("cookie@example.com", "ROLE_USER");
+        assertAuthentication("cookie@example.com", "ROLE_CUSTOMER");
         verify(chain).doFilter(request, response);
     }
 
