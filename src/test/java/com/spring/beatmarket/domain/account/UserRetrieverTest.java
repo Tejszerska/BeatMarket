@@ -22,7 +22,7 @@ class UserRetrieverTest {
         when(userRepository.existsByEmail(email)).thenReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> userRetriever.throwExceptionIfUserExits(email))
+        assertThatThrownBy(() -> userRetriever.ensureUserDoesNotExist(email))
                 .isInstanceOf(UserExistsException.class)
                 .hasMessage("User with this email already exists.");
     }
@@ -35,7 +35,7 @@ class UserRetrieverTest {
         when(userRepository.existsByEmail(email)).thenReturn(false);
 
         // when
-        userRetriever.throwExceptionIfUserExits(email);
+        userRetriever.ensureUserDoesNotExist(email);
 
         // then
         verify(userRepository).existsByEmail(email);

@@ -19,7 +19,7 @@ class UserRegisterer {
     private final UserRetriever userRetriever;
 
     User registerNewUser(UserRegistrationDto userRegistrationDto) {
-        userRetriever.throwExceptionIfUserExits(userRegistrationDto.email());
+        userRetriever.ensureUserDoesNotExist(userRegistrationDto.email());
 
         User user = User.builder()
                 .email(userRegistrationDto.email())

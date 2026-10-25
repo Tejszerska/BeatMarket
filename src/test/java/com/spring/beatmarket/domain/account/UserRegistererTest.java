@@ -43,7 +43,7 @@ class UserRegistererTest {
         assertThat(registeredUser.getAuthorities()).containsExactly("ROLE_CUSTOMER");
         assertThat(registeredUser.isEnabled()).isFalse();
         assertThat(UUID.fromString(registeredUser.getConfirmationToken())).isNotNull();
-        verify(userRetriever).throwExceptionIfUserExits(request.email());
+        verify(userRetriever).ensureUserDoesNotExist(request.email());
         verify(passwordEncoder).encode(request.password());
         verify(userRepository).save(registeredUser);
     }
@@ -54,7 +54,7 @@ class UserRegistererTest {
         // given
         UserRegistrationDto request = new UserRegistrationDto("existing@example.com", "plain-password");
         doThrow(new UserExistsException("User with this email already exists."))
-                .when(userRetriever).throwExceptionIfUserExits(request.email());
+                .when(userRetriever).ensureUserDoesNotExist(request.email());
 
         // when & then
         assertThatThrownBy(() -> userRegisterer.registerNewUser(request))
