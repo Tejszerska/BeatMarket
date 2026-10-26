@@ -1,4 +1,4 @@
 package com.spring.beatmarket.domain.account;
 
-public record UserRegisteredEvent(User user) {
+public record UserRegisteredEvent(String email, String confirmationToken) {
 }

@@ -20,7 +20,7 @@ public class UserFacade {
 
     public void registerNewUser(UserRegistrationDto userRegistrationDto) {
         User user = userRegisterer.registerNewUser(userRegistrationDto);
-        eventPublisher.publishEvent(new UserRegisteredEvent(user));
+        eventPublisher.publishEvent(new UserRegisteredEvent(user.getEmail(), user.getConfirmationToken()));
     }
 
     public void registerNewUser(String email) {

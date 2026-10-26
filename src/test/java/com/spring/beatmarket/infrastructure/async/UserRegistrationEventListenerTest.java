@@ -1,7 +1,6 @@
 package com.spring.beatmarket.infrastructure.async;
 
 import com.spring.beatmarket.domain.account.ConfirmationEmailSenderPort;
-import com.spring.beatmarket.domain.account.User;
 import com.spring.beatmarket.domain.account.UserRegisteredEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,16 +18,12 @@ class UserRegistrationEventListenerTest {
     @DisplayName("Sends a confirmation email when a user registers")
     void sends_confirmation_email_for_registered_user() {
         // given
-        User user = User.builder()
-                .email("new@example.com")
-                .confirmationToken("confirmation-token")
-                .build();
-        UserRegisteredEvent event = new UserRegisteredEvent(user);
+        UserRegisteredEvent event = new UserRegisteredEvent("new@example.com", "confirmation-token");
 
         // when
         listener.handleUserRegistration(event);
 
         // then
-        verify(confirmationEmailSenderPort).sendConfirmationEmail(user);
+        verify(confirmationEmailSenderPort).sendConfirmationEmail(event.email(), event.confirmationToken());
     }
 }

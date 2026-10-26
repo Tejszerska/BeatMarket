@@ -25,14 +25,17 @@ class UserFacadeTest {
     void publishes_registration_event() {
         // given
         UserRegistrationDto request = new UserRegistrationDto("new@example.com", "password");
-        User user = User.builder().email(request.email()).build();
+        User user = User.builder()
+                .email(request.email())
+                .confirmationToken("confirmation-token")
+                .build();
         when(userRegisterer.registerNewUser(request)).thenReturn(user);
 
         // when
         userFacade.registerNewUser(request);
 
         // then
-        verify(eventPublisher).publishEvent(new UserRegisteredEvent(user));
+        verify(eventPublisher).publishEvent(new UserRegisteredEvent(user.getEmail(), user.getConfirmationToken()));
     }
 
     @Test

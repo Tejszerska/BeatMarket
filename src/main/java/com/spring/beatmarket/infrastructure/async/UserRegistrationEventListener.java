@@ -16,6 +16,6 @@ class UserRegistrationEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserRegistration(UserRegisteredEvent event) {
-        confirmationEmailSenderPort.sendConfirmationEmail(event.user());
+        confirmationEmailSenderPort.sendConfirmationEmail(event.email(), event.confirmationToken());
     }
 }
