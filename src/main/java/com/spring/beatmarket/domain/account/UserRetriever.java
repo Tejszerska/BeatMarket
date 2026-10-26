@@ -10,7 +10,7 @@ class UserRetriever {
 
     void ensureUserDoesNotExist(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new UserExistsException("User with this email already exists.");
+            throw new UserExistsException();
         }
     }
 

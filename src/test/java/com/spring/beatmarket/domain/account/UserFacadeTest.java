@@ -41,7 +41,7 @@ class UserFacadeTest {
         // given
         UserRegistrationDto request = new UserRegistrationDto("existing@example.com", "password");
         when(userRegisterer.registerNewUser(request))
-                .thenThrow(new UserExistsException("User with this email already exists."));
+                .thenThrow(new UserExistsException());
 
         // when & then
         assertThatThrownBy(() -> userFacade.registerNewUser(request))

@@ -2,7 +2,7 @@ package com.spring.beatmarket.domain.account;
 
 public class UserExistsException extends RuntimeException {
 
-    public UserExistsException(final String message) {
-        super(message);
+    public UserExistsException() {
+        super("User with this email already exists.");
     }
 }

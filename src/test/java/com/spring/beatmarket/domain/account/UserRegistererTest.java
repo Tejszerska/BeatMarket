@@ -53,7 +53,7 @@ class UserRegistererTest {
     void rejects_duplicate_registration() {
         // given
         UserRegistrationDto request = new UserRegistrationDto("existing@example.com", "plain-password");
-        doThrow(new UserExistsException("User with this email already exists."))
+        doThrow(new UserExistsException())
                 .when(userRetriever).ensureUserDoesNotExist(request.email());
 
         // when & then

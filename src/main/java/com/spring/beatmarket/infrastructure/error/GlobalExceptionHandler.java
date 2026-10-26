@@ -2,6 +2,7 @@ package com.spring.beatmarket.infrastructure.error;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.spring.beatmarket.domain.account.UserExistsException;
+import com.spring.beatmarket.domain.account.UserNotFoundException;
 import com.spring.beatmarket.domain.catalog.exception.AudioFileTooBigException;
 import com.spring.beatmarket.domain.catalog.exception.DataConflictException;
 import com.spring.beatmarket.domain.catalog.exception.DuplicateRoleException;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -34,6 +36,13 @@ public class GlobalExceptionHandler {
 
     @Value("${spring.servlet.multipart.max-file-size}")
     String maxFileSize;
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    ProblemDetail handleUsernameNotFoundException(UsernameNotFoundException exception) {
+        log.warn("Username not found: {}", exception.getMessage());
+        // Returns a generic message to avoid revealing sensitive information.
+        return problem(HttpStatus.UNAUTHORIZED, "Authentication failed", "Invalid credentials.");
+    }
 
     @ExceptionHandler(AuthenticationException.class)
     ProblemDetail handleAuthenticationException(AuthenticationException exception) {
@@ -50,6 +59,12 @@ public class GlobalExceptionHandler {
                 "Registration conflict",
                 "Registration could not be completed with the provided details."
         );
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    ProblemDetail handleUserNotFoundException(UserNotFoundException exception) {
+        log.warn("Confirmation failed: {}", exception.getMessage());
+        return problem(HttpStatus.NOT_FOUND, "Confirmation failed.", "Invalid or expired confirmation token.");
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

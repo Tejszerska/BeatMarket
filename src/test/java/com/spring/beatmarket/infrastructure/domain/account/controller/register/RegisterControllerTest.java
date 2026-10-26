@@ -79,7 +79,7 @@ class RegisterControllerTest {
         RegisterUserRequest request = new RegisterUserRequest("existing@example.com", "strong-password");
         UserRegistrationDto mappedRequest = new UserRegistrationDto(request.email(), request.password());
         when(mapper.toDomainRegistration(request)).thenReturn(mappedRequest);
-        doThrow(new UserExistsException("User with this email already exists."))
+        doThrow(new UserExistsException())
                 .when(userFacade).registerNewUser(mappedRequest);
 
         // when & then
