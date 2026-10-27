@@ -56,7 +56,7 @@ class AlbumCoverUpdaterTest {
 
         // then
         assertThat(result).isEqualTo(expectedCover);
-        assertThat(album.getCoverFileKey()).matches("covers/album-\\d{5}-[a-f0-9]{8}\\.webp");
+        assertThat(album.getCoverFileKey()).matches("covers/album-[a-f0-9]{8}\\.webp");
         verify(fileStoragePort).upload(processedImage, album.getCoverFileKey(), "image/webp");
         verify(fileStoragePort).urlFor(album.getCoverFileKey());
         verify(albumRetriever).getActive(42L);

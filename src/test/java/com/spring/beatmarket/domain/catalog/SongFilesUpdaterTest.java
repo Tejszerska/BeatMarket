@@ -53,7 +53,7 @@ class SongFilesUpdaterTest {
         // then
         assertThat(response).isEqualTo(new SongDto.Track(17L, "Track uploaded successfully"));
         String trackFileKey = song.getTrackFileKey();
-        assertThat(trackFileKey).matches("tracks/test-song-\\d{5}-[a-f0-9]{8}\\.FLAC");
+        assertThat(trackFileKey).matches("tracks/test-song-[a-f0-9]{8}\\.FLAC");
         verify(fileStoragePort).upload(trackBytes, trackFileKey, "audio/flac");
     }
 
