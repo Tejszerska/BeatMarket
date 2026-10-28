@@ -23,6 +23,7 @@ import java.util.List;
 
 @Component
 @Slf4j
+
 @RequiredArgsConstructor
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private final KeyPair keyPair;

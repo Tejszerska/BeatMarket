@@ -24,6 +24,10 @@ Errors handled by `GlobalExceptionHandler`, including failed login attempts, use
 Duplicate registration is also handled by `GlobalExceptionHandler`; invalid email confirmation still returns a
 controller-specific payload.
 
+Requests to protected endpoints without valid authentication also return status `401` with an
+`application/problem+json` body. The security filter chain returns this response directly, so it is handled by the
+configured authentication entry point rather than `GlobalExceptionHandler`.
+
 Audio-specific handlers add `durationInDatabase` for a duration mismatch and `fileSize`/`maxSize` for an audio file that
 exceeds its format limit. A role conflict adds `entity` and `conflictingIds`. A multipart request exceeding the server
 limit returns status `413` with the configured `maxSize`.

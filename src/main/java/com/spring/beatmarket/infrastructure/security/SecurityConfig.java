@@ -1,10 +1,11 @@
 package com.spring.beatmarket.infrastructure.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.beatmarket.domain.account.UserRepository;
 import com.spring.beatmarket.infrastructure.security.jwt.JwtAuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -27,9 +27,18 @@ class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    //@TODO Add authorization rules for endpoints after development is finished
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler successHandler, JwtAuthTokenFilter jwtAuthTokenFilter) throws Exception {
+    ProblemDetailAuthenticationEntryPoint problemDetailAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        return new ProblemDetailAuthenticationEntryPoint(objectMapper);
+    }
+
+    @Bean
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            AuthenticationSuccessHandler successHandler,
+            JwtAuthTokenFilter jwtAuthTokenFilter,
+            ProblemDetailAuthenticationEntryPoint authenticationEntryPoint
+    ) throws Exception {
         http.csrf(c -> c.disable());
         http.formLogin(c -> c.disable());
         http.httpBasic(c -> c.disable());
@@ -37,17 +46,21 @@ class SecurityConfig {
         http.oauth2Login(oauth2 -> oauth2
                 .successHandler(successHandler)
         );
-        http.exceptionHandling(c -> c.authenticationEntryPoint(
-                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-        ));
+        http.exceptionHandling(c -> c.authenticationEntryPoint(authenticationEntryPoint));
         http.sessionManagement( c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtAuthTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/**").permitAll()
-
-                // SWAGGER & API DOCS
                 .requestMatchers(
+                        HttpMethod.POST,
+                        "/api/users/register",
+                        "/api/users/login",
+                        "/api/users/logout"
+                ).permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/confirm").permitAll()
+                .requestMatchers(
+                        "/oauth2/**",
+                        "/login/oauth2/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
@@ -56,36 +69,14 @@ class SecurityConfig {
                         "/webjars/**",
                         "/error"
                 ).permitAll()
-//                // LOGIN & REGISTER
-//                .requestMatchers("/api/users/register/**").permitAll()
-//                .requestMatchers("/api/users/confirm/**").permitAll()
-//                .requestMatchers("/api/users/login/**").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/api/identity/**").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/api/identity/email").authenticated()
-//                // GENRES endpoint rules
-//                .requestMatchers(HttpMethod.GET, "/api/genres/**").permitAll()
-//                .requestMatchers(HttpMethod.PATCH, "/api/genres/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/api/genres/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/api/genres/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.PUT, "/api/genres/**").hasRole("ADMIN")
-//                // SONGS endpoint rules
-//                .requestMatchers(HttpMethod.GET, "/api/catalog/songs/**").permitAll()
-//                .requestMatchers(HttpMethod.PATCH, "/api/catalog/songs/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/api/catalog/songs/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/api/catalog/songs/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.PUT, "/api/catalog/songs/**").hasRole("ADMIN")
-//                // ALBUMS endpoint rules
-//                .requestMatchers(HttpMethod.GET, "/api/albums/**").permitAll()
-//                .requestMatchers(HttpMethod.PATCH, "/api/albums/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/api/albums/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/api/albums/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.PUT, "/api/albums/**").hasRole("ADMIN")
-//                // ARTISTS endpoint rules
-//                .requestMatchers(HttpMethod.GET, "/api/artists/**").permitAll()
-//                .requestMatchers(HttpMethod.PATCH, "/api/artists/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/api/artists/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.POST, "/api/artists/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.PUT, "/api/artists/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/webhook/payments").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/catalog/songs/*").hasAnyRole("CUSTOMER", "ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/catalog/songs").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/catalog/genres/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/catalog/artists/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/catalog/albums/**").permitAll()
+                .requestMatchers("/api/catalog/**").hasRole("ADMIN")
+                .requestMatchers("/api/payments/**", "/api/licenses/**").authenticated()
                 .anyRequest().authenticated());
         return http.build();
     }
