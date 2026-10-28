@@ -10,6 +10,7 @@ import com.spring.beatmarket.infrastructure.security.SecurityMvcTestConfiguratio
 import com.spring.beatmarket.infrastructure.upload.UploadFileValidator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
@@ -89,7 +90,7 @@ class AlbumControllerMvcTest {
         verify(facade).findAllAlbums(eq(3L), eq("Album"), pageableCaptor.capture());
         assertThat(pageableCaptor.getValue().getPageNumber()).isZero();
         assertThat(pageableCaptor.getValue().getPageSize()).isEqualTo(20);
-        assertThat(pageableCaptor.getValue().getSort().getOrderFor("editedOn").getDirection())
+        assertThat(Objects.requireNonNull(pageableCaptor.getValue().getSort().getOrderFor("editedOn")).getDirection())
                 .isEqualTo(Sort.Direction.ASC);
     }
 
