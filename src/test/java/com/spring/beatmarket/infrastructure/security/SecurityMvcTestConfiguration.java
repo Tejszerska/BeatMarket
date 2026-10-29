@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
@@ -13,7 +14,14 @@ import java.security.NoSuchAlgorithmException;
 public class SecurityMvcTestConfiguration {
 
     @Bean
-    JwtAuthTokenFilter jwtAuthTokenFilter() throws NoSuchAlgorithmException {
-        return new JwtAuthTokenFilter(KeyPairGenerator.getInstance("RSA").generateKeyPair());
+    KeyPair jwtTestKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
+
+    @Bean
+    JwtAuthTokenFilter jwtAuthTokenFilter(KeyPair jwtTestKeyPair) {
+        return new JwtAuthTokenFilter(jwtTestKeyPair);
     }
 }

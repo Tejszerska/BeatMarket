@@ -1,11 +1,18 @@
 package com.spring.beatmarket.infrastructure.domain.catalog.controller.genre;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.spring.beatmarket.domain.account.UserRepository;
 import com.spring.beatmarket.domain.catalog.GenreFacade;
 import com.spring.beatmarket.domain.catalog.dto.GenreDto;
-import com.spring.beatmarket.domain.account.UserRepository;
 import com.spring.beatmarket.infrastructure.config.WebConfig;
 import com.spring.beatmarket.infrastructure.security.SecurityMvcTestConfiguration;
 
+import jakarta.servlet.http.Cookie;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,12 +26,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,6 +51,9 @@ class GenreControllerMvcTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private KeyPair jwtTestKeyPair;
 
     @MockitoBean
     private GenreFacade facade;
@@ -96,7 +107,7 @@ class GenreControllerMvcTest {
                 // then
                 .andExpect(status().isBadRequest());
 
-        verify(facade, never()).addGenre(org.mockito.ArgumentMatchers.any());
+        verify(facade, never()).addGenre(any());
     }
 
     @Test
@@ -120,6 +131,74 @@ class GenreControllerMvcTest {
                                 {"name":"Synthwave"}
                                 """))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Creates a genre with an administrator JWT")
+    void creates_genre_with_admin_jwt() throws Exception {
+        // given
+        GenreDto.Create domainRequest = new GenreDto.Create("Synthwave");
+        GenreDto.Info createdGenre = new GenreDto.Info(4L, "Synthwave");
+        when(mapper.toDomainCreate(new GenreApiDto.Request("Synthwave"))).thenReturn(domainRequest);
+        when(facade.addGenre(domainRequest)).thenReturn(createdGenre);
+        when(mapper.toInfoResponse(createdGenre)).thenReturn(new GenreApiDto.InfoResponse(4L, "Synthwave"));
+        String token = createToken(jwtTestKeyPair, "admin@example.com", "ROLE_ADMIN");
+
+        // when
+        mockMvc.perform(post("/api/catalog/genres")
+                        .cookie(new Cookie("accessToken", token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name":"Synthwave"}
+                                """))
+
+                // then
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.name").value("Synthwave"));
+
+        verify(facade).addGenre(domainRequest);
+    }
+
+    @Test
+    @DisplayName("Rejects genre creation with a customer JWT")
+    void rejects_genre_creation_with_customer_jwt() throws Exception {
+        // given
+        String token = createToken(jwtTestKeyPair, "customer@example.com", "ROLE_CUSTOMER");
+
+        // when
+        mockMvc.perform(post("/api/catalog/genres")
+                        .cookie(new Cookie("accessToken", token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name":"Synthwave"}
+                                """))
+
+                // then
+                .andExpect(status().isForbidden());
+
+        verify(facade, never()).addGenre(any());
+    }
+
+    @Test
+    @DisplayName("Rejects genre creation with an invalid JWT signature")
+    void rejects_genre_creation_with_invalid_jwt_signature() throws Exception {
+        // given
+        KeyPair invalidKeyPair = createKeyPair();
+        String token = createToken(invalidKeyPair, "admin@example.com", "ROLE_ADMIN");
+
+        // when
+        mockMvc.perform(post("/api/catalog/genres")
+                        .cookie(new Cookie("accessToken", token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name":"Synthwave"}
+                                """))
+
+                // then
+                .andExpect(status().isUnauthorized());
+
+        verify(facade, never()).addGenre(org.mockito.ArgumentMatchers.any());
     }
 
     @Test
@@ -223,6 +302,19 @@ class GenreControllerMvcTest {
                 .andExpect(status().isNoContent());
 
         verify(facade).deactivateGenre(4L);
+    }
+
+    private String createToken(KeyPair keyPair, String subject, String role) {
+        return JWT.create()
+                .withSubject(subject)
+                .withClaim("roles", List.of(role))
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
+    }
+
+    private KeyPair createKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
     }
 
 }
