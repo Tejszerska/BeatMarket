@@ -9,7 +9,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests # skipping tests for build speed
 
 # 2/ Runtime
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:24-jre-alpine
 WORKDIR /app
 
 # copying built .jar from 1st stage
