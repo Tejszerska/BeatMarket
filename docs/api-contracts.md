@@ -1633,7 +1633,7 @@ _Returned if communication with the Stripe API fails._
 
 #### POST /api/webhook/payments
 
-Receives asynchronous event notifications from Stripe (e.g., checkout.session.completed, payment_intent.payment_failed).
+Receives asynchronous event notifications from Stripe (e.g., checkout.session.completed).
 
 **Request Headers:**
 

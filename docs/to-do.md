@@ -1,4 +1,4 @@
-- [ ] Poprawić Security Filter Chain - rozważyc grupowanie metod
+- [x] Poprawić Security Filter Chain - rozważyc grupowanie metod
 
 ```
 // SONGS endpoint rules
@@ -22,7 +22,7 @@
 
 - [ ] walidacja biznesowa w song (RDM) "Czy piosenka może zmienić język, jeśli została już zablokowana przez proces licencyjny?", "Czy można nałożyć zniżkę na utwór, który ma status archiwalny?", "Czy data premiery nie jest przypadkiem z przyszłości?".
 
-- rozważyć i zakodować CascadeType w encjach catalog
+- [ ] rozważyć i zakodować CascadeType w encjach catalog
 
 - [ ] spr SongPriceId.class - czy dobrze zaimplementowałam?
 
@@ -43,3 +43,5 @@
 
 Wdrożenie: 
 - [ ] spiąć AWS przez IAM zamiast zmiennych produkcyjnych
+
+- [ ] zmienic webhook secret ze Stripe (add endpoint i wtedy nowy webhook)

@@ -57,9 +57,19 @@ domain-facing ports; external services and technical integrations are handled in
    verification.
 
 4. Add required `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to enable AWS S3 integration (storage and presigned URLs
-   for track downloads). These variables are resolved directly by the AWS SDK DefaultCredentialsProvider via Docker Compose.
+   for track downloads). These variables are resolved directly by the AWS SDK DefaultCredentialsProvider via Docker
+   Compose.
 
-5. Build and start the application and PostgreSQL database:
+5. Add the required `STRIPE_API_KEY` and `STRIPE_WEBHOOK_SECRET` to your `.env` file to enable Stripe integration. To
+   obtain the local webhook secret, install the Stripe CLI and forward events to your local endpoint using the following
+   command:
+   ```bash
+   stripe listen --forward-to https://localhost:8443/api/webhook/payments --skip-verify --events "checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.async_payment_failed"
+   ```
+   Note: After running the command, the CLI will output a webhook signing secret (whsec_...) in the terminal. Copy this
+   value and assign it to `STRIPE_WEBHOOK_SECRET`.
+
+6. Build and start the application and PostgreSQL database:
 
    ```bash
    docker compose up --build
