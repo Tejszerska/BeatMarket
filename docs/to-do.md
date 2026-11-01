@@ -39,4 +39,7 @@
 
 - [ ] Podpięcie istniejącego mechanizmu mailowego pod zmianę statusu płatności, by wysyłał powiadomienie po wygenerowaniu licencji.
 
-- [ ] Poprawienie w account simple mail sender - wywalenie do infrastruktury 
+- [x] Poprawienie w account simple mail sender - wywalenie do infrastruktury 
+
+Wdrożenie: 
+- [ ] spiąć AWS przez IAM zamiast zmiennych produkcyjnych

@@ -54,10 +54,12 @@ domain-facing ports; external services and technical integrations are handled in
    ```
 
 3. Add your Google OAuth2 and Gmail app-password credentials to `.env` if you want to use Google login and email
-   verification. Add `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` if you want to use S3 uploads. These variables are passed to
-   the application by Docker Compose.
+   verification.
 
-4. Build and start the application and PostgreSQL database:
+4. Add required `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to enable AWS S3 integration (storage and presigned URLs
+   for track downloads). These variables are resolved directly by the AWS SDK DefaultCredentialsProvider via Docker Compose.
+
+5. Build and start the application and PostgreSQL database:
 
    ```bash
    docker compose up --build
